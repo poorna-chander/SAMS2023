@@ -1,4 +1,4 @@
-package com.sams.api.controller;
+package com.sams.samsapi.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
