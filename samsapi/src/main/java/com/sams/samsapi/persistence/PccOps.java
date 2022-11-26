@@ -3,32 +3,27 @@ package com.sams.samsapi.persistence;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
+import com.sams.samsapi.json_crud_utils.AssignedPapersUtil;
+import com.sams.samsapi.json_crud_utils.PaperChoicesUtil;
 import com.sams.samsapi.json_crud_utils.PapersUtil;
+import com.sams.samsapi.json_crud_utils.UserUtils;
+import com.sams.samsapi.model.PaperChoices;
 import com.sams.samsapi.model.ResearchPaper;
 import com.sams.samsapi.model.ReviewTemplate;
+import com.sams.samsapi.model.User;
+import com.sams.samsapi.model.ReviewTemplate.Reviews;
+import com.sams.samsapi.model.User.USER_TYPE;
 
 public class PccOps implements PccInterface {
 
     @Override
     public ArrayList<ResearchPaper> getAllSubmissions() {
-        HashMap<Integer,ResearchPaper> idVsPaperDtls =  PapersUtil.getAllPapers();
-        HashMap<Integer,ResearchPaper> paperIdVsPaper = new HashMap<>();
-        for(Integer id : idVsPaperDtls.keySet()){
-            ResearchPaper paper = idVsPaperDtls.get(id);
-            Integer paperId = paper.getPaperId();
-            if(paperIdVsPaper.containsKey(paperId)){
-                ResearchPaper oldPaper = paperIdVsPaper.get(paperId);
-                if(oldPaper.getRevisionNo() > paper.getRevisionNo()){
-                    paper = oldPaper;
-                }
-            }
-            paperIdVsPaper.put(paperId, paper);
-        }
-
+        HashMap<Integer,ResearchPaper> idVsPaper = PapersUtil.getAllPaperDetailsBasedOnLatestRevision(true);
         ArrayList<ResearchPaper> papers = new ArrayList<>();
-        for(Integer paperId : paperIdVsPaper.keySet()){
-            papers.add(paperIdVsPaper.get(paperId));
+        for(Integer paperId : idVsPaper.keySet()){
+            papers.add(idVsPaper.get(paperId));
         }
 
         return papers;
@@ -36,44 +31,98 @@ public class PccOps implements PccInterface {
 
     @Override
     public ArrayList<ResearchPaper> getPaperPendingPCCAssignments() {
-        // TODO Auto-generated method stub
-        return null;
+        ArrayList<ResearchPaper> paperDtls = getAllSubmissions();
+        List<Integer> parsedPaperIds = new ArrayList<>();
+        HashMap<Integer,ReviewTemplate> idVsAssignedPaperDtls =  AssignedPapersUtil.getAllAssignedPapers();
+        for(Integer id : idVsAssignedPaperDtls.keySet()){
+            ReviewTemplate assignedPaper = idVsAssignedPaperDtls.get(id);
+            if(!parsedPaperIds.contains(assignedPaper.getPaperId())){
+                HashMap<Integer, ResearchPaper> papers = PapersUtil.getPaperDetailsBasedOnPaperId(assignedPaper.getPaperId());
+                for(Integer paperPrimaryId : papers.keySet()){
+                    if(paperDtls.contains(papers.get(paperPrimaryId))){
+                        paperDtls.remove(papers.get(paperPrimaryId));
+                    }
+                }
+                parsedPaperIds.add(assignedPaper.getPaperId());
+            }
+        }
+
+        return paperDtls;
     }
 
     @Override
     public HashMap<Integer, HashMap<Integer, Integer>> getPaperAssignmentDetails() {
-        // TODO Auto-generated method stub
-        return null;
+        HashMap<Integer, HashMap<Integer, Integer>> paperAssignmentDtls = new HashMap<>();
+        HashMap<Integer,ReviewTemplate> idVsAssignedPaperDtls =  AssignedPapersUtil.getAllAssignedPapers();
+        for(Integer id : idVsAssignedPaperDtls.keySet()){
+            ReviewTemplate assignedPaper = idVsAssignedPaperDtls.get(id);
+            HashMap<Integer, Integer> paperDtl = new HashMap<>();
+            if(paperAssignmentDtls.containsKey(assignedPaper.getPaperId())){
+                paperDtl = paperAssignmentDtls.get(assignedPaper.getPaperId());
+            }
+            paperDtl.put(assignedPaper.getPcmId(), assignedPaper.getRating());
+            paperAssignmentDtls.put(assignedPaper.getPaperId(), paperDtl);
+        }
+        return paperAssignmentDtls;
     }
 
     @Override
-    public Boolean assignPaperToPCM(Integer paperId, Integer pcmId) {
-        // TODO Auto-generated method stub
-        return null;
+    public Boolean assignPaperToPCM(Integer paperId, Integer pcmId, Reviews[] reviews) {
+        HashMap<Integer,ReviewTemplate> idVsAssignedPaperDtls =  AssignedPapersUtil.getAssignedPaperBasedOnPaperId(paperId);
+        Boolean isCreate = true;
+        ReviewTemplate updatedReviewTemplate = null;
+        if(idVsAssignedPaperDtls.size() != 0){
+           for(Integer id : idVsAssignedPaperDtls.keySet()){
+                if(Objects.equals(idVsAssignedPaperDtls.get(id).getPcmId(), pcmId)){
+                    isCreate = false;
+                    updatedReviewTemplate = new ReviewTemplate(id, paperId, pcmId, reviews, null);
+                }
+           }
+        }
+        if(idVsAssignedPaperDtls.size() >= AssignedPapersUtil.getAssignPaperLimit()){
+            return false;
+        }
+        return Boolean.TRUE.equals(isCreate) ? AssignedPapersUtil.insertAssignedPaper(paperId, pcmId, reviews, pcmId) : AssignedPapersUtil.updateAssignedPaper(updatedReviewTemplate);
     }
 
     @Override
     public HashMap<Integer, ReviewTemplate> viewPCMReviews(Integer paperId) {
-        // TODO Auto-generated method stub
-        return null;
+        return AssignedPapersUtil.getAssignedPaperBasedOnPaperId(paperId);
     }
 
     @Override
     public void ratePaper(Integer paperId, Integer rating) {
-        // TODO Auto-generated method stub
-        
+        ArrayList<ResearchPaper> paperDtls = getAllSubmissions();
+        for(ResearchPaper researchPaper : paperDtls){
+            if(Objects.equals(researchPaper.getPaperId(), paperId)){
+                researchPaper.setRating(rating);
+                PapersUtil.updatePaperDetails(researchPaper);
+                break;
+            }
+        }
     }
 
     @Override
-    public HashMap<Integer, ArrayList<Integer>> getPCMChoices() {
-        // TODO Auto-generated method stub
-        return null;
+    public HashMap<Integer, ArrayList<ResearchPaper>> getPCMChoices() {
+        HashMap<Integer,ResearchPaper> paperIdVsPaper = PapersUtil.getAllPaperDetailsBasedOnLatestRevision(true);
+        HashMap<Integer,PaperChoices> idVsPaperChoicesDtls =  PaperChoicesUtil.getAllPaperChoices();
+        HashMap<Integer, ArrayList<ResearchPaper>> pcmChoices = new HashMap<>();
+        for(Integer id : idVsPaperChoicesDtls.keySet()){
+            PaperChoices paperChoice = idVsPaperChoicesDtls.get(id);
+            ResearchPaper paper = paperIdVsPaper.get(paperChoice.getPaperId());
+            ArrayList<ResearchPaper> paperList = new ArrayList<>();
+            if(pcmChoices.containsKey(paperChoice.getPcmId())){
+                paperList = pcmChoices.get(paperChoice.getPcmId());
+            }
+            paperList.add(paper);
+            pcmChoices.put(paper.getId(), paperList);
+        }
+        return pcmChoices;
     }
 
     @Override
     public ResearchPaper getPaperDetails(Integer paperId) {
-        // TODO Auto-generated method stub
-        return null;
+        return PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId);
     }
 
     void notifyPCMforReview(Integer pcmId){
@@ -82,9 +131,9 @@ public class PccOps implements PccInterface {
     void notifyPCMsforChoiceMaking(){
 
     }
-    ArrayList<Integer> getAvailablePCMs(){
-
-        return null;
+    public ArrayList<Integer> getAvailablePCMs(){
+        HashMap<Integer,User> pcmDtls = UserUtils.getAllUserDetailsBasedOnType(USER_TYPE.PCM);
+        return new ArrayList<>(pcmDtls.keySet());
     }
 
 }
