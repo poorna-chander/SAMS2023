@@ -1,6 +1,7 @@
 package com.sams.samsapi.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ResearchPaper {
@@ -8,177 +9,119 @@ public class ResearchPaper {
     private int id;
     @JsonProperty("title")
     private String title;
-    @JsonProperty("SubmiterId")
-    private int SubmiterId;
+    @JsonProperty("submitterId")
+    private Integer submitterId;
     @JsonProperty("authors")
-    private String[] authors;
+    private List<String> authors;
     @JsonProperty("contact")
     private String contact;
-    @JsonProperty("revisionNumber")
-    private int revisionNumber;
-    @JsonProperty("fileLocation")
-    private String fileLocation;
     @JsonProperty("fileName")
     private String fileName;
     @JsonProperty("fileExtension")
     private String fileExtension;
-    @JsonProperty("PCMrating1")
-    private ReviewTemplate PCMrating1;
-    @JsonProperty("PCMrating2")
-    private ReviewTemplate PCMrating2;
-    @JsonProperty("PCMrating3")
-    private ReviewTemplate PCMrating3;
-    @JsonProperty("PCCrating")
-    private ReviewTemplate PCCrating;
-    @JsonProperty("reviewComplete")
-    private boolean reviewComplete;
+    @JsonProperty("paperId")
+    private Integer paperId;
+    @JsonProperty("revisionNo")
+    private Integer revisionNo;
+    @JsonProperty("rating")
+    private Integer rating;
 
-    public ResearchPaper(int id,
-            String title,
-            int SubmiterId,
-            String[] authors,
-            String contact,
-            int revisionNumber,
-            String fileLocation,
-            String fileName,
-            String fileExtension,
-            ReviewTemplate PCMrating1,
-            ReviewTemplate PCMrating2,
-            ReviewTemplate PCMrating3,
-            ReviewTemplate PCCrating,
-            boolean reviewComplete) {
+    public ResearchPaper(@JsonProperty("id") Integer id,
+                        @JsonProperty("title") String title,
+                        @JsonProperty("submitterId") Integer submitterId,
+                        @JsonProperty("authors") List<String> authors,
+                        @JsonProperty("contact") String contact,
+                        @JsonProperty("fileName") String fileName,
+                        @JsonProperty("fileExtension") String fileExtension,
+                        @JsonProperty("paperId") Integer paperId,
+                        @JsonProperty("revisionNo") Integer revisionNo,
+                        @JsonProperty("rating") Integer rating) {
 
         this.id = id;
         this.title = title;
-        this.SubmiterId = SubmiterId;
+        this.submitterId = submitterId;
         this.authors = authors;
         this.contact = contact;
-        this.revisionNumber = revisionNumber;
-        this.reviewComplete = reviewComplete;
-        this.fileExtension = fileExtension;
-        this.fileLocation = fileLocation;
         this.fileName = fileName;
-        this.PCMrating1 = PCMrating1;
-        this.PCMrating2 = PCMrating2;
-        this.PCMrating3 = PCMrating3;
-        this.PCCrating = PCCrating;
-
+        this.fileExtension = fileExtension;
+        this.paperId = paperId;
+        this.revisionNo = revisionNo;
+        this.rating = rating;
     }
 
     public int getId() {
-        return this.id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        return id;
     }
 
     public String getTitle() {
-        return this.title;
+        return title;
+    }
+
+    public Integer getSubmitterId() {
+        return submitterId;
+    }
+
+    public List<String> getAuthors() {
+        return authors;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public String getFileExtension() {
+        return fileExtension;
+    }
+
+    public Integer getPaperId() {
+        return paperId;
+    }
+
+    public Integer getRevisionNo() {
+        return revisionNo;
+    }
+
+    public Integer getRating() {
+        return rating;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public int getSubmiterId() {
-        return this.SubmiterId;
+    public void setSubmitterId(Integer submitterId) {
+        this.submitterId = submitterId;
     }
 
-    public void setSubmiterId(int SubmiterId) {
-        this.SubmiterId = SubmiterId;
-    }
-
-    public String[] getAuthors() {
-        return this.authors;
-    }
-
-    public void setAuthors(String[] authors) {
+    public void setAuthors(List<String> authors) {
         this.authors = authors;
-    }
-
-    public String getContact() {
-        return this.contact;
     }
 
     public void setContact(String contact) {
         this.contact = contact;
     }
 
-    public int getRevisionNumber() {
-        return this.revisionNumber;
-    }
-
-    public void setRevisionNumber(int revisionNumber) {
-        this.revisionNumber = revisionNumber;
-    }
-
-    public String getFileLocation() {
-        return this.fileLocation;
-    }
-
-    public void setFileLocation(String fileLocation) {
-        this.fileLocation = fileLocation;
-    }
-
-    public String getFileName() {
-        return this.fileName;
-    }
-
     public void setFileName(String fileName) {
         this.fileName = fileName;
-    }
-
-    public String getFileExtension() {
-        return this.fileExtension;
     }
 
     public void setFileExtension(String fileExtension) {
         this.fileExtension = fileExtension;
     }
 
-    public ReviewTemplate getPCMrating1() {
-        return this.PCMrating1;
+    public void setPaperId(Integer paperId) {
+        this.paperId = paperId;
     }
 
-    public void setPCMrating1(ReviewTemplate PCMrating1) {
-        this.PCMrating1 = PCMrating1;
+    public void setRevisionNo(Integer revisionNo) {
+        this.revisionNo = revisionNo;
     }
 
-    public ReviewTemplate getPCMrating2() {
-        return this.PCMrating2;
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
-
-    public void setPCMrating2(ReviewTemplate PCMrating2) {
-        this.PCMrating2 = PCMrating2;
-    }
-
-    public ReviewTemplate getPCMrating3() {
-        return this.PCMrating3;
-    }
-
-    public void setPCMrating3(ReviewTemplate PCMrating3) {
-        this.PCMrating3 = PCMrating3;
-    }
-
-    public ReviewTemplate getPCCrating() {
-        return this.PCCrating;
-    }
-
-    public void setPCCrating(ReviewTemplate PCCrating) {
-        this.PCCrating = PCCrating;
-    }
-
-    public boolean isReviewComplete() {
-        return this.reviewComplete;
-    }
-
-    public boolean getReviewComplete() {
-        return this.reviewComplete;
-    }
-
-    public void setReviewComplete(boolean reviewComplete) {
-        this.reviewComplete = reviewComplete;
-    }
-
 }

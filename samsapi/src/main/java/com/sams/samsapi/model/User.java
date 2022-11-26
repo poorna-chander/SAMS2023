@@ -1,28 +1,31 @@
 package com.sams.samsapi.model;
 
 public class User {
-    private String Name;
-    private int Id;
+    public enum USER_TYPE{
+        ADMIN,
+        PCC,
+        PCM,
+        SUBMITTER
+    }
+    private String name;
+    private int id;
+    private USER_TYPE type;
 
-    public User(String Name, int Id) {
-        this.Name = Name;
-        this.Id = Id;
+    public User(String name, int id, USER_TYPE type) {
+        this.name = name;
+        this.id = id;
+        this.type = type;
     }
 
     public String getName() {
-        return this.Name;
-    }
-
-    public void setName(String Name) {
-        this.Name = Name;
+        return this.name;
     }
 
     public int getId() {
-        return this.Id;
+        return this.id;
     }
 
-    public void setId(String usertype) {
-        // add code
+    public USER_TYPE getType() {
+        return type;
     }
-
 }

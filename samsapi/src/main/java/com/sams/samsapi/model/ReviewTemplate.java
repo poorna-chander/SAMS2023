@@ -2,49 +2,93 @@ package com.sams.samsapi.model;
 
 import java.util.HashMap;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ReviewTemplate {
-    private int paperID;
-    private int reviewerUserID;
-    private HashMap<String, String> details;
-    private int rating;
+    @JsonProperty("id")
+    private Integer id;
+    @JsonProperty("paperId")
+    private Integer paperId;
+    @JsonProperty("pcmId")
+    private Integer pcmId;
+    @JsonProperty("reviews")
+    private Reviews[] reviews;
+    @JsonProperty("rating")
+    private Integer rating;
 
-    public ReviewTemplate(int paperID, int reviewerUserID, HashMap<String, String> details, int rating) {
-        this.paperID = paperID;
-        this.reviewerUserID = reviewerUserID;
-        this.details = details;
+    public ReviewTemplate(@JsonProperty("id") Integer id,
+                        @JsonProperty("paperId") Integer paperId,
+                        @JsonProperty("pcmId") Integer pcmId,
+                        @JsonProperty("reviews") Reviews[] reviews,
+                        @JsonProperty("rating") Integer rating) {
+
+        this.id = id;
+        this.paperId = paperId;
+        this.pcmId = pcmId;
+        this.reviews = reviews;
         this.rating = rating;
     }
 
-    public int getPaperID() {
-        return this.paperID;
+    public Integer getId() {
+        return id;
     }
 
-    public void setPaperID(int paperID) {
-        this.paperID = paperID;
+    public Integer getPaperId() {
+        return paperId;
     }
 
-    public int getReviewerUserID() {
-        return this.reviewerUserID;
+    public void setPaperId(Integer paperId) {
+        this.paperId = paperId;
     }
 
-    public void setReviewerUserID(int reviewerUserID) {
-        this.reviewerUserID = reviewerUserID;
+    public Integer getPcmId() {
+        return pcmId;
     }
 
-    public HashMap<String, String> getDetails() {
-        return this.details;
+    public void setPcmId(Integer pcmId) {
+        this.pcmId = pcmId;
     }
 
-    public void setDetails(HashMap<String, String> details) {
-        this.details = details;
+    public Reviews[] getReviews() {
+        return reviews;
     }
 
-    public int getRating() {
-        return this.rating;
+    public void setReviews(Reviews[] reviews) {
+        this.reviews = reviews;
     }
 
-    public void setRating(int rating) {
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
         this.rating = rating;
     }
 
+    public static class Reviews{
+        @JsonProperty("reviewId") private Integer reviewId;
+        @JsonProperty("value") private String value;
+
+        public Reviews(@JsonProperty("reviewId") Integer reviewId,
+                    @JsonProperty("value") String value){
+            this.reviewId = reviewId;
+            this.value = value;
+        }
+
+        public Integer getReviewId() {
+            return reviewId;
+        }
+
+        public void setReviewId(Integer reviewId) {
+            this.reviewId = reviewId;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 }

@@ -1,29 +1,20 @@
 package com.sams.samsapi.controller;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.sams.samsapi.json_crud_utils.AssignedPapersUtil;
+import com.sams.samsapi.json_crud_utils.PaperChoicesUtil;
+import com.sams.samsapi.json_crud_utils.PaperDetailsUtil;
+import com.sams.samsapi.json_crud_utils.PapersUtil;
+import com.sams.samsapi.json_crud_utils.ReviewQuestionnaireUtil;
+import com.sams.samsapi.json_crud_utils.UserUtils;
+import com.sams.samsapi.model.PaperDetails;
 
 @RestController
 @RequestMapping("/")
-public record SamsController() {
-
+public class SamsController {
+    public SamsController(AssignedPapersUtil assignedPapersUtil, PaperChoicesUtil paperChoicesUtil, PapersUtil papersUtil, ReviewQuestionnaireUtil reviewUtil, UserUtils userUtil, PaperDetailsUtil paperDetailsUtil) {
+      
+    }
 }
