@@ -100,6 +100,16 @@ public class UserUtils {
         return userIdVsUserDtls;
     }
 
+    public static HashMap<Integer,User> getAllUserDetailsBasedOnType(USER_TYPE type){
+        HashMap<Integer,User> userIdVsUserDtlsOfType = new HashMap<>();
+        for(Integer userId : userIdVsUserDtls.keySet()){
+            if(userIdVsUserDtls.get(userId).getType().equals(type)){
+                userIdVsUserDtlsOfType.put(userId, userIdVsUserDtls.get(userId));
+            }
+        }
+        return userIdVsUserDtlsOfType;
+    }
+
     public static User getUserDetails(Integer userId){
         return userIdVsUserDtls.get(userId);
     }

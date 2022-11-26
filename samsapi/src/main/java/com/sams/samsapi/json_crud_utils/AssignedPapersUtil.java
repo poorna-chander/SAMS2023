@@ -1,9 +1,11 @@
 package com.sams.samsapi.json_crud_utils;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
@@ -16,13 +18,15 @@ public class AssignedPapersUtil {
     private static final Logger LOG = Logger.getLogger(AssignedPapersUtil.class.getName());
     private static HashMap<Integer, ReviewTemplate> idVsAssignedPapers;
     private static int nextAssignedPaperId = 1;
-    
-    public AssignedPapersUtil(){
-        initialize();
+    private static Integer assignPaperLimit = 0;
+
+    public AssignedPapersUtil(@Value("${assign.paper.limit}") String localAssignPaperLimit){
+        initialize(localAssignPaperLimit);
     }
 
-    private static void initialize(){
+    private static void initialize(String localAssignPaperLimit){
         idVsAssignedPapers = PaperDetailsUtil.getIdVsAssignedPapers();
+        assignPaperLimit = Integer.parseInt(localAssignPaperLimit);
         initializeData();
     }
 
@@ -30,6 +34,10 @@ public class AssignedPapersUtil {
         for(Integer id : idVsAssignedPapers.keySet()){
             nextAssignedPaperId = id + 1;
         }
+    }
+    
+    public static Integer getAssignPaperLimit() {
+        return assignPaperLimit;
     }
 
     private static Integer getNextAssignedPaperId(){
@@ -89,5 +97,15 @@ public class AssignedPapersUtil {
 
     public static ReviewTemplate getAssignedPaper(Integer id){
         return idVsAssignedPapers.get(id);
+    }
+
+    public static HashMap<Integer, ReviewTemplate> getAssignedPaperBasedOnPaperId(Integer paperId){
+        HashMap<Integer, ReviewTemplate> paperDtls = new HashMap<>();
+        for(Integer id : idVsAssignedPapers.keySet()){
+            if(Objects.equals(idVsAssignedPapers.get(id).getPaperId(), paperId)){
+                paperDtls.put(id, idVsAssignedPapers.get(id));
+            }
+        }
+        return paperDtls;
     }
 }

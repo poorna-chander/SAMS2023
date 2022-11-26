@@ -111,4 +111,30 @@ public class PapersUtil {
         }
         return paperDtls;
     }
+
+    public static ResearchPaper getLatestRevisedPaperDetailsBasedOnPaperId(Integer paperId){
+        return getAllPaperDetailsBasedOnLatestRevision(true).get(paperId);
+    }
+
+    public static HashMap<Integer, ResearchPaper> getAllPaperDetailsBasedOnLatestRevision(Boolean isPaperIdPrimary){
+        HashMap<Integer,ResearchPaper> idVsPaperDtls =  getAllPapers();
+        HashMap<Integer,ResearchPaper> paperIdVsPaper = new HashMap<>();
+        HashMap<Integer,ResearchPaper> idVsPaper = new HashMap<>();
+        for(Integer id : idVsPaperDtls.keySet()){
+            ResearchPaper paper = idVsPaperDtls.get(id);
+            Integer paperId = paper.getPaperId();
+            if(paperIdVsPaper.containsKey(paperId)){
+                ResearchPaper oldPaper = paperIdVsPaper.get(paperId);
+                if(oldPaper.getRevisionNo() > paper.getRevisionNo()){
+                    paper = oldPaper;
+                }
+            }
+            paperIdVsPaper.put(paperId, paper);
+        }
+        
+        for(Integer paperId : paperIdVsPaper.keySet()){
+            idVsPaper.put(paperIdVsPaper.get(paperId).getId(), paperIdVsPaper.get(paperId));
+        }
+        return Boolean.TRUE.equals(isPaperIdPrimary) ? paperIdVsPaper : idVsPaper;
+    }
 }
