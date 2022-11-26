@@ -18,9 +18,7 @@ public class FileUploadService {
     }
 
     public File downloadFile(String filePath, String filename) {
-
         File file = new File(filePath + filename);
-
         return file;
 
     }

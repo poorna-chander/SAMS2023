@@ -50,12 +50,14 @@ public class SamsController {
             @RequestParam String title,
             @RequestParam String authors,
             @RequestParam String contact,
-            @RequestParam MultipartFile file) throws IllegalStateException, IOException {
+            @RequestParam MultipartFile file,
+            @RequestHeader String submitterId) throws IllegalStateException, IOException {
 
         HashMap<String, String> formData = new HashMap<>();
         formData.put("title", title);
         formData.put("authors", authors);
         formData.put("contact", contact);
+        formData.put("submitterId", submitterId);
 
         submitterInterface = new SubmitterOps();
         boolean formvalidation = submitterInterface.validateFormFile(formData, file);
@@ -64,9 +66,11 @@ public class SamsController {
             System.out.println("add to notification");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
-            submitterInterface.validateFormFile(formData, file);
+            boolean submissionStatus = submitterInterface.SubmitPaperForm(uploadPath, formData, file);
+            if (submissionStatus) {
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
         }
-        boolean submissionStatus = submitterInterface.SubmitPaperForm(uploadPath, formData, file);
 
         return null;
     }
@@ -76,26 +80,29 @@ public class SamsController {
             @RequestParam String title,
             @RequestParam String authors,
             @RequestParam String contact,
-            @RequestParam MultipartFile file) throws IllegalStateException, IOException {
+            @RequestParam MultipartFile file,
+            @RequestParam String paperId,
+            @RequestHeader String submitterId) throws IllegalStateException, IOException {
 
+        int paperIdInt = Integer.parseInt(paperId);
         HashMap<String, String> formData = new HashMap<>();
         formData.put("title", title);
         formData.put("authors", authors);
         formData.put("contact", contact);
+        formData.put("submitterId", submitterId);
 
         submitterInterface = new SubmitterOps();
         boolean formvalidation = submitterInterface.validateFormFile(formData, file);
 
         if (!formvalidation) {
-            System.out.println("add to notification");
+            System.out.println("add to bad file format notification");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
-            submitterInterface.validateFormFile(formData, file);
+            boolean submissionStatus = submitterInterface.revisePaperForm(uploadPath, formData, file, paperIdInt);
+            if (submissionStatus) {
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
         }
-
-        boolean submissionStatus = submitterInterface.revisePaperForm(uploadPath, formData, file, 1);
-
         return null;
     }
-
 }
