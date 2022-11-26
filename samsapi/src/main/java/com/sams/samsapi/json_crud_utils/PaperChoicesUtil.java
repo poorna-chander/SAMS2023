@@ -4,38 +4,42 @@ import java.util.logging.Logger;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import com.sams.samsapi.model.PaperChoices;
 
 @Component
+@DependsOn({"paperDetailsUtil"})
 public class PaperChoicesUtil {
     private static final Logger LOG = Logger.getLogger(PaperChoicesUtil.class.getName());
-    private HashMap<Integer, PaperChoices> idVsPaperChoices;
-    private int nextPaperChoiceId = 1;
-    private PaperDetailsUtil paperDetailsUtil;
+    private static HashMap<Integer, PaperChoices> idVsPaperChoices;
+    private static int nextPaperChoiceId = 1;
     
-    public PaperChoicesUtil(PaperDetailsUtil paperDetailsUtil){
-        this.paperDetailsUtil = paperDetailsUtil;
-        this.idVsPaperChoices = paperDetailsUtil.getIdVsPaperChoices();
+    public PaperChoicesUtil(){
         initialize();
     }
 
-    private void initialize(){
+    private static void initialize(){
+        idVsPaperChoices = PaperDetailsUtil.getIdVsPaperChoices();
+        initializeData();
+    }
+
+    private static void initializeData(){
         for(Integer id : idVsPaperChoices.keySet()){
             nextPaperChoiceId = id + 1;
         }
     }
 
-    private Integer getNextPaperChoiceId(){
+    private static Integer getNextPaperChoiceId(){
         return nextPaperChoiceId++;
     }
 
-    private void savePaperChoices() throws Exception{
-        paperDetailsUtil.setIdVsPaperChoices(idVsPaperChoices);
+    private static void savePaperChoices() throws Exception{
+        PaperDetailsUtil.setIdVsPaperChoices(idVsPaperChoices);
     }
 
-    private Boolean isSavePaperChoicesSuccessful(){
+    private static Boolean isSavePaperChoicesSuccessful(){
         try{
             savePaperChoices();
             return true;
@@ -45,7 +49,7 @@ public class PaperChoicesUtil {
         return false;
     }
 
-    public Boolean insertPaperChoice(Integer paperId, Integer pcmId){
+    public static Boolean insertPaperChoice(Integer paperId, Integer pcmId){
         Integer id = getNextPaperChoiceId();
 
         if(paperId == null || pcmId == null){
@@ -57,7 +61,7 @@ public class PaperChoicesUtil {
         return isSavePaperChoicesSuccessful();
     }
 
-    public Boolean updatePaperChoice(PaperChoices paperChoice){
+    public static Boolean updatePaperChoice(PaperChoices paperChoice){
         Integer id = paperChoice.getId();
         if(!idVsPaperChoices.containsKey(id)){
             return false;
@@ -66,7 +70,7 @@ public class PaperChoicesUtil {
         return isSavePaperChoicesSuccessful();
     }
 
-    public Boolean deletePaperChoice(Integer id){
+    public static Boolean deletePaperChoice(Integer id){
         if(!idVsPaperChoices.containsKey(id)){
             return false;
         }
@@ -74,11 +78,11 @@ public class PaperChoicesUtil {
         return isSavePaperChoicesSuccessful();
     }
 
-    public HashMap<Integer,PaperChoices> getAllPaperChoices(){
+    public static HashMap<Integer,PaperChoices> getAllPaperChoices(){
         return idVsPaperChoices;
     }
 
-    public PaperChoices getPaperChoice(Integer id){
+    public static PaperChoices getPaperChoice(Integer id){
         return idVsPaperChoices.get(id);
     }
 }

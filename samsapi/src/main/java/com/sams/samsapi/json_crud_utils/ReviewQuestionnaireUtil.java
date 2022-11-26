@@ -17,20 +17,24 @@ import com.sams.samsapi.model.ReviewQuestionnaire.STATUS;
 @Component
 public class ReviewQuestionnaireUtil {
     private static final Logger LOG = Logger.getLogger(ReviewQuestionnaireUtil.class.getName());
-    private ObjectMapper objectMapper;
-    private String reviewTemplateFileName;
-    private ReviewQuestionnaire[] reviewDtls;
-    private HashMap<Integer,ReviewQuestionnaire> idVsReviewQuestionnaire;
-    private int nextReviewId = 1;
+    private static ObjectMapper objectMapper;
+    private static String reviewTemplateFileName;
+    private static ReviewQuestionnaire[] reviewDtls;
+    private static HashMap<Integer,ReviewQuestionnaire> idVsReviewQuestionnaire;
+    private static int nextReviewId = 1;
     
-    public ReviewQuestionnaireUtil(@Value("${reviewQuestionnaire.file}") String userFileName, ObjectMapper objectMapper) throws Exception{
-        this.objectMapper = objectMapper;
-        this.reviewTemplateFileName = userFileName;
-        reviewDtls = objectMapper.readValue(new File(userFileName), ReviewQuestionnaire[].class);
+    public ReviewQuestionnaireUtil(@Value("${reviewQuestionnaire.file}") String reviewFileName, ObjectMapper objectMapper) throws Exception{
+        initialize(reviewFileName, objectMapper);
+    }
+
+    private static void initialize(String localReviewFileName, ObjectMapper localObjectMapper) throws Exception{
+        reviewTemplateFileName = localReviewFileName;
+        objectMapper = localObjectMapper;
+        reviewDtls = objectMapper.readValue(new File(reviewTemplateFileName), ReviewQuestionnaire[].class);
         initializeData();
     }
 
-    public void initializeData(){
+    private static void initializeData(){
         idVsReviewQuestionnaire = new HashMap<>();
 
         for(ReviewQuestionnaire review : reviewDtls){
@@ -39,11 +43,11 @@ public class ReviewQuestionnaireUtil {
         }
     }
 
-    private Integer getNextReviewId(){
+    private static Integer getNextReviewId(){
         return nextReviewId++;
     }
 
-    private void saveReviewQuestionnaire() throws Exception{
+    private static void saveReviewQuestionnaire() throws Exception{
         List<ReviewQuestionnaire> reviewList = new ArrayList<>();
         for(Integer userId : idVsReviewQuestionnaire.keySet()){
             reviewList.add(idVsReviewQuestionnaire.get(userId));
@@ -54,7 +58,7 @@ public class ReviewQuestionnaireUtil {
         objectMapper.writeValue(new File(reviewTemplateFileName), reviewDtls);
     }
 
-    private Boolean isSaveReviewQuestionnaireSuccessful(){
+    private static Boolean isSaveReviewQuestionnaireSuccessful(){
         try{
             saveReviewQuestionnaire();
             return true;
@@ -64,7 +68,7 @@ public class ReviewQuestionnaireUtil {
         return false;
     }
 
-    public Boolean insertReviewQuestionnaire(String field, STATUS status){
+    public static Boolean insertReviewQuestionnaire(String field, STATUS status){
         Integer reviewId = getNextReviewId();
         if(field == null || status == null){
             return false;
@@ -74,7 +78,7 @@ public class ReviewQuestionnaireUtil {
         return isSaveReviewQuestionnaireSuccessful();
     }
 
-    public Boolean updateReviewQuestionnaire(ReviewQuestionnaire review){
+    public static Boolean updateReviewQuestionnaire(ReviewQuestionnaire review){
         Integer reviewId = review.getId();
         if(reviewId == null || review.getField() == null || review.getStatus() == null){
             return false;
@@ -83,7 +87,7 @@ public class ReviewQuestionnaireUtil {
         return isSaveReviewQuestionnaireSuccessful();
     }
 
-    public Boolean deleteReviewQuestionnaire(Integer reviewId){
+    public static Boolean deleteReviewQuestionnaire(Integer reviewId){
         if(reviewId == null || !idVsReviewQuestionnaire.containsKey(reviewId)){
             return false;
         }
@@ -93,11 +97,11 @@ public class ReviewQuestionnaireUtil {
         return isSaveReviewQuestionnaireSuccessful();
     }
 
-    public HashMap<Integer,ReviewQuestionnaire> getAllReviewQuestionnaire(){
+    public static HashMap<Integer,ReviewQuestionnaire> getAllReviewQuestionnaire(){
         return idVsReviewQuestionnaire;
     }
 
-    public ReviewQuestionnaire getReviewQuestionnaire(Integer reviewId){
+    public static ReviewQuestionnaire getReviewQuestionnaire(Integer reviewId){
         return idVsReviewQuestionnaire.get(reviewId);
     }
 }

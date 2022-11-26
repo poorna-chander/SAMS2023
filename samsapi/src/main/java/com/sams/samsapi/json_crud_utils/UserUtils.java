@@ -17,20 +17,24 @@ import com.sams.samsapi.model.User.USER_TYPE;
 @Component
 public class UserUtils {
     private static final Logger LOG = Logger.getLogger(UserUtils.class.getName());
-    private ObjectMapper objectMapper;
-    private String userFileName;
-    private User[] userDtls;
-    private HashMap<Integer,User> userIdVsUserDtls;
-    private int nextUserId = 1;
+    private static ObjectMapper objectMapper;
+    private static String userFileName;
+    private static User[] userDtls;
+    private static HashMap<Integer,User> userIdVsUserDtls;
+    private static int nextUserId = 1;
     
     public UserUtils(@Value("${user.file}") String userFileName, ObjectMapper objectMapper) throws Exception{
-        this.objectMapper = objectMapper;
-        this.userFileName = userFileName;
+        initialize(userFileName, objectMapper);
+    }
+
+    private static void initialize( String localUserFileName, ObjectMapper localObjectMapper) throws Exception{
+        userFileName = localUserFileName;
+        objectMapper = localObjectMapper;
         userDtls = objectMapper.readValue(new File(userFileName), User[].class);
         initializeData();
     }
 
-    public void initializeData(){
+    private static void initializeData(){
         userIdVsUserDtls = new HashMap<>();
 
         for(User user : userDtls){
@@ -39,11 +43,11 @@ public class UserUtils {
         }
     }
 
-    private Integer getNextUserId(){
+    private static Integer getNextUserId(){
         return nextUserId++;
     }
 
-    private void saveUser() throws Exception{
+    private static void saveUser() throws Exception{
         List<User> userList = new ArrayList<>();
         for(Integer userId : userIdVsUserDtls.keySet()){
             userList.add(userIdVsUserDtls.get(userId));
@@ -54,7 +58,7 @@ public class UserUtils {
         objectMapper.writeValue(new File(userFileName), userDtls);
     }
 
-    private Boolean isSaveUserSuccessful(){
+    private static Boolean isSaveUserSuccessful(){
         try{
             saveUser();
             return true;
@@ -64,7 +68,7 @@ public class UserUtils {
         return false;
     }
 
-    public Boolean insertUserData(String name, USER_TYPE type){
+    public static Boolean insertUserData(String name, USER_TYPE type){
         Integer userId = getNextUserId();
         if(userId == null || name == null || type == null){
             return false;
@@ -74,7 +78,7 @@ public class UserUtils {
         return isSaveUserSuccessful();
     }
 
-    public Boolean updateUserData(User user){
+    public static Boolean updateUserData(User user){
         Integer userId = user.getId();
         if(userId == null || user.getName() == null || user.getType() == null || !userIdVsUserDtls.containsKey(userId)){
             return false;
@@ -83,7 +87,7 @@ public class UserUtils {
         return isSaveUserSuccessful();
     }
 
-    public Boolean deleteUserData(User user){
+    public static Boolean deleteUserData(User user){
         Integer userId = user.getId();
         if(userId == null || !userIdVsUserDtls.containsKey(userId)){
             return false;
@@ -92,11 +96,11 @@ public class UserUtils {
         return isSaveUserSuccessful();
     }
 
-    public HashMap<Integer,User> getAllUserDetails(){
+    public static HashMap<Integer,User> getAllUserDetails(){
         return userIdVsUserDtls;
     }
 
-    public User getUserDetails(Integer userId){
+    public static User getUserDetails(Integer userId){
         return userIdVsUserDtls.get(userId);
     }
 }

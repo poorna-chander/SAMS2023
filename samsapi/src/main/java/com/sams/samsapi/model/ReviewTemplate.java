@@ -1,7 +1,5 @@
 package com.sams.samsapi.model;
 
-import java.util.HashMap;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ReviewTemplate {

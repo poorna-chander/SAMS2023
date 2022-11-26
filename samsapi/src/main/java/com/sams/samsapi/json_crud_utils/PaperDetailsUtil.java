@@ -16,21 +16,25 @@ import com.sams.samsapi.model.ReviewTemplate;
 
 @Component
 public class PaperDetailsUtil {
-    private ObjectMapper objectMapper;
-    private String papersDetailsFileName;
-    private PaperDetails paperDtls;
-    private HashMap<Integer, ResearchPaper> idVsPaperDetails;
-    private HashMap<Integer, ReviewTemplate> idVsAssignedPapers;
-    private HashMap<Integer, PaperChoices> idVsPaperChoices;
+    private static ObjectMapper objectMapper;
+    private static String papersDetailsFileName;
+    private static PaperDetails paperDtls;
+    private static HashMap<Integer, ResearchPaper> idVsPaperDetails;
+    private static HashMap<Integer, ReviewTemplate> idVsAssignedPapers;
+    private static HashMap<Integer, PaperChoices> idVsPaperChoices;
 
     public PaperDetailsUtil(@Value("${paperDetails.file}") String papersDetailsFileName, ObjectMapper objectMapper) throws Exception{
-        this.objectMapper = objectMapper;
-        this.papersDetailsFileName = papersDetailsFileName;
+        initialize(papersDetailsFileName, objectMapper);
+    }
+
+    private static void initialize(String localPapersDetailsFileName, ObjectMapper localObjectMapper) throws Exception{
+        papersDetailsFileName = localPapersDetailsFileName;
+        objectMapper = localObjectMapper;
         paperDtls = objectMapper.readValue(new File(papersDetailsFileName), PaperDetails.class);
         initializeData();
     }
 
-    private void initializeData(){
+    private static void initializeData(){
         idVsPaperDetails = new HashMap<>();
         idVsAssignedPapers = new HashMap<>();
         idVsPaperChoices = new HashMap<>();
@@ -48,7 +52,7 @@ public class PaperDetailsUtil {
         }
     }
 
-    private void savePaperDetails() throws Exception{
+    private static void savePaperDetails() throws Exception{
         List<ResearchPaper> paperDetails = new ArrayList<>();
         List<ReviewTemplate> assignedPapers = new ArrayList<>();
         List<PaperChoices> paperChoices = new ArrayList<>();
@@ -78,30 +82,30 @@ public class PaperDetailsUtil {
         objectMapper.writeValue(new File(papersDetailsFileName), paperDtls);
     }
 
-    public HashMap<Integer, ResearchPaper> getIdVsPaperDetails() {
+    public static HashMap<Integer, ResearchPaper> getIdVsPaperDetails() {
         return idVsPaperDetails;
     }
 
-    public void setIdVsPaperDetails(HashMap<Integer, ResearchPaper> idVsPaperDetails) throws Exception{
-        this.idVsPaperDetails = idVsPaperDetails;
+    public static void setIdVsPaperDetails(HashMap<Integer, ResearchPaper> localIdVsPaperDetails) throws Exception{
+        idVsPaperDetails = localIdVsPaperDetails;
         savePaperDetails();
     }
 
-    public HashMap<Integer, ReviewTemplate> getIdVsAssignedPapers() {
+    public static HashMap<Integer, ReviewTemplate> getIdVsAssignedPapers() {
         return idVsAssignedPapers;
     }
 
-    public void setIdVsAssignedPapers(HashMap<Integer, ReviewTemplate> idVsAssignedPapers) throws Exception {
-        this.idVsAssignedPapers = idVsAssignedPapers;
+    public static void setIdVsAssignedPapers(HashMap<Integer, ReviewTemplate> localIdVsAssignedPapers) throws Exception {
+        idVsAssignedPapers = localIdVsAssignedPapers;
         savePaperDetails();
     }
 
-    public HashMap<Integer, PaperChoices> getIdVsPaperChoices() {
+    public static HashMap<Integer, PaperChoices> getIdVsPaperChoices() {
         return idVsPaperChoices;
     }
 
-    public void setIdVsPaperChoices(HashMap<Integer, PaperChoices> idVsPaperChoices) throws Exception {
-        this.idVsPaperChoices = idVsPaperChoices;
+    public static void setIdVsPaperChoices(HashMap<Integer, PaperChoices> localIdVsPaperChoices) throws Exception {
+        idVsPaperChoices = localIdVsPaperChoices;
         savePaperDetails();
     }
 }

@@ -6,38 +6,42 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import com.sams.samsapi.model.ResearchPaper;
 
 @Component
+@DependsOn({"paperDetailsUtil"})
 public class PapersUtil {
     private static final Logger LOG = Logger.getLogger(PapersUtil.class.getName());
-    private HashMap<Integer, ResearchPaper> idVsPaperDetails;
-    private int nextPaperId = 1;
-    private PaperDetailsUtil paperDetailsUtil;
+    private static HashMap<Integer, ResearchPaper> idVsPaperDetails;
+    private static int nextPaperId = 1;
     
-    public PapersUtil(PaperDetailsUtil paperDetailsUtil){
-        this.paperDetailsUtil = paperDetailsUtil;
-        this.idVsPaperDetails = paperDetailsUtil.getIdVsPaperDetails();
+    public PapersUtil(){
         initialize();
     }
 
-    private void initialize(){
+    private static void initialize(){
+        idVsPaperDetails = PaperDetailsUtil.getIdVsPaperDetails();
+        initializeData();
+    }
+
+    private static void initializeData(){
         for(Integer id : idVsPaperDetails.keySet()){
             nextPaperId = id + 1;
         }
     }
 
-    private Integer getNextPaperId(){
+    private static Integer getNextPaperId(){
         return nextPaperId++;
     }
 
-    private void savePapers() throws Exception{
-        paperDetailsUtil.setIdVsPaperDetails(idVsPaperDetails);
+    private static void savePapers() throws Exception{
+        PaperDetailsUtil.setIdVsPaperDetails(idVsPaperDetails);
     }
 
-    private Boolean isSavePapersSuccessful(){
+    private static Boolean isSavePapersSuccessful(){
         try{
             savePapers();
             return true;
@@ -47,7 +51,7 @@ public class PapersUtil {
         return false;
     }
 
-    public Boolean insertPaperDetails(String title, Integer submitterId, List<String> authors, String contact, String fileName, String fileExtension, Integer paperId, Integer revisionNo){
+    public static Boolean insertPaperDetails(String title, Integer submitterId, List<String> authors, String contact, String fileName, String fileExtension, Integer paperId, Integer revisionNo){
         Integer id = getNextPaperId();
 
         if(title == null || submitterId == null || contact == null || fileName == null || fileExtension == null || paperId == null || revisionNo == null){
@@ -63,7 +67,7 @@ public class PapersUtil {
         return isSavePapersSuccessful();
     }
 
-    public Boolean updatePaperDetails(ResearchPaper paper){
+    public static Boolean updatePaperDetails(ResearchPaper paper){
         Integer id = paper.getId();
         if(!idVsPaperDetails.containsKey(id)){
             return false;
@@ -72,7 +76,7 @@ public class PapersUtil {
         return isSavePapersSuccessful();
     }
 
-    public Boolean deletePaperDetails(Integer id){
+    public static Boolean deletePaperDetails(Integer id){
         if(!idVsPaperDetails.containsKey(id)){
             return false;
         }
@@ -80,11 +84,11 @@ public class PapersUtil {
         return isSavePapersSuccessful();
     }
 
-    public HashMap<Integer,ResearchPaper> getAllPapers(){
+    public static HashMap<Integer,ResearchPaper> getAllPapers(){
         return idVsPaperDetails;
     }
 
-    public ResearchPaper getPaperDetails(Integer id){
+    public static ResearchPaper getPaperDetails(Integer id){
         return idVsPaperDetails.get(id);
     }
 }

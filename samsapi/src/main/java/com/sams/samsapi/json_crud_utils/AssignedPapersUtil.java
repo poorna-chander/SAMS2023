@@ -4,39 +4,43 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import com.sams.samsapi.model.ReviewTemplate;
 import com.sams.samsapi.model.ReviewTemplate.Reviews;
 
 @Component
+@DependsOn({"paperDetailsUtil"})
 public class AssignedPapersUtil {
     private static final Logger LOG = Logger.getLogger(AssignedPapersUtil.class.getName());
-    private HashMap<Integer, ReviewTemplate> idVsAssignedPapers;
-    private int nextAssignedPaperId = 1;
-    private PaperDetailsUtil paperDetailsUtil;
+    private static HashMap<Integer, ReviewTemplate> idVsAssignedPapers;
+    private static int nextAssignedPaperId = 1;
     
-    public AssignedPapersUtil(PaperDetailsUtil paperDetailsUtil){
-        this.paperDetailsUtil = paperDetailsUtil;
-        this.idVsAssignedPapers = paperDetailsUtil.getIdVsAssignedPapers();
+    public AssignedPapersUtil(){
         initialize();
     }
 
-    private void initialize(){
+    private static void initialize(){
+        idVsAssignedPapers = PaperDetailsUtil.getIdVsAssignedPapers();
+        initializeData();
+    }
+
+    private static void initializeData(){
         for(Integer id : idVsAssignedPapers.keySet()){
             nextAssignedPaperId = id + 1;
         }
     }
 
-    private Integer getNextAssignedPaperId(){
+    private static Integer getNextAssignedPaperId(){
         return nextAssignedPaperId++;
     }
 
-    private void saveAssignedPapers() throws Exception{
-        paperDetailsUtil.setIdVsAssignedPapers(idVsAssignedPapers);
+    private static void saveAssignedPapers() throws Exception{
+        PaperDetailsUtil.setIdVsAssignedPapers(idVsAssignedPapers);
     }
 
-    private Boolean isSaveAssignedPapersSuccessful(){
+    private static Boolean isSaveAssignedPapersSuccessful(){
         try{
             saveAssignedPapers();
             return true;
@@ -46,7 +50,7 @@ public class AssignedPapersUtil {
         return false;
     }
 
-    public Boolean insertAssignedPaper(Integer paperId, Integer pcmId, Reviews[] reviews, Integer rating){
+    public static Boolean insertAssignedPaper(Integer paperId, Integer pcmId, Reviews[] reviews, Integer rating){
         Integer id = getNextAssignedPaperId();
 
         if(paperId == null || pcmId == null || rating == null){
@@ -62,7 +66,7 @@ public class AssignedPapersUtil {
         return isSaveAssignedPapersSuccessful();
     }
 
-    public Boolean updateAssignedPaper(ReviewTemplate assignedPaper){
+    public static Boolean updateAssignedPaper(ReviewTemplate assignedPaper){
         Integer id = assignedPaper.getId();
         if(!idVsAssignedPapers.containsKey(id)){
             return false;
@@ -71,7 +75,7 @@ public class AssignedPapersUtil {
         return isSaveAssignedPapersSuccessful();
     }
 
-    public Boolean deleteAssignedPaper(Integer id){
+    public static Boolean deleteAssignedPaper(Integer id){
         if(!idVsAssignedPapers.containsKey(id)){
             return false;
         }
@@ -79,11 +83,11 @@ public class AssignedPapersUtil {
         return isSaveAssignedPapersSuccessful();
     }
 
-    public HashMap<Integer,ReviewTemplate> getAllAssignedPapers(){
+    public static HashMap<Integer,ReviewTemplate> getAllAssignedPapers(){
         return idVsAssignedPapers;
     }
 
-    public ReviewTemplate getAssignedPaper(Integer id){
+    public static ReviewTemplate getAssignedPaper(Integer id){
         return idVsAssignedPapers.get(id);
     }
 }
