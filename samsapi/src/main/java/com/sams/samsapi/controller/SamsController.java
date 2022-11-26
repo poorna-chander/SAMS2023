@@ -3,6 +3,7 @@ package com.sams.samsapi.controller;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -55,12 +56,16 @@ public class SamsController {
         formData.put("authors", authors);
         formData.put("contact", contact);
 
-        submitterInterface = new SubmitterOps(0);
+        submitterInterface = new SubmitterOps();
         boolean formvalidation = submitterInterface.validateFormFile(formData, file);
 
-        if (formvalidation) {
-            System.out.println("");
+        if (!formvalidation) {
+            System.out.println("add to notification");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            submitterInterface.validateFormFile(formData, file);
         }
+        boolean submissionStatus = submitterInterface.SubmitPaperForm(formData, file);
 
         return null;
 
