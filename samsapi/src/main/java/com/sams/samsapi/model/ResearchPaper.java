@@ -180,5 +180,4 @@ public class ResearchPaper {
     public void setReviewComplete(boolean reviewComplete) {
         this.reviewComplete = reviewComplete;
     }
-
 }

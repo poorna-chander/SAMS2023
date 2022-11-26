@@ -14,6 +14,15 @@ public class Users {
     private ArrayList<Admin> admins;
 
     public Users() {
+        loadUsers();
+    }
+
+    public void loadUsers() {
+
+    }
+
+    public String getSubmitterName(int id) {
+        return null;
     }
 
 }
