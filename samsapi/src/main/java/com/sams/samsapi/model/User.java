@@ -1,5 +1,7 @@
 package com.sams.samsapi.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class User {
     public enum USER_TYPE{
         ADMIN,
@@ -7,11 +9,16 @@ public class User {
         PCM,
         SUBMITTER
     }
+    @JsonProperty("name")
     private String name;
+    @JsonProperty("id")
     private int id;
+    @JsonProperty("type")
     private USER_TYPE type;
 
-    public User(String name, int id, USER_TYPE type) {
+    public User(@JsonProperty("name") String name, 
+                @JsonProperty("id") int id, 
+                @JsonProperty("type") USER_TYPE type) {
         this.name = name;
         this.id = id;
         this.type = type;
