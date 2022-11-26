@@ -1,16 +1,19 @@
 package com.sams.samsapi.persistence;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sams.samsapi.model.ResearchPaper;
 import com.sams.samsapi.model.Submitter;
 import com.sams.samsapi.model.User;
 import com.sams.samsapi.persistence.Users;
+import com.sams.samsapi.service.FileUploadService;
 import com.sams.samsapi.json_crud_utils.PapersUtil;
 import com.sams.samsapi.json_crud_utils.UserUtils;
 
@@ -25,30 +28,68 @@ public class SubmitterOps implements SubmitterInterface {
     }
 
     @Override
-    public boolean SubmitPaperForm(HashMap<String, String> data, MultipartFile fileBytes) {
+    public boolean SubmitPaperForm(String uploadPath, HashMap<String, String> data, MultipartFile fileBytes)
+            throws IllegalStateException, IOException {
         int next_paper_id = PapersUtil.getNextPaperId();
         String uploadedFileName = fileBytes.getOriginalFilename();
         String[] uploadedFileExtension = uploadedFileName.split("\\.");
         String extension = uploadedFileExtension[uploadedFileExtension.length - 1];
-        String fileName = data.get("title") + 1 + ".pdf";
+        int revisionNo = 1;
+        String fileName = data.get("title") + revisionNo + "." + extension;
         List<String> authors = new ArrayList<>(Arrays.asList(data.get("authors").split(",")));
-        PapersUtil.insertPaperDetails(data.get("title"),
+        boolean insertedInfo = PapersUtil.insertPaperDetails(data.get("title"),
                 4,
                 authors,
                 data.get("contact"),
                 fileName,
                 extension,
                 next_paper_id,
-                1);
+                revisionNo);
 
-        return true;
+        FileUploadService fileuploadservice = new FileUploadService();
+        boolean uploadedFile = fileuploadservice.uploadFile(uploadPath + fileName, fileBytes);
+
+        if (insertedInfo && uploadedFile) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
-    public boolean updateSubmission(HashMap<String, String> data, MultipartFile fileBytes, int paper_id) {
+    public boolean revisePaperForm(String uploadPath, HashMap<String, String> data, MultipartFile fileBytes,
+            int paper_id) throws IllegalStateException, IOException {
         HashMap<Integer, ResearchPaper> paperSubmissions = PapersUtil.getPaperDetailsBasedOnPaperId(paper_id);
-        // TODO Auto-generated method stub
-        return false;
+        // fetching latest revision
+        int max = 1;
+        for (ResearchPaper paper : paperSubmissions.values()) {
+            if (paper.getRevisionNo() > max) {
+                max = paper.getRevisionNo();
+            }
+        }
+        String uploadedFileName = fileBytes.getOriginalFilename();
+        String[] uploadedFileExtension = uploadedFileName.split("\\.");
+        String extension = uploadedFileExtension[uploadedFileExtension.length - 1];
+        int revisionNo = max + 1;
+        String fileName = data.get("title") + revisionNo + "." + extension;
+        List<String> authors = new ArrayList<>(Arrays.asList(data.get("authors").split(",")));
+        boolean insertedInfo = PapersUtil.insertPaperDetails(data.get("title"),
+                4,
+                authors,
+                data.get("contact"),
+                fileName,
+                extension,
+                paper_id,
+                revisionNo);
+
+        FileUploadService fileuploadservice = new FileUploadService();
+        boolean uploadedFile = fileuploadservice.uploadFile(uploadPath + fileName, fileBytes);
+
+        if (insertedInfo && uploadedFile) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -71,7 +112,7 @@ public class SubmitterOps implements SubmitterInterface {
         String uploadedFileName = fileBytes.getOriginalFilename();
         String[] uploadedFileExtension = uploadedFileName.split("\\.");
         String extension = uploadedFileExtension[uploadedFileExtension.length - 1];
-        if (!extension.equals("png")) {
+        if (!(extension.equals("pdf") || extension.equals("docx"))) {
             return false;
         }
         return true;

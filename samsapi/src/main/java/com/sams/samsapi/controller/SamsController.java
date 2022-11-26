@@ -1,5 +1,6 @@
 package com.sams.samsapi.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -49,7 +50,7 @@ public class SamsController {
             @RequestParam String title,
             @RequestParam String authors,
             @RequestParam String contact,
-            @RequestParam MultipartFile file) {
+            @RequestParam MultipartFile file) throws IllegalStateException, IOException {
 
         HashMap<String, String> formData = new HashMap<>();
         formData.put("title", title);
@@ -65,10 +66,36 @@ public class SamsController {
         } else {
             submitterInterface.validateFormFile(formData, file);
         }
-        boolean submissionStatus = submitterInterface.SubmitPaperForm(formData, file);
+        boolean submissionStatus = submitterInterface.SubmitPaperForm(uploadPath, formData, file);
 
         return null;
+    }
 
+    @PostMapping("/revise")
+    public ResponseEntity<Object> revisePaperForm(@Value("${filelocation.savepath}") String uploadPath,
+            @RequestParam String title,
+            @RequestParam String authors,
+            @RequestParam String contact,
+            @RequestParam MultipartFile file) throws IllegalStateException, IOException {
+
+        HashMap<String, String> formData = new HashMap<>();
+        formData.put("title", title);
+        formData.put("authors", authors);
+        formData.put("contact", contact);
+
+        submitterInterface = new SubmitterOps();
+        boolean formvalidation = submitterInterface.validateFormFile(formData, file);
+
+        if (!formvalidation) {
+            System.out.println("add to notification");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            submitterInterface.validateFormFile(formData, file);
+        }
+
+        boolean submissionStatus = submitterInterface.revisePaperForm(uploadPath, formData, file, 1);
+
+        return null;
     }
 
 }

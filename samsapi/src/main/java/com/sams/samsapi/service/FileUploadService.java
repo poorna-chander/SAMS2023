@@ -11,8 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileUploadService {
-    public void uploadFile(String uploadPath, MultipartFile file) throws IllegalStateException, IOException {
-        file.transferTo(new File(uploadPath + file.getOriginalFilename()));
+    public boolean uploadFile(String uploadPath, MultipartFile file)
+            throws IllegalStateException, IOException {
+        file.transferTo(new File(uploadPath));
+        return true;
     }
 
     public File downloadFile(String filePath, String filename) {
