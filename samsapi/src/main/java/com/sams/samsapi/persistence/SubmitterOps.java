@@ -38,7 +38,7 @@ public class SubmitterOps implements SubmitterInterface {
         String fileName = data.get("title") + revisionNo + "." + extension;
         List<String> authors = new ArrayList<>(Arrays.asList(data.get("authors").split(",")));
         boolean insertedInfo = PapersUtil.insertPaperDetails(data.get("title"),
-                4,
+                Integer.parseInt(data.get("submitterId")), // TODO:
                 authors,
                 data.get("contact"),
                 fileName,
@@ -74,7 +74,7 @@ public class SubmitterOps implements SubmitterInterface {
         String fileName = data.get("title") + revisionNo + "." + extension;
         List<String> authors = new ArrayList<>(Arrays.asList(data.get("authors").split(",")));
         boolean insertedInfo = PapersUtil.insertPaperDetails(data.get("title"),
-                4,
+                Integer.parseInt(data.get("submitterId")),
                 authors,
                 data.get("contact"),
                 fileName,
