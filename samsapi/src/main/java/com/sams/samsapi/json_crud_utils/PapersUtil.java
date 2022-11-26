@@ -3,6 +3,7 @@ package com.sams.samsapi.json_crud_utils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,6 +17,7 @@ import com.sams.samsapi.model.ResearchPaper;
 public class PapersUtil {
     private static final Logger LOG = Logger.getLogger(PapersUtil.class.getName());
     private static HashMap<Integer, ResearchPaper> idVsPaperDetails;
+    private static int nextId = 1;
     private static int nextPaperId = 1;
     
     public PapersUtil(){
@@ -29,12 +31,16 @@ public class PapersUtil {
 
     private static void initializeData(){
         for(Integer id : idVsPaperDetails.keySet()){
-            nextPaperId = id + 1;
+            nextId = id + 1;
+            ResearchPaper paper = idVsPaperDetails.get(id);
+            if(nextPaperId <= paper.getPaperId()){
+                nextPaperId = paper.getPaperId() + 1;
+            }
         }
     }
 
-    private static Integer getNextPaperId(){
-        return nextPaperId++;
+    private static Integer getNextId(){
+        return nextId++;
     }
 
     private static void savePapers() throws Exception{
@@ -52,7 +58,7 @@ public class PapersUtil {
     }
 
     public static Boolean insertPaperDetails(String title, Integer submitterId, List<String> authors, String contact, String fileName, String fileExtension, Integer paperId, Integer revisionNo){
-        Integer id = getNextPaperId();
+        Integer id = getNextId();
 
         if(title == null || submitterId == null || contact == null || fileName == null || fileExtension == null || paperId == null || revisionNo == null){
             return false;
@@ -90,5 +96,19 @@ public class PapersUtil {
 
     public static ResearchPaper getPaperDetails(Integer id){
         return idVsPaperDetails.get(id);
+    }
+
+    public static Integer getNextPaperId(){
+        return nextPaperId++;
+    } 
+
+    public static HashMap<Integer, ResearchPaper> getPaperDetailsBasedOnPaperId(Integer paperId){
+        HashMap<Integer, ResearchPaper> paperDtls = new HashMap<>();
+        for(Integer id : idVsPaperDetails.keySet()){
+            if(Objects.equals(idVsPaperDetails.get(id).getPaperId(), paperId)){
+                paperDtls.put(id, idVsPaperDetails.get(id));
+            }
+        }
+        return paperDtls;
     }
 }

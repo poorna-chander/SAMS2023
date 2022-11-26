@@ -10,6 +10,7 @@ import com.sams.samsapi.json_crud_utils.PapersUtil;
 import com.sams.samsapi.json_crud_utils.ReviewQuestionnaireUtil;
 import com.sams.samsapi.json_crud_utils.UserUtils;
 import com.sams.samsapi.model.PaperDetails;
+import com.sams.samsapi.persistence.SubmitterInterface;
 
 @RestController
 @RequestMapping("/")
