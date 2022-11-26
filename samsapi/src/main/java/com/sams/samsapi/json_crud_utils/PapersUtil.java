@@ -140,4 +140,14 @@ public class PapersUtil {
         }
         return Boolean.TRUE.equals(isPaperIdPrimary) ? paperIdVsPaper : idVsPaper;
     }
+
+    public static HashMap<Integer, ResearchPaper> getPaperDetailsBasedOnSubmitterId(Integer submitterId) {
+        HashMap<Integer, ResearchPaper> paperDtls = new HashMap<>();
+        for (Integer id : idVsPaperDetails.keySet()) {
+            if (Objects.equals(idVsPaperDetails.get(id).getSubmitterId(), submitterId)) {
+                paperDtls.put(id, idVsPaperDetails.get(id));
+            }
+        }
+        return paperDtls;
+    }
 }

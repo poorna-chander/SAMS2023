@@ -67,7 +67,7 @@ public class PccOps implements PccInterface {
     }
 
     @Override
-    public Boolean assignPaperToPCM(Integer paperId, Integer pcmId, Reviews[] reviews) {
+    public Boolean assignPaperToPCM(Integer paperId, Integer pcmId) {
         HashMap<Integer,ReviewTemplate> idVsAssignedPaperDtls =  AssignedPapersUtil.getAssignedPaperBasedOnPaperId(paperId);
         Boolean isCreate = true;
         ReviewTemplate updatedReviewTemplate = null;
@@ -75,19 +75,24 @@ public class PccOps implements PccInterface {
            for(Integer id : idVsAssignedPaperDtls.keySet()){
                 if(Objects.equals(idVsAssignedPaperDtls.get(id).getPcmId(), pcmId)){
                     isCreate = false;
-                    updatedReviewTemplate = new ReviewTemplate(id, paperId, pcmId, reviews, null);
+                    updatedReviewTemplate = new ReviewTemplate(id, paperId, pcmId, null, null);
                 }
            }
         }
         if(idVsAssignedPaperDtls.size() >= AssignedPapersUtil.getAssignPaperLimit()){
             return false;
         }
-        return Boolean.TRUE.equals(isCreate) ? AssignedPapersUtil.insertAssignedPaper(paperId, pcmId, reviews, pcmId) : AssignedPapersUtil.updateAssignedPaper(updatedReviewTemplate);
+        return Boolean.TRUE.equals(isCreate) ? AssignedPapersUtil.insertAssignedPaper(paperId, pcmId, null, pcmId) : AssignedPapersUtil.updateAssignedPaper(updatedReviewTemplate);
     }
 
     @Override
     public HashMap<Integer, ReviewTemplate> viewPCMReviews(Integer paperId) {
-        return AssignedPapersUtil.getAssignedPaperBasedOnPaperId(paperId);
+        HashMap<Integer, ReviewTemplate> assignedPaperDtls = AssignedPapersUtil.getAssignedPaperBasedOnPaperId(paperId);
+        HashMap<Integer, ReviewTemplate> pcmIdVsAssignedPapers = new HashMap<>();
+        for(Integer id : assignedPaperDtls.keySet()){
+            pcmIdVsAssignedPapers.put(assignedPaperDtls.get(id).getPcmId(), assignedPaperDtls.get(id));
+        }
+        return pcmIdVsAssignedPapers;
     }
 
     @Override
@@ -115,7 +120,7 @@ public class PccOps implements PccInterface {
                 paperList = pcmChoices.get(paperChoice.getPcmId());
             }
             paperList.add(paper);
-            pcmChoices.put(paper.getId(), paperList);
+            pcmChoices.put(paperChoice.getPcmId(), paperList);
         }
         return pcmChoices;
     }

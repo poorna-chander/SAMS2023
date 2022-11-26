@@ -11,7 +11,7 @@ public interface PccInterface {
     ArrayList<ResearchPaper> getAllSubmissions();
     ArrayList<ResearchPaper> getPaperPendingPCCAssignments();
     HashMap<Integer,HashMap<Integer,Integer>> getPaperAssignmentDetails();
-    Boolean assignPaperToPCM(Integer paperId, Integer pcmId, Reviews[] reviews);
+    Boolean assignPaperToPCM(Integer paperId, Integer pcmId);
     HashMap<Integer,ReviewTemplate> viewPCMReviews(Integer paperId);
     void ratePaper(Integer paperId, Integer rating);
     HashMap<Integer, ArrayList<ResearchPaper>> getPCMChoices();
