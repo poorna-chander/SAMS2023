@@ -2,12 +2,16 @@ package com.sams.samsapi.persistence;
 
 import java.util.HashMap;
 
-public interface SubmitterInterface {
-    public boolean SubmitPaperForm(HashMap<String, String> data, byte[] fileBytes);
+import org.springframework.web.multipart.MultipartFile;
 
-    public boolean updateSubmission(HashMap<String, String> data, byte[] fileBytes);
+public interface SubmitterInterface {
+    public boolean SubmitPaperForm(HashMap<String, String> data, MultipartFile fileBytes);
+
+    public boolean updateSubmission(HashMap<String, String> data, MultipartFile fileBytes);
 
     public HashMap<String, HashMap<String, String>> getSubmissionDetails();
 
     public HashMap<String, Integer> viewFinalRating();
+
+    public boolean validateFormFile(HashMap<String, String> data, MultipartFile fileBytes);
 }

@@ -2,6 +2,8 @@ package com.sams.samsapi.persistence;
 
 import java.util.HashMap;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.sams.samsapi.model.Submitter;
 import com.sams.samsapi.persistence.Users;
 
@@ -17,12 +19,12 @@ public class SubmitterOps implements SubmitterInterface {
     }
 
     @Override
-    public boolean SubmitPaperForm(HashMap<String, String> data, byte[] fileBytes) {
+    public boolean SubmitPaperForm(HashMap<String, String> data, MultipartFile fileBytes) {
         return false;
     }
 
     @Override
-    public boolean updateSubmission(HashMap<String, String> data, byte[] fileBytes) {
+    public boolean updateSubmission(HashMap<String, String> data, MultipartFile fileBytes) {
         // TODO Auto-generated method stub
         return false;
     }
@@ -37,6 +39,12 @@ public class SubmitterOps implements SubmitterInterface {
     public HashMap<String, Integer> viewFinalRating() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public boolean validateFormFile(HashMap<String, String> data, MultipartFile fileBytes) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }
