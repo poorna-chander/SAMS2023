@@ -20,6 +20,7 @@ import { SubmitterSubmissionsComponent } from './submitter-submissions/submitter
 import { AngularMaterialModule } from './angular-material.module';
 import { SubmitterRevisionComponent } from './submitter-revision/submitter-revision.component';
 import { HttpClientModule } from '@angular/common/http';
+import {MatTableModule} from '@angular/material/table';
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,6 +37,7 @@ import { HttpClientModule } from '@angular/common/http';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatTableModule,
     MatSlideToggleModule,
     BrowserModule,
     AppRoutingModule,
