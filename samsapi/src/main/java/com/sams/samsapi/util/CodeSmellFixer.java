@@ -11,7 +11,8 @@ public class CodeSmellFixer {
         }
     }
     public class UpperCase{
-     
+        public static final String INVALID_BODY = "INVALID_BODY";
+
         private UpperCase(){
         
         }
@@ -26,6 +27,11 @@ public class CodeSmellFixer {
         public static final String DEADLINE = "deadline";
         public static final String AUTHORS = "authors";
         public static final String CONTACT = "contact";
+        public static final String USERNAME = "username";
+        public static final String PASSWORD = "password";
+        public static final String REGISTRATION = "registration";
+        public static final String SUCCESS = "success";
+        public static final String ID = "id";
 
         private LowerCase(){
         
@@ -47,6 +53,8 @@ public class CodeSmellFixer {
         public static final String FILE_NAME = "file_name";
         public static final String FILE_EXTENSION = "file_extension";
         public static final String REVISION_NO = "revision_no";
+        public static final String USER_DATA = "user_data";
+        public static final String USER_ID = "user_id";
 
         private SnakeCase(){
         

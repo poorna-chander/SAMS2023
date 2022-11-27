@@ -19,10 +19,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sams.samsapi.json_crud_utils.AssignedPapersUtil;
+import com.sams.samsapi.json_crud_utils.PaperChoicesUtil;
+import com.sams.samsapi.json_crud_utils.PaperDetailsUtil;
+import com.sams.samsapi.json_crud_utils.PapersUtil;
+import com.sams.samsapi.json_crud_utils.ReviewQuestionnaireUtil;
+import com.sams.samsapi.json_crud_utils.UserUtils;
 import com.sams.samsapi.model.ReviewTemplate;
 import com.sams.samsapi.model.ReviewTemplate.Reviews;
+import com.sams.samsapi.model.User;
 import com.sams.samsapi.model.User.USER_TYPE;
 import com.sams.samsapi.persistence.AdminInterface;
+import com.sams.samsapi.persistence.AdminInterface.DEADLINE_TYPE;
 import com.sams.samsapi.persistence.AdminOps;
 import com.sams.samsapi.persistence.PccInterface;
 import com.sams.samsapi.persistence.PccOps;
@@ -32,7 +40,6 @@ import com.sams.samsapi.persistence.SubmitterInterface;
 import com.sams.samsapi.persistence.SubmitterOps;
 import com.sams.samsapi.persistence.UsersInterface;
 import com.sams.samsapi.persistence.UsersOps;
-import com.sams.samsapi.persistence.AdminInterface.DEADLINE_TYPE;
 import com.sams.samsapi.util.CodeSmellFixer;
 
 @RestController
@@ -45,7 +52,8 @@ public class SamsController {
     private PcmInterface pcmInterface = new PcmOps();
     private AdminInterface adminInterface = new AdminOps();
 
-    public SamsController() {
+    public SamsController(AssignedPapersUtil assignedPapersUtil, PaperChoicesUtil paperChoicesUtil, PaperDetailsUtil paperDetailsUtil,
+                        PapersUtil papersUtil, ReviewQuestionnaireUtil reviewQuestionnaireUtil, UserUtils userUtils) {
 
     }
 
@@ -155,21 +163,26 @@ public class SamsController {
     @PutMapping("/papers/pcc/assignment/assign")
     public ResponseEntity<Object> updatePapersAssignment(@RequestHeader Object userId,
             @RequestBody HashMap<String, Object> details) throws Exception {
-        Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCC)
-                || usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN);
-        if (Boolean.FALSE.equals(isValidUser)) {
-            LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        try {
+            Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCC)
+                    || usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN);
+            if (Boolean.FALSE.equals(isValidUser)) {
+                LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+            if (!details.containsKey(CodeSmellFixer.SnakeCase.PCM_ID)
+                    || !details.containsKey(CodeSmellFixer.SnakeCase.PAPER_ID)) {
+                CodeSmellFixer.ExceptionThrower.throwInvalidBody();
+            }
+            Boolean status = pccInterface.assignPaperToPCM(
+                    Integer.parseInt(details.get(CodeSmellFixer.SnakeCase.PAPER_ID).toString()),
+                    Integer.parseInt(details.get(CodeSmellFixer.SnakeCase.PCM_ID).toString()));
+            return Boolean.TRUE.equals(status) ? new ResponseEntity<>(HttpStatus.OK)
+                    : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (IllegalArgumentException ex) {
+            LOG.log(Level.SEVERE, CodeSmellFixer.UpperCase.INVALID_BODY);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (!details.containsKey(CodeSmellFixer.SnakeCase.PCM_ID)
-                || !details.containsKey(CodeSmellFixer.SnakeCase.PAPER_ID)) {
-            CodeSmellFixer.ExceptionThrower.throwInvalidBody();
-        }
-        Boolean status = pccInterface.assignPaperToPCM(
-                Integer.parseInt(details.get(CodeSmellFixer.SnakeCase.PAPER_ID).toString()),
-                Integer.parseInt(details.get(CodeSmellFixer.SnakeCase.PCM_ID).toString()));
-        return Boolean.TRUE.equals(status) ? new ResponseEntity<>(HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/papers/pcc/assignment/view")
@@ -200,43 +213,54 @@ public class SamsController {
     @PutMapping("/papers/pcc/rate")
     public ResponseEntity<Object> updatePaperRating(@RequestHeader Object userId,
             @RequestBody HashMap<String, Object> details) throws Exception {
-        Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCC)
-                || usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN);
-        if (Boolean.FALSE.equals(isValidUser)) {
-            LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        try {
+            Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCC)
+                    || usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN);
+            if (Boolean.FALSE.equals(isValidUser)) {
+                LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+            if (!details.containsKey(CodeSmellFixer.LowerCase.RATING)
+                    || !details.containsKey(CodeSmellFixer.SnakeCase.PAPER_ID)) {
+                CodeSmellFixer.ExceptionThrower.throwInvalidBody();
+            }
+            pccInterface.ratePaper(Integer.parseInt(details.get(CodeSmellFixer.SnakeCase.PAPER_ID).toString()),
+                    Integer.parseInt(details.get(CodeSmellFixer.LowerCase.RATING).toString()));
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IllegalArgumentException ex) {
+            LOG.log(Level.SEVERE, CodeSmellFixer.UpperCase.INVALID_BODY);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (!details.containsKey(CodeSmellFixer.LowerCase.RATING)
-                || !details.containsKey(CodeSmellFixer.SnakeCase.PAPER_ID)) {
-            CodeSmellFixer.ExceptionThrower.throwInvalidBody();
-        }
-        pccInterface.ratePaper(Integer.parseInt(details.get(CodeSmellFixer.SnakeCase.PAPER_ID).toString()),
-                Integer.parseInt(details.get(CodeSmellFixer.LowerCase.RATING).toString()));
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/papers/pcm/choice")
     public ResponseEntity<Object> createPaperChoices(@RequestHeader Object userId,
             @RequestBody HashMap<String, Object> details) throws Exception {
-        Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCM);
-        if (Boolean.FALSE.equals(isValidUser)) {
-            LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        try {
+            Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCM);
+            if (Boolean.FALSE.equals(isValidUser)) {
+                LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+            if (!details.containsKey(CodeSmellFixer.SnakeCase.PAPER_IDS)) {
+                CodeSmellFixer.ExceptionThrower.throwInvalidBody();
+            }
+            ArrayList<Integer> paperIds = new ArrayList<>();
+            Object paperIdsObj = details.get(CodeSmellFixer.SnakeCase.PAPER_IDS);
+            if (!(paperIdsObj instanceof ArrayList<?>)) {
+                CodeSmellFixer.ExceptionThrower.throwInvalidBody();
+            }
+            ArrayList<?> ids = (ArrayList<?>) paperIdsObj;
+            for (Object paperId : ids) {
+                paperIds.add(Integer.parseInt(paperId.toString()));
+            }
+            Boolean status = pcmInterface.submitPaperChoices(paperIds, Integer.parseInt(userId.toString()));
+            return Boolean.TRUE.equals(status) ? new ResponseEntity<>(HttpStatus.OK)
+                    : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (IllegalArgumentException ex) {
+            LOG.log(Level.SEVERE, CodeSmellFixer.UpperCase.INVALID_BODY);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (!details.containsKey(CodeSmellFixer.SnakeCase.PAPER_IDS)) {
-            CodeSmellFixer.ExceptionThrower.throwInvalidBody();
-        }
-        ArrayList<Integer> paperIds = new ArrayList<>();
-        Object paperIdsObj = details.get(CodeSmellFixer.SnakeCase.PAPER_IDS);
-        if (!(paperIdsObj instanceof ArrayList<?>)) {
-            CodeSmellFixer.ExceptionThrower.throwInvalidBody();
-        }
-        ArrayList<?> ids = (ArrayList<?>) paperIdsObj;
-        for (Object paperId : ids) {
-            paperIds.add(Integer.parseInt(paperId.toString()));
-        }
-        Boolean status = pcmInterface.submitPaperChoices(paperIds, Integer.parseInt(userId.toString()));
-        return Boolean.TRUE.equals(status) ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/papers/pcm/meta")
@@ -247,86 +271,175 @@ public class SamsController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        return new ResponseEntity<>(pcmInterface.getMetaAvailablePaperDetails(Integer.parseInt(userId.toString())), HttpStatus.OK);
+        return new ResponseEntity<>(pcmInterface.getMetaAvailablePaperDetails(Integer.parseInt(userId.toString())),
+                HttpStatus.OK);
     }
 
     @PostMapping("/papers/pcm/review")
-    public ResponseEntity<Object> createPaperReview(@RequestHeader Object userId, @RequestBody HashMap<String, Object> details) throws Exception {
-        Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCM);
-        if (Boolean.FALSE.equals(isValidUser)) {
-            LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<Object> createPaperReview(@RequestHeader Object userId,
+            @RequestBody HashMap<String, Object> details) throws Exception {
+        try {
+            Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCM);
+            if (Boolean.FALSE.equals(isValidUser)) {
+                LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
 
-        if (!details.containsKey(CodeSmellFixer.SnakeCase.PAPER_ID) || !details.containsKey(CodeSmellFixer.LowerCase.REVIEWS) || !details.containsKey(CodeSmellFixer.LowerCase.RATING)) {
-            CodeSmellFixer.ExceptionThrower.throwInvalidBody();
-        }
-        
-        HashMap<Integer,String> reviewData = new HashMap<>();
-        Object reviewDataObj = details.get(CodeSmellFixer.LowerCase.REVIEWS);
-        if (!(reviewDataObj instanceof HashMap<?,?>)) {
-            CodeSmellFixer.ExceptionThrower.throwInvalidBody();
-        }
-        
-        HashMap<?,?> ids = (HashMap<?,?>) reviewDataObj;
-        for(Object id : ids.keySet()) {
-            reviewData.put(Integer.parseInt(id.toString()), ids.get(id).toString());
-        }
-        
-        Reviews[] review = pcmInterface.getReviewData(reviewData);
-        if(review == null){
-            CodeSmellFixer.ExceptionThrower.throwInvalidBody();
-        }
+            if (!details.containsKey(CodeSmellFixer.SnakeCase.PAPER_ID)
+                    || !details.containsKey(CodeSmellFixer.LowerCase.REVIEWS)
+                    || !details.containsKey(CodeSmellFixer.LowerCase.RATING)) {
+                CodeSmellFixer.ExceptionThrower.throwInvalidBody();
+            }
 
-        ReviewTemplate template = pcmInterface.getReviewTemplate(Integer.parseInt(userId.toString()) , Integer.parseInt(details.get(CodeSmellFixer.SnakeCase.PAPER_ID).toString()));
+            HashMap<Integer, String> reviewData = new HashMap<>();
+            Object reviewDataObj = details.get(CodeSmellFixer.LowerCase.REVIEWS);
+            if (!(reviewDataObj instanceof HashMap<?, ?>)) {
+                CodeSmellFixer.ExceptionThrower.throwInvalidBody();
+            }
 
-        template.setRating(Integer.parseInt(details.get(CodeSmellFixer.LowerCase.RATING).toString()));
-        template.setReviews(review);
+            HashMap<?, ?> ids = (HashMap<?, ?>) reviewDataObj;
+            for (Object id : ids.keySet()) {
+                reviewData.put(Integer.parseInt(id.toString()), ids.get(id).toString());
+            }
 
-        Boolean status = pcmInterface.submitReview(Integer.parseInt(details.get(CodeSmellFixer.SnakeCase.PAPER_ID).toString()), template);
+            Reviews[] review = pcmInterface.getReviewData(reviewData);
+            if (review == null) {
+                CodeSmellFixer.ExceptionThrower.throwInvalidBody();
+            }
 
-        return Boolean.TRUE.equals(status) ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            ReviewTemplate template = pcmInterface.getReviewTemplate(Integer.parseInt(userId.toString()),
+                    Integer.parseInt(details.get(CodeSmellFixer.SnakeCase.PAPER_ID).toString()));
+
+            template.setRating(Integer.parseInt(details.get(CodeSmellFixer.LowerCase.RATING).toString()));
+            template.setReviews(review);
+
+            Boolean status = pcmInterface.submitReview(
+                    Integer.parseInt(details.get(CodeSmellFixer.SnakeCase.PAPER_ID).toString()), template);
+
+            return Boolean.TRUE.equals(status) ? new ResponseEntity<>(HttpStatus.OK)
+                    : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (IllegalArgumentException ex) {
+            LOG.log(Level.SEVERE, CodeSmellFixer.UpperCase.INVALID_BODY);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/papers/deadline")
-    public ResponseEntity<Object> updateDeadline(@RequestHeader Object userId, @RequestBody HashMap<String, Object> details) throws Exception {
-        Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN);
-        if (Boolean.FALSE.equals(isValidUser)) {
-            LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<Object> updateDeadline(@RequestHeader Object userId,
+            @RequestBody HashMap<String, Object> details) throws Exception {
+        try {
+            Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN);
+            if (Boolean.FALSE.equals(isValidUser)) {
+                LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
 
-        if (!details.containsKey(CodeSmellFixer.LowerCase.TYPE) || !details.containsKey(CodeSmellFixer.LowerCase.DEADLINE)) {
-            CodeSmellFixer.ExceptionThrower.throwInvalidBody();
+            if (!details.containsKey(CodeSmellFixer.LowerCase.TYPE)
+                    || !details.containsKey(CodeSmellFixer.LowerCase.DEADLINE)) {
+                CodeSmellFixer.ExceptionThrower.throwInvalidBody();
+            }
+            Boolean status = adminInterface.updateDeadlines(
+                    DEADLINE_TYPE.valueOf(details.get(CodeSmellFixer.LowerCase.TYPE).toString()),
+                    Long.valueOf(details.get(CodeSmellFixer.LowerCase.DEADLINE).toString()));
+            return Boolean.TRUE.equals(status) ? new ResponseEntity<>(HttpStatus.OK)
+                    : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (IllegalArgumentException ex) {
+            LOG.log(Level.SEVERE, CodeSmellFixer.UpperCase.INVALID_BODY);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Boolean status = adminInterface.updateDeadlines(DEADLINE_TYPE.valueOf(details.get(CodeSmellFixer.LowerCase.TYPE).toString()), Long.valueOf(details.get(CodeSmellFixer.LowerCase.DEADLINE).toString()));
-        return Boolean.TRUE.equals(status) ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PutMapping("/papers/template")
-    public ResponseEntity<Object> updateTemplate(@RequestHeader Object userId, @RequestBody HashMap<String, Object> details) throws Exception {
-        Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN);
-        if (Boolean.FALSE.equals(isValidUser)) {
-            LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<Object> updateTemplate(@RequestHeader Object userId,
+            @RequestBody HashMap<String, Object> details) throws Exception {
+        try {
+            Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN);
+            if (Boolean.FALSE.equals(isValidUser)) {
+                LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
 
-        if (!details.containsKey(CodeSmellFixer.LowerCase.REVIEW)) {
-            CodeSmellFixer.ExceptionThrower.throwInvalidBody();
-        }
+            if (!details.containsKey(CodeSmellFixer.LowerCase.REVIEW)) {
+                CodeSmellFixer.ExceptionThrower.throwInvalidBody();
+            }
 
-        HashMap<Integer,String> reviewData = new HashMap<>();
-        Object reviewDataObj = details.get(CodeSmellFixer.LowerCase.REVIEW);
-        if (!(reviewDataObj instanceof HashMap<?,?>)) {
-            CodeSmellFixer.ExceptionThrower.throwInvalidBody();
-        }
-        
-        HashMap<?,?> ids = (HashMap<?,?>) reviewDataObj;
-        for(Object id : ids.keySet()) {
-            reviewData.put(Integer.parseInt(id.toString()), ids.get(id).toString());
-        }
+            HashMap<Integer, String> reviewData = new HashMap<>();
+            Object reviewDataObj = details.get(CodeSmellFixer.LowerCase.REVIEW);
+            if (!(reviewDataObj instanceof HashMap<?, ?>)) {
+                CodeSmellFixer.ExceptionThrower.throwInvalidBody();
+            }
 
-        Boolean status = adminInterface.updateTemplate(reviewData);
-        return Boolean.TRUE.equals(status) ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            HashMap<?, ?> ids = (HashMap<?, ?>) reviewDataObj;
+            for (Object id : ids.keySet()) {
+                reviewData.put(Integer.parseInt(id.toString()), ids.get(id).toString());
+            }
+
+            Boolean status = adminInterface.updateTemplate(reviewData);
+            return Boolean.TRUE.equals(status) ? new ResponseEntity<>(HttpStatus.OK)
+                    : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (IllegalArgumentException ex) {
+            LOG.log(Level.SEVERE, CodeSmellFixer.UpperCase.INVALID_BODY);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("user/authenticate")
+    public ResponseEntity<HashMap<String, Object>> authenticateUser(@RequestBody HashMap<String, String> credentials) {
+        LOG.log(Level.INFO, "POST /user/authenticate {0}", new Object[] { credentials });
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+            if (!credentials.containsKey(CodeSmellFixer.LowerCase.USERNAME)
+                    || !credentials.containsKey(CodeSmellFixer.LowerCase.PASSWORD)) {
+                CodeSmellFixer.ExceptionThrower.throwInvalidBody();
+            }
+            String userName = credentials.get(CodeSmellFixer.LowerCase.USERNAME);
+            String password = credentials.get(CodeSmellFixer.LowerCase.PASSWORD);
+
+            User user = usersInterface.authenticateUser(userName, password);
+
+            if (user != null) {
+                response.put(CodeSmellFixer.SnakeCase.USER_ID, user.getId());
+                response.put(CodeSmellFixer.LowerCase.USERNAME, user.getName());
+                response.put(CodeSmellFixer.LowerCase.PASSWORD, user.getPassword());
+                response.put(CodeSmellFixer.LowerCase.TYPE, user.getType());
+            }
+
+            return user == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                    : new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException ex) {
+            LOG.log(Level.SEVERE, CodeSmellFixer.UpperCase.INVALID_BODY);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            LOG.log(Level.SEVERE, ex.getLocalizedMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("user/register")
+    public ResponseEntity<HashMap<String, Object>> registeruser(@RequestBody HashMap<String, String> credentials) {
+        LOG.log(Level.INFO, "POST /user/register {0}", new Object[] { credentials });
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+            if (!credentials.containsKey(CodeSmellFixer.LowerCase.USERNAME)
+                    || !credentials.containsKey(CodeSmellFixer.LowerCase.PASSWORD)) {
+                CodeSmellFixer.ExceptionThrower.throwInvalidBody();
+            }
+            String userName = credentials.get(CodeSmellFixer.LowerCase.USERNAME);
+            String password = credentials.get(CodeSmellFixer.LowerCase.PASSWORD);
+            String type = credentials.get(CodeSmellFixer.LowerCase.TYPE);
+            User user = usersInterface.registerUser(userName, password, USER_TYPE.valueOf(type));
+            if (user != null) {
+                response.put(CodeSmellFixer.LowerCase.REGISTRATION, CodeSmellFixer.LowerCase.SUCCESS);
+                response.put(CodeSmellFixer.LowerCase.USERNAME, user.getName());
+                response.put(CodeSmellFixer.LowerCase.ID, user.getId());
+                response.put(CodeSmellFixer.LowerCase.TYPE, user.getType());
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            }
+        } catch (IllegalArgumentException ex) {
+            LOG.log(Level.SEVERE, CodeSmellFixer.UpperCase.INVALID_BODY);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }
