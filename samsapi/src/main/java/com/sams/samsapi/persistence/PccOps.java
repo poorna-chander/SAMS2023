@@ -13,7 +13,6 @@ import com.sams.samsapi.model.PaperChoices;
 import com.sams.samsapi.model.ResearchPaper;
 import com.sams.samsapi.model.ReviewTemplate;
 import com.sams.samsapi.model.User;
-import com.sams.samsapi.model.ReviewTemplate.Reviews;
 import com.sams.samsapi.model.User.USER_TYPE;
 
 public class PccOps implements PccInterface {

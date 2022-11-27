@@ -6,13 +6,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sams.samsapi.model.ResearchPaper;
-import com.sams.samsapi.model.Submitter;
 import com.sams.samsapi.model.User;
-import com.sams.samsapi.persistence.UsersOps;
 import com.sams.samsapi.service.FileUploadService;
 import com.sams.samsapi.json_crud_utils.PapersUtil;
 import com.sams.samsapi.json_crud_utils.UserUtils;

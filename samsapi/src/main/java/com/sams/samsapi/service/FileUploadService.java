@@ -1,11 +1,8 @@
 package com.sams.samsapi.service;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

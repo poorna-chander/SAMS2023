@@ -3,6 +3,7 @@ package com.sams.samsapi.persistence;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import com.sams.samsapi.json_crud_utils.AssignedPapersUtil;
 import com.sams.samsapi.json_crud_utils.PaperChoicesUtil;
@@ -38,7 +39,7 @@ public class PcmOps implements PcmInterface {
             data.put(CodeSmellFixer.LowerCase.TITLE, paperIdVsPaper.get(paperId).getTitle());
 
             HashMap<Integer,ReviewTemplate> idVsAssignedPaperDtls =  AssignedPapersUtil.getAssignedPaperBasedOnPaperId(paperId);
-            if(idVsAssignedPaperDtls.size() < AssignedPapersUtil.getAssignPaperLimit() && paperIdVsPaper.get(paperId).getSubmitterId() != pcmId){
+            if(idVsAssignedPaperDtls.size() < AssignedPapersUtil.getAssignPaperLimit() && !Objects.equals(paperIdVsPaper.get(paperId).getSubmitterId(), pcmId)){
                 metaData.put(paperId, data);
             }
         }
