@@ -9,18 +9,23 @@ public class User {
         PCM,
         SUBMITTER
     }
-    @JsonProperty("name")
-    private String name;
+
     @JsonProperty("id")
     private int id;
+    @JsonProperty("name")
+    private String name;
+    @JsonProperty("password")
+    private String password;
     @JsonProperty("type")
     private USER_TYPE type;
 
-    public User(@JsonProperty("name") String name, 
-                @JsonProperty("id") int id, 
+    public User(@JsonProperty("id") int id, 
+                @JsonProperty("name") String name, 
+                @JsonProperty("password") String password, 
                 @JsonProperty("type") USER_TYPE type) {
-        this.name = name;
         this.id = id;
+        this.name = name;
+        this.password = password;
         this.type = type;
     }
 
@@ -34,5 +39,9 @@ public class User {
 
     public USER_TYPE getType() {
         return type;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

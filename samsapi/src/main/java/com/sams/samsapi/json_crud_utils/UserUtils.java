@@ -68,12 +68,12 @@ public class UserUtils {
         return false;
     }
 
-    public static Boolean insertUserData(String name, USER_TYPE type){
+    public static Boolean insertUserData(String name, String password, USER_TYPE type){
         Integer userId = getNextUserId();
         if(userId == null || name == null || type == null){
             return false;
         }
-        User user = new User(name, userId, type);
+        User user = new User(userId, name, password , type);
         userIdVsUserDtls.put(userId, user);
         return isSaveUserSuccessful();
     }
@@ -114,5 +114,14 @@ public class UserUtils {
         return userIdVsUserDtls.get(userId);
     }
 
+    public static User getUserDetails(String userName, String password){
+        for(Integer userId : userIdVsUserDtls.keySet()){
+            User user = userIdVsUserDtls.get(userId);
+            if(user.getName().equals(userName) && user.getPassword().equals(password)){
+                return user;
+            }
+        }
+        return null;
+    }
     
 }
