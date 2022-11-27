@@ -18,17 +18,20 @@ import {MatCardModule} from '@angular/material/card';
 import {MatRadioModule} from '@angular/material/radio';
 import { SubmitterSubmissionsComponent } from './submitter-submissions/submitter-submissions.component';
 import { AngularMaterialModule } from './angular-material.module';
-
+import { SubmitterRevisionComponent } from './submitter-revision/submitter-revision.component';
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     LandingUserComponent,
     SubmitterFormComponent,
-    SubmitterSubmissionsComponent
+    SubmitterSubmissionsComponent,
+    SubmitterRevisionComponent
   ],
   imports: [
     FormsModule,
+    HttpClientModule,
     MatButtonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
