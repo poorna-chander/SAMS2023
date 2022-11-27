@@ -19,6 +19,13 @@ public class CodeSmellFixer {
 
     public class LowerCase{
         public static final String RATING = "rating";
+        public static final String TITLE = "title";
+        public static final String REVIEWS = "reviews";
+        public static final String REVIEW = "review";
+        public static final String TYPE = "type";
+        public static final String DEADLINE = "deadline";
+        public static final String AUTHORS = "authors";
+        public static final String CONTACT = "contact";
 
         private LowerCase(){
         
@@ -35,6 +42,11 @@ public class CodeSmellFixer {
     public class SnakeCase{
         public static final String PCM_ID = "pcm_id";
         public static final String PAPER_ID = "paper_id";
+        public static final String PAPER_IDS = "paper_ids";
+        public static final String SUBMITTER_ID = "submitter_id";
+        public static final String FILE_NAME = "file_name";
+        public static final String FILE_EXTENSION = "file_extension";
+        public static final String REVISION_NO = "revision_no";
 
         private SnakeCase(){
         

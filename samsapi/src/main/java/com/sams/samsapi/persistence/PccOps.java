@@ -125,17 +125,14 @@ public class PccOps implements PccInterface {
         return pcmChoices;
     }
 
-    @Override
-    public ResearchPaper getPaperDetails(Integer paperId) {
-        return PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId);
-    }
-
     void notifyPCMforReview(Integer pcmId){
 
     }
     void notifyPCMsforChoiceMaking(){
 
     }
+    
+    @Override
     public ArrayList<Integer> getAvailablePCMs(){
         HashMap<Integer,User> pcmDtls = UserUtils.getAllUserDetailsBasedOnType(USER_TYPE.PCM);
         return new ArrayList<>(pcmDtls.keySet());

@@ -83,6 +83,9 @@ public class ReviewQuestionnaireUtil {
         if(reviewId == null || review.getField() == null || review.getStatus() == null){
             return false;
         }
+        if(!idVsReviewQuestionnaire.containsKey(reviewId)){
+            return false;
+        }
         idVsReviewQuestionnaire.put(reviewId, review);
         return isSaveReviewQuestionnaireSuccessful();
     }
@@ -103,5 +106,15 @@ public class ReviewQuestionnaireUtil {
 
     public static ReviewQuestionnaire getReviewQuestionnaire(Integer reviewId){
         return idVsReviewQuestionnaire.get(reviewId);
+    }
+
+    public static Boolean isGivenReviewQuestionnaireValid(Integer reviewId){
+        if(!idVsReviewQuestionnaire.containsKey(reviewId)){
+            return false;
+        }
+        if(idVsReviewQuestionnaire.get(reviewId).getStatus().equals(STATUS.NOT_LIVE)){
+            return false;
+        }
+        return true;
     }
 }
