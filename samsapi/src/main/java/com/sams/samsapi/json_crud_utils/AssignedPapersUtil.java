@@ -108,4 +108,13 @@ public class AssignedPapersUtil {
         }
         return paperDtls;
     }
+
+    public static ReviewTemplate getAssignedPaperBasedOnPaperIdAndPcmId(Integer paperId, Integer pcmId){
+        for(Integer id : idVsAssignedPapers.keySet()){
+            if(Objects.equals(idVsAssignedPapers.get(id).getPaperId(), paperId) && Objects.equals(idVsAssignedPapers.get(id).getPcmId(), pcmId)){
+                return idVsAssignedPapers.get(id);
+            }
+        }
+        return null;
+    }
 }

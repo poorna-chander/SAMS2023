@@ -113,4 +113,6 @@ public class UserUtils {
     public static User getUserDetails(Integer userId){
         return userIdVsUserDtls.get(userId);
     }
+
+    
 }

@@ -2,6 +2,7 @@ package com.sams.samsapi.json_crud_utils;
 
 import java.util.logging.Logger;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import org.springframework.context.annotation.DependsOn;
@@ -84,5 +85,14 @@ public class PaperChoicesUtil {
 
     public static PaperChoices getPaperChoice(Integer id){
         return idVsPaperChoices.get(id);
+    }
+
+    public static Boolean isPaperChoicePresent(Integer pcmId, Integer paperId){
+        for(Integer id : idVsPaperChoices.keySet()){
+            if(Objects.equals(idVsPaperChoices.get(id).getPcmId(), pcmId) && Objects.equals(idVsPaperChoices.get(id).getPaperId(), paperId)){
+                return true;
+            }
+        }
+        return false;
     }
 }
