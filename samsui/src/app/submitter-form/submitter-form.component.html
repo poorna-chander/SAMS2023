@@ -1,31 +1,57 @@
-<div class="login-div">
-    <h1>SAMS 2023 Login page</h1>
-    <p class="to" >
-        <mat-form-field appearance="fill">
-        <mat-label>enter user id</mat-label>
-        <input matInput placeholder="user ID">
-        <mat-icon matSuffix></mat-icon>
-        <mat-hint>user id</mat-hint>
-        </mat-form-field>
-    </p>
-    <p class="password">
-        <mat-form-field appearance="fill">
-        <mat-label>enter password</mat-label>
-        <input matInput placeholder="Password">
-        <mat-icon matSuffix></mat-icon>
-        <mat-hint>password</mat-hint>
-        </mat-form-field>
-    </p>
-    <section>
-        <div class="example-button-row">
-          <button mat-raised-button>Login</button>
-          <a mat-button href="https://www.google.com/" target="_blank">register</a>
-        </div>
-    </section>
-    <section>
-    <div class="example-button-row">
-    
-    </div>
-    </section>
-</div>
-  
+<form (ngSubmit)="onSubmit()">
+    <mat-card class="shipping-card">
+      <mat-card-header class="header">
+        <mat-card-title>Paper Submission Form</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p class="title" >
+            <mat-form-field appearance="fill">
+            <mat-label>Paper Title</mat-label>
+            <input matInput placeholder="enter your paper title">
+            <mat-icon matSuffix></mat-icon>
+            <mat-hint>name of the title</mat-hint>
+            </mat-form-field>
+        </p>
+        <p class="authors" >
+            <mat-form-field appearance="fill">
+            <mat-label>Authors</mat-label>
+            <input matInput placeholder="author1, author2, ...">
+            <mat-icon matSuffix></mat-icon>
+            <mat-hint>author names</mat-hint>
+            </mat-form-field>
+        </p>
+        <p class="contact" >
+            <mat-form-field appearance="fill">
+            <mat-label>Contact</mat-label>
+            <input matInput placeholder="abc@rit.edu">
+            <mat-icon matSuffix></mat-icon>
+            <mat-hint>email id</mat-hint>
+            </mat-form-field>
+        </p>
+        <p class = "fileupload">
+            <mat-form-field>
+                <div>
+                  <mat-toolbar>
+                    <!-- Display files names -->
+                    <input matInput [(ngModel)]="fileAttr" readonly name="name" />
+                    <!-- Browse Button -->
+                    <button mat-flat-button color="primary">Browse File</button>
+                  </mat-toolbar>
+                  <!-- Fetch selected filed on change -->
+                  <input
+                    type="file"
+                    #fileInput
+                    id="uploadFile"
+                    (change)="uploadFileEvt($event)"
+                    name="uploadFile"
+                    multiple="multiple"
+                    accept="image/*"
+                  />
+                </div>
+              </mat-form-field>
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+      </mat-card-actions>
+    </mat-card>
+</form>     

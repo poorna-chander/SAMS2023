@@ -16,13 +16,16 @@ import {MatTabsModule} from '@angular/material/tabs';
 import { SubmitterFormComponent } from './submitter-form/submitter-form.component';
 import {MatCardModule} from '@angular/material/card';
 import {MatRadioModule} from '@angular/material/radio';
+import { SubmitterSubmissionsComponent } from './submitter-submissions/submitter-submissions.component';
+import { AngularMaterialModule } from './angular-material.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     LandingUserComponent,
-    SubmitterFormComponent
+    SubmitterFormComponent,
+    SubmitterSubmissionsComponent
   ],
   imports: [
     FormsModule,
@@ -36,7 +39,8 @@ import {MatRadioModule} from '@angular/material/radio';
     BrowserAnimationsModule,
     MatTabsModule,
     MatCardModule,
-    MatRadioModule
+    MatRadioModule,
+    AngularMaterialModule
     // MaterialExampleModule
   ],
   providers: [
