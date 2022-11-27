@@ -1,6 +1,61 @@
 
-<h1>Upload and Download File</h1>
-<input type="file" id="customFile">
-<button class="btn btn-primary" >Save File</button>
-<button class="btn btn-primary" style="margin-left: 10px">View File</button>
-
+<form #paperSubmissionForm="ngForm" (ngSubmit)="onSubmit(paperSubmissionForm.value)">
+    <mat-card class="shipping-card">
+      <mat-card-header class="header">
+        <mat-card-title>Revise The Submitted Paper</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p class="title" >
+            <mat-form-field appearance="fill">
+            <mat-label>Paper Title</mat-label>
+            <input matInput name="title" placeholder="enter your paper title" ngModel>
+            <mat-icon matSuffix></mat-icon>
+            <mat-hint>name of the title</mat-hint>
+            </mat-form-field>
+        </p>
+        <p class="authors" >
+            <mat-form-field appearance="fill">
+            <mat-label>Authors</mat-label>
+            <input matInput name="authors" placeholder="author1, author2, ..." ngModel>
+            <mat-icon matSuffix></mat-icon>
+            <mat-hint>author names</mat-hint>
+            </mat-form-field>
+        </p>
+        <p class="contact" >
+            <mat-form-field appearance="fill">
+            <mat-label>Contact</mat-label>
+            <input matInput name="email" placeholder="abc@rit.edu" ngModel>
+            <mat-icon matSuffix></mat-icon>
+            <mat-hint>email id</mat-hint>
+            </mat-form-field>
+        </p>
+        <p class = "fileupload">
+            <mat-form-field>
+                <div>
+                  <mat-toolbar>
+                    <!-- Display files names -->
+                    <input matInput [(ngModel)]="fileAttr" readonly name="name" />
+                    <!-- Browse Button -->
+                    <button mat-flat-button color="primary">Browse File</button>
+                  </mat-toolbar>
+                  <!-- Fetch selected filed on change -->
+                  <input
+                    type="file"
+                    #fileInput
+                    id="uploadFile"
+                    (change)="uploadFileEvt($event)"
+                    name="uploadFile"
+                    multiple="multiple"
+                    accept="image/*"
+                  />
+                </div>
+              </mat-form-field>
+        </p>
+        <p>
+            <button mat-flat-button color="primary" type="submit">Submit</button>
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+      </mat-card-actions>
+    </mat-card>
+</form>     
