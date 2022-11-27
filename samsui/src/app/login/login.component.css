@@ -1,0 +1,12 @@
+
+.login-div {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%; 
+    background-color: rgb(235, 191, 109);
+    color: rgb(0, 0, 0);
+    padding: 15px;
+    position: absolute;
+    left: 30%;
+
+  }
