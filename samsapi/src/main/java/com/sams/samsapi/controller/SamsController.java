@@ -442,4 +442,19 @@ public class SamsController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("user/notification")
+    public ResponseEntity<Object> getNotification(@RequestHeader Object userId) throws Exception {
+        Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCM) || 
+                                usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCC) ||
+                                usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN) ||
+                                usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.SUBMITTER);
+        if (Boolean.FALSE.equals(isValidUser)) {
+            LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        return new ResponseEntity<>(pcmInterface.getMetaAvailablePaperDetails(Integer.parseInt(userId.toString())),
+                HttpStatus.OK);
+    }
 }

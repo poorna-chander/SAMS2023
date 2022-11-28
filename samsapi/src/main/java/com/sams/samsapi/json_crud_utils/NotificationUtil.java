@@ -68,13 +68,13 @@ public class NotificationUtil {
         return false;
     }
 
-    public static Boolean insertNotificationData(Long timeStamp, ArrayList<HashMap<String,Object>> data, ArrayList<Integer> visitedIds, TYPE type){
+    public static Boolean insertNotificationData(Long timeStamp, HashMap<String, Object> data, ArrayList<Integer> visitedIds, TYPE type){
         Integer notificationId = getNextNotificationId();
         if(notificationId == null || timeStamp == null ){
             return false;
         }
         if(data == null){
-            data = new ArrayList<>();
+            data = new HashMap<>();
         }
         if(visitedIds == null){
             visitedIds = new ArrayList<>();
@@ -109,6 +109,16 @@ public class NotificationUtil {
         HashMap<Integer,Notification> idVsNotification = new HashMap<>();
         for(Integer id : idVsNotification.keySet()){
             if(idVsNotification.get(id).getType().equals(type)){
+                idVsNotification.put(id, idVsNotification.get(id));
+            }
+        }
+        return idVsNotification;
+    }
+
+    public static HashMap<Integer,Notification> getAllUnNoticedNotificationsBasedOnType(TYPE type){
+        HashMap<Integer,Notification> idVsNotification = new HashMap<>();
+        for(Integer id : idVsNotification.keySet()){
+            if(idVsNotification.get(id).getType().equals(type) && idVsNotification.get(id).getStatus().equals(STATUS.UN_NOTICED)){
                 idVsNotification.put(id, idVsNotification.get(id));
             }
         }

@@ -85,7 +85,7 @@ public class PccOps implements PccInterface {
         status = Boolean.TRUE.equals(isCreate) ? AssignedPapersUtil.insertAssignedPaper(paperId, pcmId, null, pcmId) : AssignedPapersUtil.updateAssignedPaper(updatedReviewTemplate);
         if(Boolean.TRUE.equals(status)){
             Integer id = Boolean.TRUE.equals(isCreate) ? AssignedPapersUtil.getAssignedPaperBasedOnPaperIdAndPcmId(paperId, pcmId).getId() : updatedReviewTemplate.getId();
-            new Notifications().insertPcmAssignmentNotification(id, paperId, pcmId);
+            new NotificationsOps().insertPcmAssignmentNotification(id, paperId, pcmId);
         }
         return status;
     }
@@ -114,7 +114,7 @@ public class PccOps implements PccInterface {
             }
         }
         if(Boolean.TRUE.equals(status)){
-            new Notifications().insertFinalRatingNotification(paperId, submitterId);
+            new NotificationsOps().insertFinalRatingNotification(paperId, submitterId);
         }
     }
 

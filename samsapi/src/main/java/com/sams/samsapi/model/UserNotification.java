@@ -13,7 +13,7 @@ public class UserNotification {
     @JsonProperty("timeStamp")
     private Long timeStamp;
     @JsonProperty("data")
-    private ArrayList<HashMap<String, Object>> data;
+    private HashMap<String, Object> data;
     @JsonProperty("type")
     private TYPE type;
     @JsonProperty("status")
@@ -21,7 +21,7 @@ public class UserNotification {
 
     public UserNotification(@JsonProperty("id") Integer id,
             @JsonProperty("timeStamp") Long timeStamp,
-            @JsonProperty("data") ArrayList<HashMap<String, Object>> data,
+            @JsonProperty("data") HashMap<String, Object> data,
             @JsonProperty("type") TYPE type,
             @JsonProperty("status") STATUS status) {
         this.id = id;
@@ -39,7 +39,7 @@ public class UserNotification {
         return timeStamp;
     }
 
-    public ArrayList<HashMap<String, Object>> getData() {
+    public HashMap<String, Object> getData() {
         return data;
     }
 
@@ -55,7 +55,7 @@ public class UserNotification {
         this.timeStamp = timeStamp;
     }
 
-    public void setData(ArrayList<HashMap<String, Object>> data) {
+    public void setData(HashMap<String, Object> data) {
         this.data = data;
     }
 

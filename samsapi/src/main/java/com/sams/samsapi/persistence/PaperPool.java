@@ -26,7 +26,7 @@ public class PaperPool {
         Integer revisionNo = Integer.parseInt(paperDetails.get(CodeSmellFixer.SnakeCase.REVISION_NO).toString());
         Boolean status = PapersUtil.insertPaperDetails(title, submitterId, authors, contact, fileName, fileExtension, paperId, revisionNo);
         if(Boolean.TRUE.equals(status)){
-            new Notifications().insertPaperSubmissionNotification(PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId).getId(), revisionNo, title, paperId);
+            new NotificationsOps().insertPaperSubmissionNotification(PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId).getId(), revisionNo, title, paperId);
         }
         return status;
     }

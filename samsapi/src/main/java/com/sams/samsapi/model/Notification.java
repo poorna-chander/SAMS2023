@@ -18,6 +18,7 @@ public class Notification {
 
     public enum STATUS {
         UN_NOTICED,
+        NOTICED,
         PARTIAL_PCM_NOTICED,
         ALL_PCM_NOTICED,
         PARTIAL_PCC_NOTICED,
@@ -35,7 +36,7 @@ public class Notification {
     @JsonProperty("timeStamp")
     private Long timeStamp;
     @JsonProperty("data")
-    private ArrayList<HashMap<String, Object>> data;
+    private HashMap<String, Object> data;
     @JsonProperty("type")
     private TYPE type;
     @JsonProperty("visitedIds")
@@ -45,7 +46,7 @@ public class Notification {
 
     public Notification(@JsonProperty("id") Integer id,
             @JsonProperty("timeStamp") Long timeStamp,
-            @JsonProperty("data") ArrayList<HashMap<String, Object>> data,
+            @JsonProperty("data") HashMap<String, Object> data,
             @JsonProperty("type") TYPE type,
             @JsonProperty("visitedIds") ArrayList<Integer> visitedIds,
             @JsonProperty("status") STATUS status) {
@@ -65,7 +66,7 @@ public class Notification {
         return timeStamp;
     }
 
-    public ArrayList<HashMap<String, Object>> getData() {
+    public HashMap<String, Object> getData() {
         return data;
     }
 
@@ -85,7 +86,7 @@ public class Notification {
         this.timeStamp = timeStamp;
     }
 
-    public void setData(ArrayList<HashMap<String, Object>> data) {
+    public void setData(HashMap<String, Object> data) {
         this.data = data;
     }
 
@@ -95,6 +96,15 @@ public class Notification {
 
     public void setVisitedIds(ArrayList<Integer> visitedIds) {
         this.visitedIds = visitedIds;
+    }
+
+    public void setVisitedIds(Integer visitedId) {
+        
+        if(this.visitedIds == null){
+            this.visitedIds = new ArrayList();
+        }
+
+        this.visitedIds.add(visitedId);
     }
 
     public void setStatus(STATUS status) {
