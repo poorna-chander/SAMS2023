@@ -7,8 +7,10 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sams.samsapi.json_crud_utils.DeadlineUtil;
 import com.sams.samsapi.json_crud_utils.ReviewQuestionnaireUtil;
 import com.sams.samsapi.model.ReviewQuestionnaire;
+import com.sams.samsapi.model.Deadline.TYPE;
 import com.sams.samsapi.model.ReviewQuestionnaire.STATUS;
 import com.sams.samsapi.util.CodeSmellFixer;
 
@@ -16,29 +18,15 @@ public class AdminOps implements AdminInterface {
     private static final Logger LOG = Logger.getLogger(AdminOps.class.getName());
 
     @Override
-    public Boolean updateDeadlines(DEADLINE_TYPE type, long deadlineInMillis) throws Exception {
+    public Boolean updateDeadlines(TYPE type, long deadlineInMillis) throws Exception {
 
-        Boolean status = false;
-        try (
-            FileInputStream in = new FileInputStream("application");
-            FileOutputStream out = new FileOutputStream("propertiesFile")
-        ) {
-            Properties props = new Properties();
-            props.load(in);
-
-            if (type.equals(DEADLINE_TYPE.PAPER_SUBMISSION)) {
-                props.setProperty("paper.submission.deadline", String.valueOf(deadlineInMillis));
-            } else {
-                props.setProperty("review.submission.deadline", String.valueOf(deadlineInMillis));
-            }
-
-            props.store(out, null);
-            status = true;
-        } catch (Exception ex) {
-            LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.EXCEPTION, ex);
+        if(type.equals(TYPE.PAPER_SUBMISSION_DEADLINE)){
+            return DeadlineUtil.updatePaperSubmissionDeadlines(deadlineInMillis);
+        }else if(type.equals(TYPE.REVIEW_SUBMISSION_DEADLINE)){
+            return DeadlineUtil.updateReviewSubmissionDeadlines(deadlineInMillis);
         }
 
-        return status;
+        return false;
     }
 
     @Override

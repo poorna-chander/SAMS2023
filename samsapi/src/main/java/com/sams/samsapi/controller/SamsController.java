@@ -28,9 +28,9 @@ import com.sams.samsapi.json_crud_utils.UserUtils;
 import com.sams.samsapi.model.ReviewTemplate;
 import com.sams.samsapi.model.ReviewTemplate.Reviews;
 import com.sams.samsapi.model.User;
+import com.sams.samsapi.model.Deadline.TYPE;
 import com.sams.samsapi.model.User.USER_TYPE;
 import com.sams.samsapi.persistence.AdminInterface;
-import com.sams.samsapi.persistence.AdminInterface.DEADLINE_TYPE;
 import com.sams.samsapi.persistence.AdminOps;
 import com.sams.samsapi.persistence.PccInterface;
 import com.sams.samsapi.persistence.PccOps;
@@ -339,7 +339,7 @@ public class SamsController {
                 CodeSmellFixer.ExceptionThrower.throwInvalidBody();
             }
             Boolean status = adminInterface.updateDeadlines(
-                    DEADLINE_TYPE.valueOf(details.get(CodeSmellFixer.LowerCase.TYPE).toString()),
+                    TYPE.valueOf(details.get(CodeSmellFixer.LowerCase.TYPE).toString()),
                     Long.valueOf(details.get(CodeSmellFixer.LowerCase.DEADLINE).toString()));
             return Boolean.TRUE.equals(status) ? new ResponseEntity<>(HttpStatus.OK)
                     : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
