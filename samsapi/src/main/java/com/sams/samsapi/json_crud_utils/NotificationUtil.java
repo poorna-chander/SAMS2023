@@ -84,12 +84,20 @@ public class NotificationUtil {
         return isSaveNotificationSuccessful();
     }
 
-    public static Boolean updateUserData(Notification notification){
+    public static Boolean updateNotificationData(Notification notification){
         Integer notificationId = notification.getId();
         if(notificationId == null || notification.getData() == null || notification.getType() == null || notification.getStatus() == null || notification.getTimeStamp() == null || notification.getVisitedIds() == null || !idVsNotification.containsKey(notificationId)){
             return false;
         }
         idVsNotification.put(notificationId, notification);
+        return isSaveNotificationSuccessful();
+    }
+
+    public static Boolean deleteNotificationData(Integer notificationId){
+        if(notificationId == null || !idVsNotification.containsKey(notificationId)){
+            return false;
+        }
+        idVsNotification.remove(notificationId);
         return isSaveNotificationSuccessful();
     }
 

@@ -24,7 +24,11 @@ public class PaperPool {
         String fileExtension = paperDetails.get(CodeSmellFixer.SnakeCase.FILE_EXTENSION).toString();
         Integer paperId = Integer.parseInt(paperDetails.get(CodeSmellFixer.SnakeCase.PAPER_ID).toString());
         Integer revisionNo = Integer.parseInt(paperDetails.get(CodeSmellFixer.SnakeCase.REVISION_NO).toString());
-        return PapersUtil.insertPaperDetails(title, submitterId, authors, contact, fileName, fileExtension, paperId, revisionNo);
+        Boolean status = PapersUtil.insertPaperDetails(title, submitterId, authors, contact, fileName, fileExtension, paperId, revisionNo);
+        if(Boolean.TRUE.equals(status)){
+            new Notifications().insertPaperSubmissionNotification(PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId).getId(), revisionNo, title, paperId);
+        }
+        return status;
     }
 
     public Boolean updatePaper(ResearchPaper paper){

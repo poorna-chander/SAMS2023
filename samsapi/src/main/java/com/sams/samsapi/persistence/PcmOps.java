@@ -75,4 +75,24 @@ public class PcmOps implements PcmInterface {
         return AssignedPapersUtil.getAssignedPaperBasedOnPaperIdAndPcmId(paperId, pcmId);
     }
 
+    public List<Integer> getPaperIdsWithAllPCMCompletedTasks(){
+        HashMap<Integer, ReviewTemplate> idVsAssignedPaperDtls =  AssignedPapersUtil.getAllAssignedPapers();
+        HashMap<Integer, Integer> paperIdVsCount = new HashMap<>();
+        for(Integer id : idVsAssignedPaperDtls.keySet()){
+            ReviewTemplate reviewTemplate = idVsAssignedPaperDtls.get(id);
+            if(reviewTemplate.getRating() != null && reviewTemplate.getReviews() != null && reviewTemplate.getReviews().length != 0){
+                paperIdVsCount.put(reviewTemplate.getPaperId(), paperIdVsCount.get(reviewTemplate.getPaperId()) + 1);
+            }
+        }
+
+        List<Integer> completedPaperIds = new ArrayList<>();
+        for(Integer paperId : paperIdVsCount.keySet()){
+            if(paperIdVsCount.get(paperId) <= AssignedPapersUtil.getAssignPaperLimit()){
+                completedPaperIds.add(paperId);
+            }
+        }
+
+        return completedPaperIds;
+    }
+
 }

@@ -20,7 +20,7 @@
         "data": [
             {
                 "id": 1,
-                "paperId:": 1,
+                "paperId": 1,
                 "pcmId": 3
             }
         ],
@@ -34,7 +34,7 @@
         "data": [
             {
                 "id": 2,
-                "paperId:": 1
+                "paperId": 1
             }
         ],
         "visitedIds": [],
@@ -46,7 +46,7 @@
         "timeStamp": 1669595783439,
         "data": [
             {
-                "reviewSubmissionDeadline": 1669590813080
+                "REVIEW_SUBMISSION_DEADLINE": 1669590813080
             }
         ],
         "visitedIds": [],
@@ -58,7 +58,7 @@
         "timeStamp": 1669595783439,
         "data": [
             {
-                "paperSubmissionDeadline": 1669410813080
+                "PAPER_SUBMISSION_DEADLINE": 1669410813080
             }
         ],
         "visitedIds": [],
@@ -85,7 +85,7 @@
                 "paperIds": [1]
             }
         ],
-        "visitedIds": [],
+        "visitedIds": [4],
         "type": "SUBMITTED_FINAL_RATING",
         "status": "UN_NOTICED"
     }

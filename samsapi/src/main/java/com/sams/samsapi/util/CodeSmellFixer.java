@@ -5,6 +5,7 @@ public class CodeSmellFixer {
         public static final String USER_UN_AUTHORIZED = "User Unauthorized : {0}";
         public static final String METHODNAME = "methodName ::: {0}";
         public static final String EXCEPTION = "Exception ::: {0}";
+        public static final String SUCCESS = "isSuccess ::: {0}";
 
         private LoggerCase(){
         
@@ -39,7 +40,11 @@ public class CodeSmellFixer {
     }
 
     public class CamelCase{
-
+        public static final String PAPER_ID = "paperId";
+        public static final String PAPER_IDS = "paperIds";
+        public static final String REVISION_NO = "revisionNo";
+        public static final String PCM_ID = "pcmId";
+        
         private CamelCase(){
         
         }

@@ -81,7 +81,13 @@ public class PccOps implements PccInterface {
         if(idVsAssignedPaperDtls.size() >= AssignedPapersUtil.getAssignPaperLimit()){
             return false;
         }
-        return Boolean.TRUE.equals(isCreate) ? AssignedPapersUtil.insertAssignedPaper(paperId, pcmId, null, pcmId) : AssignedPapersUtil.updateAssignedPaper(updatedReviewTemplate);
+        Boolean status = true;
+        status = Boolean.TRUE.equals(isCreate) ? AssignedPapersUtil.insertAssignedPaper(paperId, pcmId, null, pcmId) : AssignedPapersUtil.updateAssignedPaper(updatedReviewTemplate);
+        if(Boolean.TRUE.equals(status)){
+            Integer id = Boolean.TRUE.equals(isCreate) ? AssignedPapersUtil.getAssignedPaperBasedOnPaperIdAndPcmId(paperId, pcmId).getId() : updatedReviewTemplate.getId();
+            new Notifications().insertPcmAssignmentNotification(id, paperId, pcmId);
+        }
+        return status;
     }
 
     @Override
@@ -97,12 +103,18 @@ public class PccOps implements PccInterface {
     @Override
     public void ratePaper(Integer paperId, Integer rating) {
         ArrayList<ResearchPaper> paperDtls = getAllSubmissions();
+        Integer submitterId = 0;
+        Boolean status = false;
         for(ResearchPaper researchPaper : paperDtls){
             if(Objects.equals(researchPaper.getPaperId(), paperId)){
                 researchPaper.setRating(rating);
-                PapersUtil.updatePaperDetails(researchPaper);
+                submitterId = researchPaper.getSubmitterId();
+                status = PapersUtil.updatePaperDetails(researchPaper);
                 break;
             }
+        }
+        if(Boolean.TRUE.equals(status)){
+            new Notifications().insertFinalRatingNotification(paperId, submitterId);
         }
     }
 
