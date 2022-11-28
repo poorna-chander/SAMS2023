@@ -53,7 +53,7 @@ public class Notifications implements NotificationsInterface {
     }
 
     @Override
-    public ArrayList<Integer> updateNotificationForUser(Integer userId) {
+    public Boolean updateNotificationForUser(Integer userId, ArrayList<Integer> ids) {
         // TODO Auto-generated method stub
         return null;
     }

@@ -23,7 +23,10 @@ public class ScheduleJob {
     private static final Logger LOG = Logger.getLogger(ScheduleJob.class.getName());
     @Scheduled(fixedRateString = "@daily")
     public void jobRunner(){
-
+        // unassignedPccPapersNotification();
+        // reviewDeadlineExpiredNotification();
+        // paperDeadlineExpiredNotification();
+        // pccPendingReviewsNotification();
     }
 
     public static void unassignedPccPapersNotification(){
