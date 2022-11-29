@@ -33,6 +33,7 @@ public class CodeSmellFixer {
         public static final String REGISTRATION = "registration";
         public static final String SUCCESS = "success";
         public static final String ID = "id";
+        public static final String IDS = "ids";
 
         private LowerCase(){
         

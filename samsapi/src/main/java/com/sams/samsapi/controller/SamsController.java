@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sams.samsapi.json_crud_utils.AssignedPapersUtil;
+import com.sams.samsapi.json_crud_utils.NotificationUtil;
 import com.sams.samsapi.json_crud_utils.PaperChoicesUtil;
 import com.sams.samsapi.json_crud_utils.PaperDetailsUtil;
 import com.sams.samsapi.json_crud_utils.PapersUtil;
@@ -32,6 +33,8 @@ import com.sams.samsapi.model.Deadline.TYPE;
 import com.sams.samsapi.model.User.USER_TYPE;
 import com.sams.samsapi.persistence.AdminInterface;
 import com.sams.samsapi.persistence.AdminOps;
+import com.sams.samsapi.persistence.NotificationsInterface;
+import com.sams.samsapi.persistence.NotificationsOps;
 import com.sams.samsapi.persistence.PccInterface;
 import com.sams.samsapi.persistence.PccOps;
 import com.sams.samsapi.persistence.PcmInterface;
@@ -51,9 +54,12 @@ public class SamsController {
     private PccInterface pccInterface = new PccOps();
     private PcmInterface pcmInterface = new PcmOps();
     private AdminInterface adminInterface = new AdminOps();
+    private NotificationsInterface notificationInterface = new NotificationsOps();
 
-    public SamsController(AssignedPapersUtil assignedPapersUtil, PaperChoicesUtil paperChoicesUtil, PaperDetailsUtil paperDetailsUtil,
-                        PapersUtil papersUtil, ReviewQuestionnaireUtil reviewQuestionnaireUtil, UserUtils userUtils) {
+    public SamsController(AssignedPapersUtil assignedPapersUtil, PaperChoicesUtil paperChoicesUtil,
+            PaperDetailsUtil paperDetailsUtil,
+            PapersUtil papersUtil, ReviewQuestionnaireUtil reviewQuestionnaireUtil, UserUtils userUtils,
+            NotificationUtil notificationUtil) {
 
     }
 
@@ -445,16 +451,50 @@ public class SamsController {
 
     @GetMapping("user/notification")
     public ResponseEntity<Object> getNotification(@RequestHeader Object userId) throws Exception {
-        Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCM) || 
-                                usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCC) ||
-                                usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN) ||
-                                usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.SUBMITTER);
+        Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCM) ||
+                usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCC) ||
+                usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN) ||
+                usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.SUBMITTER);
         if (Boolean.FALSE.equals(isValidUser)) {
             LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-
-        return new ResponseEntity<>(pcmInterface.getMetaAvailablePaperDetails(Integer.parseInt(userId.toString())),
+        return new ResponseEntity<>(notificationInterface.getNotificationForUser(Integer.parseInt(userId.toString())),
                 HttpStatus.OK);
+    }
+
+    @PutMapping("user/notification")
+    public ResponseEntity<Object> updateNotification(@RequestHeader Object userId,
+            @RequestBody HashMap<String, Object> details) throws Exception {
+        try {
+            Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCM) ||
+                    usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCC) ||
+                    usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN) ||
+                    usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.SUBMITTER);
+            if (Boolean.FALSE.equals(isValidUser)) {
+                LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+            if (!details.containsKey(CodeSmellFixer.LowerCase.IDS)) {
+                CodeSmellFixer.ExceptionThrower.throwInvalidBody();
+            }
+            ArrayList<Integer> notificationIds = new ArrayList<>();
+            Object notificationIdsObj = details.get(CodeSmellFixer.LowerCase.IDS);
+            if (!(notificationIdsObj instanceof ArrayList<?>)) {
+                CodeSmellFixer.ExceptionThrower.throwInvalidBody();
+            }
+            ArrayList<?> ids = (ArrayList<?>) notificationIdsObj;
+            for (Object notificationId : ids) {
+                notificationIds.add(Integer.parseInt(notificationId.toString()));
+            }
+            notificationInterface.updateNotificationForUser(Integer.parseInt(userId.toString()), notificationIds);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IllegalArgumentException ex) {
+            if (ex.getMessage() != null) {
+                LOG.log(Level.INFO, CodeSmellFixer.LoggerCase.EXCEPTION, ex.getMessage());
+            }
+            LOG.log(Level.SEVERE, CodeSmellFixer.UpperCase.INVALID_BODY);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }

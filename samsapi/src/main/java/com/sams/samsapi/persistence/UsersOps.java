@@ -34,7 +34,9 @@ public class UsersOps implements UsersInterface{
             return null;
         }
         UserUtils.insertUserData(userName, password, type);
-        return UserUtils.getUserDetails(userName, password);
+        User user = UserUtils.getUserDetails(userName, password);
+        new NotificationsOps().updateNotificationOnUserRegister(user.getId());
+        return user;
     }
 
 }

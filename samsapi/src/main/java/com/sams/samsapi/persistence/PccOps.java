@@ -149,4 +149,9 @@ public class PccOps implements PccInterface {
         return new ArrayList<>(pcmDtls.keySet());
     }
 
+    public ArrayList<Integer> getAvailablePCCs(){
+        HashMap<Integer,User> pcmDtls = UserUtils.getAllUserDetailsBasedOnType(USER_TYPE.PCC);
+        return new ArrayList<>(pcmDtls.keySet());
+    }
+
 }

@@ -101,7 +101,7 @@ public class Notification {
     public void setVisitedIds(Integer visitedId) {
         
         if(this.visitedIds == null){
-            this.visitedIds = new ArrayList();
+            this.visitedIds = new ArrayList<>();
         }
 
         this.visitedIds.add(visitedId);

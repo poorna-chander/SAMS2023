@@ -2,6 +2,7 @@ package com.sams.samsapi.persistence;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import com.sams.samsapi.json_crud_utils.NotificationUtil;
 import com.sams.samsapi.json_crud_utils.PapersUtil;
@@ -9,6 +10,7 @@ import com.sams.samsapi.json_crud_utils.UserUtils;
 import com.sams.samsapi.model.Notification;
 import com.sams.samsapi.model.Notification.STATUS;
 import com.sams.samsapi.model.Notification.TYPE;
+import com.sams.samsapi.model.User.USER_TYPE;
 import com.sams.samsapi.model.User;
 import com.sams.samsapi.model.UserNotification;
 import com.sams.samsapi.util.CodeSmellFixer;
@@ -55,7 +57,7 @@ public class NotificationsOps implements NotificationsInterface {
             case SUBMITTER:
                 return getSubmitterNotifications(user);
             case PCC:
-                return getPccNotifications(user);
+                return getPccNotifications();
             case PCM:
                 return getPcmNotifications(user);
             default:
@@ -69,42 +71,122 @@ public class NotificationsOps implements NotificationsInterface {
         for (Integer id : ids) {
             Notification notification = NotificationUtil.getNotificationDetails(id);
             if (notification == null) {
-                throw new Exception();
+                throw new IllegalArgumentException("Notification Object not found : " + id);
             }
             switch (user.getType()) {
                 case SUBMITTER:
-                switch(notification.getType()){
-                    case SUBMITTED_FINAL_RATING:
-                    notification.setVisitedIds(user.getId());
-                    notification.setStatus(STATUS.NOTICED);
-                    NotificationUtil.updateNotificationData(notification);
-                    default:
-                    throw new Exception();
-                }
-                case PCC:
-                    switch(notification.getType()){
-                        case PAPER_SUBMISSION:
-                        
-                        case PCC_UNASSIGNED_PAPERS:
-
-                        case PCC_REVIEW_DEADLINE_EXPIRED:
-
-                        case PCC_REVIEWS_PCM_COMPLETED_RATING_PENDING:
-
-                        default:
-                        throw new Exception();
+                    if (notification.getType().equals(TYPE.SUBMITTED_FINAL_RATING)) {
+                        notification.setVisitedIds(user.getId());
+                        notification.setStatus(STATUS.NOTICED);
+                        NotificationUtil.updateNotificationData(notification);
+                    } else {
+                        throw new IllegalArgumentException("Illegal Type for : " + user.getType());
                     }
+                    break;
+                case PCC:
+                    switch (notification.getType()) {
+                        case PAPER_SUBMISSION:
+                        case PCC_UNASSIGNED_PAPERS:
+                        case PCC_REVIEWS_PCM_COMPLETED_RATING_PENDING:
+                        case PCC_REVIEW_DEADLINE_EXPIRED:
+                            notification.setVisitedIds(user.getId());
+                            ArrayList<Integer> visitedIds = notification.getVisitedIds();
+                            ArrayList<Integer> pccIds = new PccOps().getAvailablePCCs();
+                            Boolean isVisitedIdsConsistsofAllPccs = checkIfBothArraysAreSame(visitedIds, pccIds);
+                            if (Boolean.TRUE.equals(isVisitedIdsConsistsofAllPccs)) {
+                                notification.setStatus(STATUS.ALL_PCC_NOTICED);
+                            } else {
+                                notification.setStatus(STATUS.PARTIAL_PCC_NOTICED);
+                            }
+                            NotificationUtil.updateNotificationData(notification);
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Illegal Type for : " + user.getType());
+                    }
+                    break;
                 case PCM:
-                    if (!notification.getType().equals(TYPE.PCM_ASSIGNMENT) ||
-                            !notification.getType().equals(TYPE.PCM_PAPER_SUBMISSION_DEADLINE_EXPIRED)) {
-                        throw new Exception();
+                    switch (notification.getType()) {
+                        case PCM_ASSIGNMENT:
+                            if (Integer.parseInt(notification.getData().get(CodeSmellFixer.CamelCase.PCM_ID)
+                                    .toString()) == user.getId()) {
+                                notification.setVisitedIds(user.getId());
+                                notification.setStatus(STATUS.ALL_PCM_NOTICED);
+                                NotificationUtil.updateNotificationData(notification);
+                            } else {
+                                throw new IllegalArgumentException("pcmId mismatch for notification : " + notification.getId() + " and " + user.getId());
+                            }
+                            break;
+                        case PCM_PAPER_SUBMISSION_DEADLINE_EXPIRED:
+                            notification.setVisitedIds(user.getId());
+                            ArrayList<Integer> visitedIds = notification.getVisitedIds();
+                            ArrayList<Integer> pcmIds = new PccOps().getAvailablePCMs();
+                            Boolean isVisitedIdsConsistsofAllPcms = checkIfBothArraysAreSame(visitedIds, pcmIds);
+                            if (Boolean.TRUE.equals(isVisitedIdsConsistsofAllPcms)) {
+                                notification.setStatus(STATUS.ALL_PCM_NOTICED);
+                            } else {
+                                notification.setStatus(STATUS.PARTIAL_PCM_NOTICED);
+                            }
+                            NotificationUtil.updateNotificationData(notification);
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Illegal Type for : " + user.getType());
                     }
                     break;
                 default:
-
+                    throw new IllegalArgumentException("Illegal Type for : " + user.getType());
             }
         }
-        return null;
+        return true;
+    }
+
+    public Boolean updateNotificationOnUserRegister(Integer userId){
+        User user = UserUtils.getUserDetails(userId);
+        HashMap<Integer, Notification> idVsNotification = NotificationUtil.getAllNotifications();
+        for (Integer id : idVsNotification.keySet()) {
+            Notification notification = idVsNotification.get(id);
+            switch (user.getType()) {
+                case SUBMITTER:
+                    break;
+                case PCC:
+                    switch (notification.getType()) {
+                        case PAPER_SUBMISSION:
+                        case PCC_UNASSIGNED_PAPERS:
+                        case PCC_REVIEWS_PCM_COMPLETED_RATING_PENDING:
+                        case PCC_REVIEW_DEADLINE_EXPIRED:
+                            notification.setStatus(STATUS.PARTIAL_PCC_NOTICED);
+                            NotificationUtil.updateNotificationData(notification);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case PCM:
+                    if (notification.getType().equals(TYPE.PCM_PAPER_SUBMISSION_DEADLINE_EXPIRED)) {
+                        notification.setStatus(STATUS.PARTIAL_PCM_NOTICED);
+                        NotificationUtil.updateNotificationData(notification);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        return true;
+    }
+
+    private static <T> Boolean checkIfArrayIsChildOfAnother(ArrayList<T> childArray, ArrayList<T> parentArray) {
+        Iterator<T> childArrayIter = childArray.iterator();
+        while (childArrayIter.hasNext()) {
+            T value = childArrayIter.next();
+            if (!parentArray.contains(value)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static <T> Boolean checkIfBothArraysAreSame(ArrayList<T> childArray, ArrayList<T> parentArray) {
+        Boolean status = checkIfArrayIsChildOfAnother(childArray, parentArray);
+        return status && (childArray.size() == parentArray.size());
     }
 
     public static HashMap<TYPE, ArrayList<UserNotification>> getSubmitterNotifications(User user) {
@@ -146,7 +228,7 @@ public class NotificationsOps implements NotificationsInterface {
     }
 
     @SuppressWarnings("unchecked")
-    public static HashMap<TYPE, ArrayList<UserNotification>> getPccNotifications(User user) {
+    public static HashMap<TYPE, ArrayList<UserNotification>> getPccNotifications() {
         HashMap<TYPE, ArrayList<UserNotification>> returnNotification = new HashMap<>();
         ArrayList<UserNotification> userNotificationList = new ArrayList<>();
 
