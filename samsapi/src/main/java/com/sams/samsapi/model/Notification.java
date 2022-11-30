@@ -98,7 +98,7 @@ public class Notification {
         this.visitedIds = visitedIds;
     }
 
-    public void setVisitedIds(Integer visitedId) {
+    public void insertVisitedId(Integer visitedId) {
         
         if(this.visitedIds == null){
             this.visitedIds = new ArrayList<>();

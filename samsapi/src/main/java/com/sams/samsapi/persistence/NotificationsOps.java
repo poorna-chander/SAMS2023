@@ -57,7 +57,7 @@ public class NotificationsOps implements NotificationsInterface {
             case SUBMITTER:
                 return getSubmitterNotifications(user);
             case PCC:
-                return getPccNotifications();
+                return getPccNotifications(user);
             case PCM:
                 return getPcmNotifications(user);
             default:
@@ -76,7 +76,7 @@ public class NotificationsOps implements NotificationsInterface {
             switch (user.getType()) {
                 case SUBMITTER:
                     if (notification.getType().equals(TYPE.SUBMITTED_FINAL_RATING)) {
-                        notification.setVisitedIds(user.getId());
+                        notification.insertVisitedId(user.getId());
                         notification.setStatus(STATUS.NOTICED);
                         NotificationUtil.updateNotificationData(notification);
                     } else {
@@ -89,7 +89,7 @@ public class NotificationsOps implements NotificationsInterface {
                         case PCC_UNASSIGNED_PAPERS:
                         case PCC_REVIEWS_PCM_COMPLETED_RATING_PENDING:
                         case PCC_REVIEW_DEADLINE_EXPIRED:
-                            notification.setVisitedIds(user.getId());
+                            notification.insertVisitedId(user.getId());
                             ArrayList<Integer> visitedIds = notification.getVisitedIds();
                             ArrayList<Integer> pccIds = new PccOps().getAvailablePCCs();
                             Boolean isVisitedIdsConsistsofAllPccs = checkIfBothArraysAreSame(visitedIds, pccIds);
@@ -109,7 +109,7 @@ public class NotificationsOps implements NotificationsInterface {
                         case PCM_ASSIGNMENT:
                             if (Integer.parseInt(notification.getData().get(CodeSmellFixer.CamelCase.PCM_ID)
                                     .toString()) == user.getId()) {
-                                notification.setVisitedIds(user.getId());
+                                notification.insertVisitedId(user.getId());
                                 notification.setStatus(STATUS.ALL_PCM_NOTICED);
                                 NotificationUtil.updateNotificationData(notification);
                             } else {
@@ -117,7 +117,7 @@ public class NotificationsOps implements NotificationsInterface {
                             }
                             break;
                         case PCM_PAPER_SUBMISSION_DEADLINE_EXPIRED:
-                            notification.setVisitedIds(user.getId());
+                            notification.insertVisitedId(user.getId());
                             ArrayList<Integer> visitedIds = notification.getVisitedIds();
                             ArrayList<Integer> pcmIds = new PccOps().getAvailablePCMs();
                             Boolean isVisitedIdsConsistsofAllPcms = checkIfBothArraysAreSame(visitedIds, pcmIds);
@@ -228,7 +228,7 @@ public class NotificationsOps implements NotificationsInterface {
     }
 
     @SuppressWarnings("unchecked")
-    public static HashMap<TYPE, ArrayList<UserNotification>> getPccNotifications() {
+    public static HashMap<TYPE, ArrayList<UserNotification>> getPccNotifications(User user) {
         HashMap<TYPE, ArrayList<UserNotification>> returnNotification = new HashMap<>();
         ArrayList<UserNotification> userNotificationList = new ArrayList<>();
 
@@ -236,11 +236,12 @@ public class NotificationsOps implements NotificationsInterface {
                 .getAllNotificationsBasedOnType(TYPE.PAPER_SUBMISSION);
         for (Integer id : notificationMap.keySet()) {
             Notification notification = notificationMap.get(id);
+            ArrayList<Integer> visitedIds = notification.getVisitedIds();
 
             UserNotification userNotification = new UserNotification(notification.getId(),
                     notification.getTimeStamp(), notification.getData(), notification.getType(),
-                    notification.getStatus().equals(STATUS.UN_NOTICED) ? STATUS.UN_NOTICED
-                            : STATUS.NOTICED);
+                    visitedIds.contains(user.getId()) ? STATUS.NOTICED
+                            : STATUS.UN_NOTICED);
             userNotificationList.add(userNotification);
         }
 
@@ -252,11 +253,12 @@ public class NotificationsOps implements NotificationsInterface {
                 .getAllNotificationsBasedOnType(TYPE.PCC_UNASSIGNED_PAPERS);
         for (Integer id : notificationMap.keySet()) {
             Notification notification = notificationMap.get(id);
+            ArrayList<Integer> visitedIds = notification.getVisitedIds();
 
             UserNotification userNotification = new UserNotification(notification.getId(),
                     notification.getTimeStamp(), notification.getData(), notification.getType(),
-                    notification.getStatus().equals(STATUS.UN_NOTICED) ? STATUS.UN_NOTICED
-                            : STATUS.NOTICED);
+                     visitedIds.contains(user.getId()) ? STATUS.NOTICED
+                            : STATUS.UN_NOTICED);
             userNotificationList.add(userNotification);
         }
 
@@ -268,11 +270,12 @@ public class NotificationsOps implements NotificationsInterface {
                 .getAllNotificationsBasedOnType(TYPE.PCC_REVIEW_DEADLINE_EXPIRED);
         for (Integer id : notificationMap.keySet()) {
             Notification notification = notificationMap.get(id);
+            ArrayList<Integer> visitedIds = notification.getVisitedIds();
 
             UserNotification userNotification = new UserNotification(notification.getId(),
                     notification.getTimeStamp(), notification.getData(), notification.getType(),
-                    notification.getStatus().equals(STATUS.UN_NOTICED) ? STATUS.UN_NOTICED
-                            : STATUS.NOTICED);
+                     visitedIds.contains(user.getId()) ? STATUS.NOTICED
+                            : STATUS.UN_NOTICED);
             userNotificationList.add(userNotification);
         }
 
@@ -327,10 +330,12 @@ public class NotificationsOps implements NotificationsInterface {
             if (data.containsKey(CodeSmellFixer.CamelCase.PCM_ID)) {
                 Integer pcmId = Integer.valueOf(data.get(CodeSmellFixer.CamelCase.PCM_ID).toString());
                 if (pcmId == user.getId()) {
+                    ArrayList<Integer> visitedIds = notification.getVisitedIds();
+
                     UserNotification userNotification = new UserNotification(notification.getId(),
                             notification.getTimeStamp(), notification.getData(), notification.getType(),
-                            notification.getStatus().equals(STATUS.UN_NOTICED) ? STATUS.UN_NOTICED
-                                    : STATUS.NOTICED);
+                            visitedIds.contains(user.getId()) ? STATUS.NOTICED
+                            : STATUS.UN_NOTICED);
                     userNotificationList.add(userNotification);
                 }
             }
@@ -344,11 +349,12 @@ public class NotificationsOps implements NotificationsInterface {
                 .getAllNotificationsBasedOnType(TYPE.PCM_PAPER_SUBMISSION_DEADLINE_EXPIRED);
         for (Integer id : notificationMap.keySet()) {
             Notification notification = notificationMap.get(id);
+            ArrayList<Integer> visitedIds = notification.getVisitedIds();
 
             UserNotification userNotification = new UserNotification(notification.getId(),
                     notification.getTimeStamp(), notification.getData(), notification.getType(),
-                    notification.getStatus().equals(STATUS.UN_NOTICED) ? STATUS.UN_NOTICED
-                            : STATUS.NOTICED);
+                    visitedIds.contains(user.getId()) ? STATUS.NOTICED
+                            : STATUS.UN_NOTICED);
             userNotificationList.add(userNotification);
         }
 

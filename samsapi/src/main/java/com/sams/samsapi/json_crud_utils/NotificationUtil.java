@@ -8,12 +8,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sams.samsapi.model.Notification;
 import com.sams.samsapi.model.Notification.STATUS;
 import com.sams.samsapi.model.Notification.TYPE;
 
+@Component
 public class NotificationUtil {
     
     private static final Logger LOG = Logger.getLogger(NotificationUtil.class.getName());
