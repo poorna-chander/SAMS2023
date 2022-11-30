@@ -71,7 +71,7 @@ public class PapersUtil {
         }
 
         ResearchPaper paper = new ResearchPaper(id, title, submitterId, authors, contact, fileName, fileExtension,
-                paperId, revisionNo, -1);
+                paperId, revisionNo, null);
         idVsPaperDetails.put(id, paper);
         return isSavePapersSuccessful();
     }

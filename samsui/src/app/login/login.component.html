@@ -2,25 +2,30 @@
     <h1>SAMS 2023 Login page</h1>
     <p class="to" >
         <mat-form-field appearance="fill">
-        <mat-label>enter user id</mat-label>
-        <input matInput placeholder="user ID">
+        <mat-label>Enter Username</mat-label>
+        <input matInput placeholder="Username" [(ngModel)]="username">
         <mat-icon matSuffix></mat-icon>
-        <mat-hint>user id</mat-hint>
+        <mat-hint>Username</mat-hint>
         </mat-form-field>
     </p>
     <p class="password">
         <mat-form-field appearance="fill">
-        <mat-label>enter password</mat-label>
-        <input matInput placeholder="Password">
+        <mat-label>Enter Password</mat-label>
+        <input matInput placeholder="Password" [(ngModel)]="password">
         <mat-icon matSuffix></mat-icon>
-        <mat-hint>password</mat-hint>
+        <mat-hint>Password</mat-hint>
         </mat-form-field>
     </p>
+    <mat-error *ngIf="isInvalid">{{getErrorMessage()}}</mat-error>
     <section>
-        <div class="example-button-row">
-          <button mat-raised-button>Login</button>
-          <a mat-button href="https://www.google.com/" target="_blank">register</a>
+        <div class="example-button-row" *ngIf="isLoginPage;else Register">
+          <button mat-raised-button (click)="login()" [disabled]="username.trim().length == 0 || password.trim().length == 0">Login</button>
+          <a mat-button (click)="registerPage()" target="_blank">Register</a>
         </div>
+        <ng-template #Register>
+            <button mat-raised-button (click)="register()" [disabled]="username.trim().length == 0 || password.trim().length == 0">Register</button>
+            <a mat-button (click)="loginPage()" target="_blank">Cancel</a>
+          </ng-template>
     </section>
     <section>
     <div class="example-button-row">

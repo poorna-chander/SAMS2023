@@ -16,49 +16,34 @@ export class SubmitterFormComponent implements OnInit {
     private location: Location,
     private samsSubmissionService: SamsSubmissionService) {}
 
-  selectedFiles: any;
+  selectedFile: any;
   currentFileUpload: any;
+  isFileAdded: boolean;
+  isChooseFileDisabled: boolean = false;
 
   ngOnInit(): void {
   }
 
   onSubmit(paperSubmission: any): void {
-    this.currentFileUpload = this.selectedFiles.item(0);
+    debugger;
     console.log(paperSubmission)
-    this.samsSubmissionService.submitForm(this.currentFileUpload, paperSubmission.title, paperSubmission.authors, paperSubmission.email, 1).subscribe((event: { type: HttpEventType; }) => {
-      if (event.type === HttpEventType.UploadProgress) {
-      } else if (event instanceof HttpResponse) {
-         alert('File Successfully Uploaded');
-      }
-      this.selectedFiles = null;
-     }
-    );
+    if(this.isFileAdded){
+      this.samsSubmissionService.submitForm(this.selectedFile[0], paperSubmission.title, paperSubmission.authors, paperSubmission.email, 1).subscribe((event: { type: HttpEventType; }) => {
+        if (event instanceof HttpResponse) {
+           //this.isFileAdded = false;
+           alert('File Successfully Uploaded');
+        }
+       }
+      );
+    }
   }
   
   @ViewChild('fileInput') fileInput: ElementRef;
   fileAttr = 'Choose File';
   uploadFileEvt(imgFile: any) {
-    this.selectedFiles = imgFile.target.files;
-    if (imgFile.target.files && imgFile.target.files[0]) {
-      this.fileAttr = '';
-      Array.from(imgFile.target.files).forEach((file: any) => {
-        this.fileAttr += file.name + ' - ';
-      });
-      // HTML5 FileReader API
-      let reader = new FileReader();
-      reader.onload = (e: any) => {
-        let image = new Image();
-        image.src = e.target.result;
-        image.onload = (rs) => {
-          let imgBase64Path = e.target.result;
-        };
-      };
-      reader.readAsDataURL(imgFile.target.files[0]);
-      // Reset if duplicate image uploaded again
-      this.fileInput.nativeElement.value = '';
-    } else {
-      this.fileAttr = 'Choose File';
-    }
+    this.selectedFile = imgFile.target.files;
+    this.isFileAdded = true;
+    this.fileAttr = this.selectedFile[0].name;
   }
   
   }

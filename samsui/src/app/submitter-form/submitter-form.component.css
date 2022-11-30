@@ -41,6 +41,13 @@
     z-index: 9;
     opacity: 0;
     height: 100%;
-    cursor: pointer;
     position: absolute;
+}
+
+.cP{
+  cursor: pointer;
+}
+
+.cD{
+  cursor: default;
 }

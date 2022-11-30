@@ -39,9 +39,9 @@ public class NotificationUtil {
     private static void initializeData(){
         idVsNotification = new HashMap<>();
 
-        for(Integer id : idVsNotification.keySet()){
-            idVsNotification.put(id, idVsNotification.get(id));
-            nextNotificationId = id + 1;
+        for(Notification notification : notificationDtls){
+            idVsNotification.put(notification.getId(), notification);
+            nextNotificationId = notification.getId() + 1;
         }
     }
 
@@ -108,23 +108,23 @@ public class NotificationUtil {
     }
 
     public static HashMap<Integer,Notification> getAllNotificationsBasedOnType(TYPE type){
-        HashMap<Integer,Notification> idVsNotification = new HashMap<>();
+        HashMap<Integer,Notification> idVsNotificationData = new HashMap<>();
         for(Integer id : idVsNotification.keySet()){
             if(idVsNotification.get(id).getType().equals(type)){
-                idVsNotification.put(id, idVsNotification.get(id));
+                idVsNotificationData.put(id, idVsNotification.get(id));
             }
         }
-        return idVsNotification;
+        return idVsNotificationData;
     }
 
     public static HashMap<Integer,Notification> getAllUnNoticedNotificationsBasedOnType(TYPE type){
-        HashMap<Integer,Notification> idVsNotification = new HashMap<>();
+        HashMap<Integer,Notification> idVsNotificationData = new HashMap<>();
         for(Integer id : idVsNotification.keySet()){
             if(idVsNotification.get(id).getType().equals(type) && idVsNotification.get(id).getStatus().equals(STATUS.UN_NOTICED)){
-                idVsNotification.put(id, idVsNotification.get(id));
+                idVsNotificationData.put(id, idVsNotification.get(id));
             }
         }
-        return idVsNotification;
+        return idVsNotificationData;
     }
 
     public static Notification getNotificationDetails(Integer id){

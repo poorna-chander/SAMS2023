@@ -21,6 +21,7 @@ import { AngularMaterialModule } from './angular-material.module';
 import { SubmitterRevisionComponent } from './submitter-revision/submitter-revision.component';
 import { HttpClientModule } from '@angular/common/http';
 import {MatTableModule} from '@angular/material/table';
+import { NotificationsComponent } from './notifications/notifications.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,7 +29,8 @@ import {MatTableModule} from '@angular/material/table';
     LandingUserComponent,
     SubmitterFormComponent,
     SubmitterSubmissionsComponent,
-    SubmitterRevisionComponent
+    SubmitterRevisionComponent,
+    NotificationsComponent
   ],
   imports: [
     FormsModule,
@@ -49,7 +51,8 @@ import {MatTableModule} from '@angular/material/table';
     // MaterialExampleModule
   ],
   providers: [
-    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}}
+    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}},
+    NotificationsComponent
   ],
   bootstrap: [AppComponent]
 })

@@ -31,22 +31,37 @@
         <p class = "fileupload">
             <mat-form-field>
                 <div>
-                  <mat-toolbar>
+                  <mat-toolbar [ngClass]="isFileAdded ? 'cD' : 'cP'">
                     <!-- Display files names -->
                     <input matInput [(ngModel)]="fileAttr" readonly name="name" />
                     <!-- Browse Button -->
-                    <button mat-flat-button color="primary">Browse File</button>
+                    <button mat-flat-button color="primary" [disabled]="isFileAdded">Browse File</button>
                   </mat-toolbar>
                   <!-- Fetch selected filed on change -->
+
                   <input
-                    type="file"
+                  type="file"
                     #fileInput
                     id="uploadFile"
                     (change)="uploadFileEvt($event)"
                     name="uploadFile"
-                    multiple="multiple"
-                    accept="image/*"
+                    accept=".pdf, .docx"
+                    class="cP"
+                  *ngIf="!isFileAdded; else Disabled"
+                />
+                <ng-template #Disabled>
+                  <input
+                  type="file"
+                  #fileInput
+                  id="uploadFile"
+                  (change)="uploadFileEvt($event)"
+                  name="uploadFile"
+                  class="cD"
+                  accept=".pdf, .docx"
+                    disabled
+                    title="Only 1 File allowed"
                   />
+                </ng-template>
                 </div>
               </mat-form-field>
         </p>

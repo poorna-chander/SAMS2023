@@ -34,17 +34,19 @@ public class SubmitterOps implements SubmitterInterface {
         int revisionNo = 1;
         String fileName = data.get("title") + revisionNo + "." + extension;
         List<String> authors = new ArrayList<>(Arrays.asList(data.get("authors").split(",")));
-        boolean insertedInfo = PapersUtil.insertPaperDetails(data.get("title"),
-                Integer.parseInt(data.get("submitterId")), // TODO:
-                authors,
-                data.get("contact"),
-                fileName,
-                extension,
-                next_paper_id,
-                revisionNo);
-
         FileUploadService fileuploadservice = new FileUploadService();
         boolean uploadedFile = fileuploadservice.uploadFile(uploadPath + fileName, fileBytes);
+        boolean insertedInfo = false;
+        if (uploadedFile) {
+            insertedInfo = PapersUtil.insertPaperDetails(data.get("title"),
+                    Integer.parseInt(data.get("submitterId")), // TODO:
+                    authors,
+                    data.get("contact"),
+                    fileName,
+                    extension,
+                    next_paper_id,
+                    revisionNo);
+        }
 
         if (insertedInfo && uploadedFile) {
             return true;
@@ -70,17 +72,20 @@ public class SubmitterOps implements SubmitterInterface {
         int revisionNo = max + 1;
         String fileName = data.get("title") + revisionNo + "." + extension;
         List<String> authors = new ArrayList<>(Arrays.asList(data.get("authors").split(",")));
-        boolean insertedInfo = PapersUtil.insertPaperDetails(data.get("title"),
-                Integer.parseInt(data.get("submitterId")),
-                authors,
-                data.get("contact"),
-                fileName,
-                extension,
-                paper_id,
-                revisionNo);
-
         FileUploadService fileuploadservice = new FileUploadService();
         boolean uploadedFile = fileuploadservice.uploadFile(uploadPath + fileName, fileBytes);
+
+        boolean insertedInfo = false;
+        if(uploadedFile){
+            insertedInfo = PapersUtil.insertPaperDetails(data.get("title"),
+            Integer.parseInt(data.get("submitterId")),
+            authors,
+            data.get("contact"),
+            fileName,
+            extension,
+            paper_id,
+            revisionNo);
+        }
 
         if (insertedInfo && uploadedFile) {
             return true;

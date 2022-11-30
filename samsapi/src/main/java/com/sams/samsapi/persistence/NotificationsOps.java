@@ -202,7 +202,7 @@ public class NotificationsOps implements NotificationsInterface {
             if (notification.getVisitedIds().get(0).equals(user.getId())) {
                 HashMap<String, Object> data = notification.getData();
                 if (data.containsKey(CodeSmellFixer.CamelCase.PAPER_IDS)) {
-                    Object paperIdsObj = data.get(CodeSmellFixer.SnakeCase.PAPER_IDS);
+                    Object paperIdsObj = data.get(CodeSmellFixer.CamelCase.PAPER_IDS);
                     if (paperIdsObj instanceof ArrayList<?>) {
                         ArrayList<?> ids = (ArrayList<?>) paperIdsObj;
 
@@ -213,7 +213,7 @@ public class NotificationsOps implements NotificationsInterface {
                 }
 
                 HashMap<String, Object> newDataMap = new HashMap<>();
-                newDataMap.put(CodeSmellFixer.SnakeCase.PAPER_IDS, paperIds);
+                newDataMap.put(CodeSmellFixer.CamelCase.PAPER_IDS, paperIds);
 
                 UserNotification userNotification = new UserNotification(notification.getId(),
                         notification.getTimeStamp(), newDataMap, notification.getType(),

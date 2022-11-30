@@ -1,10 +1,11 @@
 <section>
-  <h2 class="invhead">Submitter Page</h2>
+  <h2 class="invhead">Submitter Page <button mat-raised-button (click)="logOut()">Log Out</button></h2>
     <div align="center" >
-        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" color="primary" backgroundColor="accent">
+        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" color="primary" backgroundColor="accent" (selectedTabChange)="tabClick($event)">
             <mat-tab class="apButts" label="Submit Paper"> <app-submitter-form class="submit-form"></app-submitter-form> </mat-tab>
             <!-- <mat-tab class="apButts"  label="Revise Paper"> <app-submitter-revision class="submit-form"> </app-submitter-revision> </mat-tab> -->
             <mat-tab class="apButts"  label="View Papers"> <app-submitter-submissions></app-submitter-submissions></mat-tab>
+            <mat-tab class="apButts"  label="Notifications"> <app-notifications></app-notifications></mat-tab>
         </mat-tab-group>
     </div>
 </section>

@@ -9,6 +9,7 @@ import { SubmitterSubmissionsComponent } from './submitter-submissions/submitter
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'landing', component: LandingUserComponent },
+  { path: '',   redirectTo: '/login', pathMatch: 'full' },
   { path: 'revise/:paperId', component: SubmitterRevisionComponent }
 ];
 

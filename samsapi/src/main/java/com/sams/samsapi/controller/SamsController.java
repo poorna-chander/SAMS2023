@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -45,6 +46,7 @@ import com.sams.samsapi.persistence.UsersInterface;
 import com.sams.samsapi.persistence.UsersOps;
 import com.sams.samsapi.util.CodeSmellFixer;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/")
 public class SamsController {
@@ -65,17 +67,17 @@ public class SamsController {
 
     @PostMapping("/paper/submit")
     public ResponseEntity<Object> submitPaperForm(@Value("${filelocation.savepath}") String uploadPath,
-            @RequestParam String title,
-            @RequestParam String authors,
-            @RequestParam String contact,
-            @RequestParam MultipartFile file,
-            @RequestHeader String submitterId) throws IllegalStateException, IOException {
+            @RequestParam("title") String title,
+            @RequestParam("authors") String authors,
+            @RequestParam("contact") String contact,
+            @RequestParam(value = "file") MultipartFile file,
+            @RequestHeader String userId) throws IllegalStateException, IOException {
 
         HashMap<String, String> formData = new HashMap<>();
         formData.put("title", title);
         formData.put("authors", authors);
         formData.put("contact", contact);
-        formData.put("submitterId", submitterId);
+        formData.put("submitterId", userId);
 
         boolean formvalidation = submitterInterface.validateFormFile(formData, file);
 
@@ -99,14 +101,14 @@ public class SamsController {
             @RequestParam String contact,
             @RequestParam MultipartFile file,
             @RequestParam String paperId,
-            @RequestHeader String submitterId) throws IllegalStateException, IOException {
+            @RequestHeader String userId) throws IllegalStateException, IOException {
 
         int paperIdInt = Integer.parseInt(paperId);
         HashMap<String, String> formData = new HashMap<>();
         formData.put("title", title);
         formData.put("authors", authors);
         formData.put("contact", contact);
-        formData.put("submitterId", submitterId);
+        formData.put("submitterId", userId);
 
         boolean formvalidation = submitterInterface.validateFormFile(formData, file);
 
