@@ -11,6 +11,7 @@ export class SamsSubmissionService {
   private submission = 'http://localhost:8080/paper/submit';
   private notification = 'http://localhost:8080/user/notification';
   private user = 'http://localhost:8080/user/';
+  private domain = 'http://localhost:8080/';
 
   constructor( private http: HttpClient,
               private sessionService: SessionService
@@ -81,6 +82,12 @@ export class SamsSubmissionService {
       catchError(this.handleUserError<any>({ "status": "failure" }))
     );
 
+  }
+
+  getAllSubmissions(): Observable<any> {
+    return this.http.get<any>(this.domain + "papers", { headers: this.getHeaders() }).pipe(map(response => {
+      return response;
+    }))
   }
 
   public handleUserError<T>(result?: T) {

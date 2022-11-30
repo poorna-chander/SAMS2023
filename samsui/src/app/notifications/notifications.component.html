@@ -2,9 +2,9 @@
   <ng-template [ngIf]="notification.type == 'SUBMITTED_FINAL_RATING'" [ngIfElse]="Others">
     <ng-template [ngIf]="notification.status == 'UN_NOTICED'">
       <ng-template ngFor let-item [ngForOf]="notification.data.paper_titles" let-i="index">
-        <li>
+        <h3>
           Final Rating Updated for <b>{{item}}</b>
-        </li>
+        </h3>
       </ng-template>
     </ng-template>
    </ng-template>

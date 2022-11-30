@@ -36,6 +36,7 @@ import com.sams.samsapi.persistence.AdminInterface;
 import com.sams.samsapi.persistence.AdminOps;
 import com.sams.samsapi.persistence.NotificationsInterface;
 import com.sams.samsapi.persistence.NotificationsOps;
+import com.sams.samsapi.persistence.PaperPool;
 import com.sams.samsapi.persistence.PccInterface;
 import com.sams.samsapi.persistence.PccOps;
 import com.sams.samsapi.persistence.PcmInterface;
@@ -128,11 +129,12 @@ public class SamsController {
     public ResponseEntity<Object> getAllPapers(@RequestHeader Object userId) throws Exception {
         Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCC)
                 || usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN);
-        if (Boolean.FALSE.equals(isValidUser)) {
+        Boolean isSubmitter =  usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.SUBMITTER);
+        if (Boolean.FALSE.equals(isValidUser || isSubmitter)) {
             LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return new ResponseEntity<>(pccInterface.getAllSubmissions(), HttpStatus.OK);
+        return new ResponseEntity<>(Boolean.TRUE.equals(isSubmitter) ? new PaperPool().getAllPapersOfSubmitter(Integer.parseInt(userId.toString())) : pccInterface.getAllSubmissions(), HttpStatus.OK);
     }
 
     @GetMapping("/pcm")

@@ -44,4 +44,14 @@ public class PaperPool {
         return PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId);
     }
 
+    public ArrayList<ResearchPaper> getAllPapersOfSubmitter(Integer userId){
+        HashMap<Integer, ResearchPaper> paperDtls = PapersUtil.getPaperDetailsBasedOnSubmitterId(userId);
+        ArrayList<ResearchPaper> papers = new ArrayList<>();
+        for(Integer id : paperDtls.keySet()){
+            papers.add(paperDtls.get(id));
+        }
+
+        return papers;
+    }
+
 }

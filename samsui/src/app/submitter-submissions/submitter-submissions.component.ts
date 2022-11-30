@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SamsSubmissionService } from '../sams-submission.service';
 
 export interface Submission {
   title: string;
@@ -21,12 +22,14 @@ const SubmissionData: Submission[] = [
 export class SubmitterSubmissionsComponent implements OnInit {
   displayedColumns: string[] = ['title', 'revision', 'paperId', "button"];
   dataSource = SubmissionData;
-  constructor() { 
-
-  }
+  paperDetails: any[];
+  constructor( private samsSubmissionService: SamsSubmissionService) { }
 
   ngOnInit(): void {
-    
+    this.samsSubmissionService.getAllSubmissions().subscribe({next: (paperDetails) =>{
+     this.paperDetails = paperDetails;
+    }}
+    );
   }
 
 }
