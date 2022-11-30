@@ -7,15 +7,15 @@ import { SamsSubmissionService } from '../sams-submission.service';
   styleUrls: ['./notifications.component.css']
 })
 export class NotificationsComponent implements OnInit {
-  public notifications: any;
-  dataSource: any;
-  displayedColumns: string[] = ['title', 'revision', 'paperId', "button"];
+  public notifications: any[];
 
   constructor( private samsSubmissionService: SamsSubmissionService) { }
 
   ngOnInit(): void {
-    debugger;
-    
+    this.samsSubmissionService.getNotifications().subscribe({next: (notifications) =>{
+      this.notifications = notifications;
+    }}
+    );
   }
 
 }

@@ -61,6 +61,7 @@ public class CodeSmellFixer {
         public static final String REVISION_NO = "revision_no";
         public static final String USER_DATA = "user_data";
         public static final String USER_ID = "user_id";
+        public static final String PAPER_TITLES = "paper_titles";
 
         private SnakeCase(){
         

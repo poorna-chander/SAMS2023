@@ -8,6 +8,7 @@ import com.sams.samsapi.json_crud_utils.NotificationUtil;
 import com.sams.samsapi.json_crud_utils.PapersUtil;
 import com.sams.samsapi.json_crud_utils.UserUtils;
 import com.sams.samsapi.model.Notification;
+import com.sams.samsapi.model.ResearchPaper;
 import com.sams.samsapi.model.Notification.STATUS;
 import com.sams.samsapi.model.Notification.TYPE;
 import com.sams.samsapi.model.User.USER_TYPE;
@@ -51,7 +52,7 @@ public class NotificationsOps implements NotificationsInterface {
     }
 
     @Override
-    public HashMap<TYPE, ArrayList<UserNotification>> getNotificationForUser(Integer userId) {
+    public ArrayList<UserNotification> getNotificationForUser(Integer userId) {
         User user = UserUtils.getUserDetails(userId);
         switch (user.getType()) {
             case SUBMITTER:
@@ -61,7 +62,7 @@ public class NotificationsOps implements NotificationsInterface {
             case PCM:
                 return getPcmNotifications(user);
             default:
-                return new HashMap<TYPE, ArrayList<UserNotification>>();
+                return new ArrayList<UserNotification>();
         }
     }
 
@@ -189,8 +190,7 @@ public class NotificationsOps implements NotificationsInterface {
         return status && (childArray.size() == parentArray.size());
     }
 
-    public static HashMap<TYPE, ArrayList<UserNotification>> getSubmitterNotifications(User user) {
-        HashMap<TYPE, ArrayList<UserNotification>> returnNotification = new HashMap<>();
+    public static ArrayList<UserNotification> getSubmitterNotifications(User user) {
         ArrayList<UserNotification> userNotificationList = new ArrayList<>();
 
         HashMap<Integer, Notification> notificationMap = NotificationUtil
@@ -213,7 +213,12 @@ public class NotificationsOps implements NotificationsInterface {
                 }
 
                 HashMap<String, Object> newDataMap = new HashMap<>();
-                newDataMap.put(CodeSmellFixer.CamelCase.PAPER_IDS, paperIds);
+                ArrayList<String> paperTitles = new ArrayList<>();
+                for(Integer paperId : paperIds){
+                    ResearchPaper paper = new PaperPool().getPaperDetails(paperId);
+                    paperTitles.add(paper.getTitle());
+                }
+                newDataMap.put(CodeSmellFixer.SnakeCase.PAPER_TITLES, paperTitles);
 
                 UserNotification userNotification = new UserNotification(notification.getId(),
                         notification.getTimeStamp(), newDataMap, notification.getType(),
@@ -223,13 +228,11 @@ public class NotificationsOps implements NotificationsInterface {
             }
         }
 
-        returnNotification.put(TYPE.SUBMITTED_FINAL_RATING, userNotificationList);
-        return returnNotification;
+        return userNotificationList;
     }
 
     @SuppressWarnings("unchecked")
-    public static HashMap<TYPE, ArrayList<UserNotification>> getPccNotifications(User user) {
-        HashMap<TYPE, ArrayList<UserNotification>> returnNotification = new HashMap<>();
+    public static  ArrayList<UserNotification> getPccNotifications(User user) {
         ArrayList<UserNotification> userNotificationList = new ArrayList<>();
 
         HashMap<Integer, Notification> notificationMap = NotificationUtil
@@ -245,10 +248,6 @@ public class NotificationsOps implements NotificationsInterface {
             userNotificationList.add(userNotification);
         }
 
-        returnNotification.put(TYPE.PAPER_SUBMISSION, userNotificationList);
-
-        userNotificationList = new ArrayList<>();
-
         notificationMap = NotificationUtil
                 .getAllNotificationsBasedOnType(TYPE.PCC_UNASSIGNED_PAPERS);
         for (Integer id : notificationMap.keySet()) {
@@ -262,10 +261,6 @@ public class NotificationsOps implements NotificationsInterface {
             userNotificationList.add(userNotification);
         }
 
-        returnNotification.put(TYPE.PCC_UNASSIGNED_PAPERS, userNotificationList);
-
-        userNotificationList = new ArrayList<>();
-
         notificationMap = NotificationUtil
                 .getAllNotificationsBasedOnType(TYPE.PCC_REVIEW_DEADLINE_EXPIRED);
         for (Integer id : notificationMap.keySet()) {
@@ -278,10 +273,6 @@ public class NotificationsOps implements NotificationsInterface {
                             : STATUS.UN_NOTICED);
             userNotificationList.add(userNotification);
         }
-
-        returnNotification.put(TYPE.PCC_REVIEW_DEADLINE_EXPIRED, userNotificationList);
-
-        userNotificationList = new ArrayList<>();
 
         notificationMap = NotificationUtil
                 .getAllNotificationsBasedOnType(TYPE.PCC_REVIEWS_PCM_COMPLETED_RATING_PENDING);
@@ -313,13 +304,10 @@ public class NotificationsOps implements NotificationsInterface {
             userNotificationList.add(userNotification);
         }
 
-        returnNotification.put(TYPE.PCC_REVIEWS_PCM_COMPLETED_RATING_PENDING, userNotificationList);
-
-        return returnNotification;
+        return userNotificationList;
     }
 
-    public static HashMap<TYPE, ArrayList<UserNotification>> getPcmNotifications(User user) {
-        HashMap<TYPE, ArrayList<UserNotification>> returnNotification = new HashMap<>();
+    public static ArrayList<UserNotification> getPcmNotifications(User user) {
         ArrayList<UserNotification> userNotificationList = new ArrayList<>();
 
         HashMap<Integer, Notification> notificationMap = NotificationUtil
@@ -341,10 +329,6 @@ public class NotificationsOps implements NotificationsInterface {
             }
         }
 
-        returnNotification.put(TYPE.PCM_ASSIGNMENT, userNotificationList);
-
-        userNotificationList = new ArrayList<>();
-
         notificationMap = NotificationUtil
                 .getAllNotificationsBasedOnType(TYPE.PCM_PAPER_SUBMISSION_DEADLINE_EXPIRED);
         for (Integer id : notificationMap.keySet()) {
@@ -358,8 +342,6 @@ public class NotificationsOps implements NotificationsInterface {
             userNotificationList.add(userNotification);
         }
 
-        returnNotification.put(TYPE.PCM_PAPER_SUBMISSION_DEADLINE_EXPIRED, userNotificationList);
-
-        return returnNotification;
+        return userNotificationList;
     }
 }
