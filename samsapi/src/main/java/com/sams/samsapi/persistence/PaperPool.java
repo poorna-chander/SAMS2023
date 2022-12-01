@@ -6,6 +6,7 @@ import com.sams.samsapi.util.CodeSmellFixer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import com.sams.samsapi.json_crud_utils.PapersUtil;
 
@@ -44,14 +45,36 @@ public class PaperPool {
         return PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId);
     }
 
-    public ArrayList<ResearchPaper> getAllPapersOfSubmitter(Integer userId){
-        HashMap<Integer, ResearchPaper> paperDtls = PapersUtil.getPaperDetailsBasedOnSubmitterId(userId);
+    public ArrayList<ResearchPaper> getAllLatestPapersOfSubmitter(Integer userId){
+        HashMap<Integer, ResearchPaper> paperDtls = PapersUtil.getLatestPaperDetailsBasedOnSubmitterId(userId);
         ArrayList<ResearchPaper> papers = new ArrayList<>();
         for(Integer id : paperDtls.keySet()){
             papers.add(paperDtls.get(id));
         }
 
         return papers;
+    }
+
+    public Boolean isGivenPaperSubmittedByUser(Integer userId, Integer paperId){
+        HashMap<Integer, ResearchPaper> paperDtls = PapersUtil.getLatestPaperDetailsBasedOnSubmitterId(userId);
+        for(Integer id : paperDtls.keySet()){
+            if(Objects.equals(paperDtls.get(id).getPaperId(), paperId) && Objects.equals(paperDtls.get(id).getSubmitterId(), userId)){
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    public ResearchPaper getPaperByPaperId(Integer userId, Integer paperId){
+        HashMap<Integer, ResearchPaper> paperDtls = PapersUtil.getLatestPaperDetailsBasedOnSubmitterId(userId);
+        for(Integer id : paperDtls.keySet()){
+            if(Objects.equals(paperDtls.get(id).getPaperId(), paperId) && Objects.equals(paperDtls.get(id).getSubmitterId(), userId)){
+                return paperDtls.get(id);
+            }
+        }
+
+        return null;
     }
 
 }

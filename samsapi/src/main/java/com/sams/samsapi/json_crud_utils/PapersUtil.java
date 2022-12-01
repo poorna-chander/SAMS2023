@@ -150,4 +150,14 @@ public class PapersUtil {
         }
         return paperDtls;
     }
+
+    public static HashMap<Integer, ResearchPaper> getLatestPaperDetailsBasedOnSubmitterId(Integer submitterId) {
+        HashMap<Integer, ResearchPaper> paperDtls = getAllPaperDetailsBasedOnLatestRevision(false);
+        for (Integer id : idVsPaperDetails.keySet()) {
+            if (Objects.equals(idVsPaperDetails.get(id).getSubmitterId(), submitterId)) {
+                paperDtls.put(id, idVsPaperDetails.get(id));
+            }
+        }
+        return paperDtls;
+    }
 }

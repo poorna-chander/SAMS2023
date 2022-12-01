@@ -8,9 +8,11 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,10 +29,10 @@ import com.sams.samsapi.json_crud_utils.PaperDetailsUtil;
 import com.sams.samsapi.json_crud_utils.PapersUtil;
 import com.sams.samsapi.json_crud_utils.ReviewQuestionnaireUtil;
 import com.sams.samsapi.json_crud_utils.UserUtils;
+import com.sams.samsapi.model.Deadline.TYPE;
 import com.sams.samsapi.model.ReviewTemplate;
 import com.sams.samsapi.model.ReviewTemplate.Reviews;
 import com.sams.samsapi.model.User;
-import com.sams.samsapi.model.Deadline.TYPE;
 import com.sams.samsapi.model.User.USER_TYPE;
 import com.sams.samsapi.persistence.AdminInterface;
 import com.sams.samsapi.persistence.AdminOps;
@@ -47,7 +49,7 @@ import com.sams.samsapi.persistence.UsersInterface;
 import com.sams.samsapi.persistence.UsersOps;
 import com.sams.samsapi.util.CodeSmellFixer;
 
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/")
 public class SamsController {
@@ -83,7 +85,6 @@ public class SamsController {
         boolean formvalidation = submitterInterface.validateFormFile(formData, file);
 
         if (!formvalidation) {
-            System.out.println("add to notification");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             boolean submissionStatus = submitterInterface.SubmitPaperForm(uploadPath, formData, file);
@@ -100,7 +101,7 @@ public class SamsController {
             @RequestParam String title,
             @RequestParam String authors,
             @RequestParam String contact,
-            @RequestParam MultipartFile file,
+            @RequestParam(required = false) MultipartFile file,
             @RequestParam String paperId,
             @RequestHeader String userId) throws IllegalStateException, IOException {
 
@@ -111,10 +112,12 @@ public class SamsController {
         formData.put("contact", contact);
         formData.put("submitterId", userId);
 
-        boolean formvalidation = submitterInterface.validateFormFile(formData, file);
+        boolean formvalidation = true;
+        if(file != null){
+            formvalidation = submitterInterface.validateFormFile(formData, file);
+        } 
 
         if (!formvalidation) {
-            System.out.println("add to bad file format notification");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             boolean submissionStatus = submitterInterface.revisePaperForm(uploadPath, formData, file, paperIdInt);
@@ -134,7 +137,20 @@ public class SamsController {
             LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return new ResponseEntity<>(Boolean.TRUE.equals(isSubmitter) ? new PaperPool().getAllPapersOfSubmitter(Integer.parseInt(userId.toString())) : pccInterface.getAllSubmissions(), HttpStatus.OK);
+        return new ResponseEntity<>(Boolean.TRUE.equals(isSubmitter) ? new PaperPool().getAllLatestPapersOfSubmitter(Integer.parseInt(userId.toString())) : pccInterface.getAllSubmissions(), HttpStatus.OK);
+    }
+
+    @GetMapping("/paper/{paperId}")
+    public ResponseEntity<Object> getPaperByPaperId(@RequestHeader Object userId, @PathVariable int paperId) throws Exception {
+        Boolean isSubmitter =  usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.SUBMITTER);
+        if (Boolean.FALSE.equals( isSubmitter)) {
+            LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        if(Boolean.FALSE.equals(new PaperPool().isGivenPaperSubmittedByUser(Integer.parseInt(userId.toString()), paperId))){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<> (new PaperPool().getPaperByPaperId(Integer.parseInt(userId.toString()), paperId), HttpStatus.OK);
     }
 
     @GetMapping("/pcm")

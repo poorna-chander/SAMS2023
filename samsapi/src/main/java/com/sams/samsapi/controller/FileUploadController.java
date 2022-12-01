@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sams.samsapi.service.FileUploadService;
 
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/")
 public class FileUploadController {

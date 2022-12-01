@@ -71,6 +71,10 @@
               "browserTarget": "samsui:build:development"
             }
           },
+          "options": {
+            "browserTarget": "samsui:build",
+            "proxyConfig": "src/proxy.conf.json"
+            },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
