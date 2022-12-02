@@ -36,6 +36,7 @@ import { PcmNotificationsComponent } from './pcm-notifications/pcm-notifications
 import { PccAssignpaperComponent } from './pcc-assignpaper/pcc-assignpaper.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { RatepaperComponent } from './ratepaper/ratepaper.component';
+import { LandingAdminComponent } from './landing-admin/landing-admin.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -55,7 +56,8 @@ import { RatepaperComponent } from './ratepaper/ratepaper.component';
     PcmRateassignedComponent,
     PcmNotificationsComponent,
     PccAssignpaperComponent,
-    RatepaperComponent
+    RatepaperComponent,
+    LandingAdminComponent
   ],
   imports: [
     FormsModule,

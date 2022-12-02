@@ -1,1 +1,17 @@
-<p>ratepaper works!</p>
+
+<div class="rating-div">
+    <h1>rate paper : : {{paper_name}}</h1>
+    <h1>paper Id : : {{paper_id}}</h1>
+    <p class="to" >
+        <mat-form-field appearance="fill">
+        <mat-label>Enter Rating</mat-label>
+        <input matInput placeholder="Rating 0-9" [(ngModel)]="rating">
+        <mat-icon matSuffix></mat-icon>
+        <mat-hint>Rating 0-9</mat-hint>
+        </mat-form-field>
+    </p>
+    <section>
+            <button mat-raised-button (click)="rate()">Rate</button>
+            <a mat-button (click)="loginPage()" target="_blank">Cancel</a>
+    </section>
+</div>
