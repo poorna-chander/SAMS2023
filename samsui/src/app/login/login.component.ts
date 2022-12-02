@@ -66,15 +66,14 @@ export class LoginComponent implements OnInit{
               this.sessionService.logInGuest();
             } else {
               this.isInvalid = false;
+              debugger;
               this.user_type = userDetails.type;
               this.sessionService.logIn(
                 userDetails.username,
                 userDetails.user_id,
                 this.user_type
               );
-              this.router.navigate(['home_submitter']).then(() => {
-                window.location.reload();
-              });
+             this.componentInteraction.loadHomePageComponentBasedOnUserType();
             }
           },
         });

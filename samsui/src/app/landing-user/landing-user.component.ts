@@ -32,15 +32,11 @@ export class LandingUserComponent implements OnInit {
     this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
     this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
       debugger;
-      let type = {tab: {textLabel: ""}};
       if(data == COMPONENT_TYPE_MESSAGE.SUBMITTER_TAB_SUBMIT){
-        type.tab.textLabel = "Submit"
         this.selectTab(0);
       }else if(data == COMPONENT_TYPE_MESSAGE.SUBMITTER_TAB_VIEW){
-        type.tab.textLabel = "View Papers"
         this.selectTab(1);
       }else if(data == COMPONENT_TYPE_MESSAGE.SUBMITTER_TAB_NOTIFICATION){
-        type.tab.textLabel = "Notifications"
         this.selectTab(2);
       }
      });
