@@ -1,6 +1,10 @@
 
 <form #paperSubmissionForm="ngForm" (ngSubmit)="onSubmit(paperSubmissionForm.value)">
-    <mat-card class="shipping-card">
+  
+  <mat-card class="shipping-card">
+    <mat-card-content>
+      <button mat-raised-button  color="accent">Back</button>
+    </mat-card-content>
       <mat-card-header class="header">
         <mat-card-title>Revise The Submitted Paper</mat-card-title>
       </mat-card-header>
