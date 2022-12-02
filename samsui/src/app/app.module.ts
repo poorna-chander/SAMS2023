@@ -22,6 +22,15 @@ import { SubmitterRevisionComponent } from './submitter-revision/submitter-revis
 import { HttpClientModule } from '@angular/common/http';
 import {MatTableModule} from '@angular/material/table';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { LandingPccComponent } from './landing-pcc/landing-pcc.component';
+import { PccViewallpapersComponent } from './pcc-viewallpapers/pcc-viewallpapers.component';
+import { PccRatepaperComponent } from './pcc-ratepaper/pcc-ratepaper.component';
+import { PccCompletedpapersComponent } from './pcc-completedpapers/pcc-completedpapers.component';
+import { PccNotificationsComponent } from './pcc-notifications/pcc-notifications.component';
+import { LandingPcmComponent } from './landing-pcm/landing-pcm.component';
+import { PcmChoosepaperComponent } from './pcm-choosepaper/pcm-choosepaper.component';
+import { PcmRateassignedComponent } from './pcm-rateassigned/pcm-rateassigned.component';
+import { PcmNotificationsComponent } from './pcm-notifications/pcm-notifications.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,7 +39,16 @@ import { NotificationsComponent } from './notifications/notifications.component'
     SubmitterFormComponent,
     SubmitterSubmissionsComponent,
     SubmitterRevisionComponent,
-    NotificationsComponent
+    NotificationsComponent,
+    LandingPccComponent,
+    PccViewallpapersComponent,
+    PccRatepaperComponent,
+    PccCompletedpapersComponent,
+    PccNotificationsComponent,
+    LandingPcmComponent,
+    PcmChoosepaperComponent,
+    PcmRateassignedComponent,
+    PcmNotificationsComponent
   ],
   imports: [
     FormsModule,

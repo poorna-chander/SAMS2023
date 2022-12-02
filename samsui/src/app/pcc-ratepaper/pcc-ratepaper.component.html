@@ -1,0 +1,29 @@
+<p>pcc-ratepaper works!</p>
+<div>
+    <table mat-table [dataSource]="paperDetails" class="mat-elevation-z8 tabby">
+
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef> Title </th>
+        <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="revision">
+        <th mat-header-cell *matHeaderCellDef> Revision </th>
+        <td mat-cell *matCellDef="let element"> {{element.revisionNo}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="paperId">
+        <th mat-header-cell *matHeaderCellDef> PaperID </th>
+        <td mat-cell *matCellDef="let element"> {{element.paperId}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="rate">
+        <th mat-header-cell *matHeaderCellDef> Rate </th>
+        <td mat-cell *matCellDef="let element"><button mat-raised-button routerLink="../revise/{{element.paperId}}" color="accent" >Rate</button> </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  
+  </div>
