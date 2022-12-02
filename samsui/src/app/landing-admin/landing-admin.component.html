@@ -1,1 +1,9 @@
-<p>landing-admin works!</p>
+<section>
+    <h2 class="invhead">Admin Page<button mat-raised-button (click)="logOut()">Log Out</button></h2>
+      <div align="center" >
+          <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" color="primary" backgroundColor="accent">
+              <mat-tab class="apButts" label="set deadlines"> <app-admin-set-deadlines class="set-deadline"></app-admin-set-deadlines> </mat-tab>
+              <mat-tab class="apButts"  label="set templates"> <app-admin-set-deadlines></app-admin-set-deadlines></mat-tab>
+            </mat-tab-group>
+      </div>
+  </section>

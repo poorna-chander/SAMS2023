@@ -37,6 +37,10 @@ import { PccAssignpaperComponent } from './pcc-assignpaper/pcc-assignpaper.compo
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { RatepaperComponent } from './ratepaper/ratepaper.component';
 import { LandingAdminComponent } from './landing-admin/landing-admin.component';
+import { AdminSetDeadlinesComponent } from './admin-set-deadlines/admin-set-deadlines.component';
+import {MatDatepickerInputEvent, MatDatepickerModule} from '@angular/material/datepicker';
+import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,7 +61,8 @@ import { LandingAdminComponent } from './landing-admin/landing-admin.component';
     PcmNotificationsComponent,
     PccAssignpaperComponent,
     RatepaperComponent,
-    LandingAdminComponent
+    LandingAdminComponent,
+    AdminSetDeadlinesComponent
   ],
   imports: [
     FormsModule,
@@ -70,6 +75,8 @@ import { LandingAdminComponent } from './landing-admin/landing-admin.component';
     MatTableModule,
     MatSlideToggleModule,
     MatDividerModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -77,7 +84,8 @@ import { LandingAdminComponent } from './landing-admin/landing-admin.component';
     MatCardModule,
     MatRadioModule,
     MatCheckboxModule,
-    AngularMaterialModule
+    AngularMaterialModule,
+    MatRippleModule
     // MaterialExampleModule
   ],
   providers: [

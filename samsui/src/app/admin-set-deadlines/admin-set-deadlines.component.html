@@ -1,0 +1,24 @@
+<div class = "div-deadline">
+<h1>set deadline 1</h1>
+<mat-form-field  class = "date-card" appearance="fill">
+    <mat-label>Choose Deadline 1</mat-label>
+    <input matInput [matDatepicker]="picker" placeholder="Choose deadline 1"  (dateChange)="getdeadline1('change', $event)">
+    <mat-hint>MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
+</mat-form-field>
+<br/>
+<h1>set deadline 1</h1>
+<mat-form-field class = "date-card" appearance="fill">
+    <mat-label>Choose Deadline 2</mat-label>
+    <input matInput [matDatepicker]="picker" placeholder="Choose deadline 1"  (dateChange)="getdeadline2('change', $event)">
+    <mat-hint>MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
+</mat-form-field>
+<br/>
+<br/>
+<button mat-raised-button (click)="back()" color="accent">Back</button>
+</div>
+
+

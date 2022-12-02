@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { SessionService } from '../session.service';
+import {MatDatepickerInputEvent, MatDatepickerModule} from '@angular/material/datepicker';
+import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
+
 
 @Component({
   selector: 'app-landing-admin',
@@ -10,6 +14,10 @@ export class LandingAdminComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  logOut() : void{
+
   }
 
 }

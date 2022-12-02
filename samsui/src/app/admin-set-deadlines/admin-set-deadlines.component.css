@@ -1,0 +1,27 @@
+.date-div {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%; 
+    background-color: rgb(235, 191, 109);
+    color: rgb(187, 54, 54);
+    padding: 15px;
+    position: absolute;
+    left: 30%;
+
+  }
+
+  .invhead{
+    text-align: center;
+  }
+  
+  .div-deadline {
+    width: 100%;
+  }
+
+  .div-deadline {
+    width: 100%;
+  }
+
+  .date-card {
+    width: 50%;
+  }
