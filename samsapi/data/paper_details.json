@@ -1,1 +1,53 @@
-{"Papers":[{"id":1,"title":"MyPaper","submitterId":4,"authors":[],"contact":"","fileName":"MyPaper_revised_0","fileExtension":"pdf","paperId":1,"revisionNo":1,"rating":null},{"id":2,"title":"MyPaper","submitterId":4,"authors":[],"contact":"","fileName":"MyPaper_revised_1","fileExtension":"pdf","paperId":1,"revisionNo":2,"rating":null},{"id":3,"title":"NewPaper","submitterId":4,"authors":["NewPaper"],"contact":"","fileName":"NewPaper1","fileExtension":"pdf","paperId":2,"revisionNo":1,"rating":null}],"AssignedPapers":[{"id":1,"paperId":1,"pcmId":3,"reviews":[{"reviewId":1,"value":"Its Okay"},{"reviewId":2,"value":"Its good"}],"rating":5}],"PaperChoices":[{"id":1,"paperId":1,"pcmId":3}]}
+{
+    "Papers": [
+        {
+            "id": 1,
+            "title": "MyPaper",
+            "submitterId": 4,
+            "authors": [],
+            "contact": "",
+            "fileName": "MyPaper_revised_0",
+            "fileExtension": "pdf",
+            "paperId": 1,
+            "revisionNo": 1,
+            "rating": null
+        },
+        {
+            "id": 2,
+            "title": "MyPaper",
+            "submitterId": 4,
+            "authors": [],
+            "contact": "",
+            "fileName": "MyPaper_revised_1",
+            "fileExtension": "pdf",
+            "paperId": 1,
+            "revisionNo": 2,
+            "rating": null
+        }
+    ],
+    "AssignedPapers": [
+        {
+            "id": 1,
+            "paperId": 1,
+            "pcmId": 3,
+            "reviews": [
+                {
+                    "reviewId": 1,
+                    "value": "Its Okay"
+                },
+                {
+                    "reviewId": 2,
+                    "value": "Its good"
+                }
+            ],
+            "rating": 5
+        }
+    ],
+    "PaperChoices": [
+        {
+            "id": 1,
+            "paperId": 1,
+            "pcmId": 3
+        }
+    ]
+}
