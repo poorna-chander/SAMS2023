@@ -36,9 +36,10 @@
                     <button mat-flat-button color="primary" [disabled]="isFileAdded">Browse File</button>
                   </mat-toolbar>
                   <!-- Fetch selected filed on change -->
-                  <mat-card class="example-card" *ngIf="isFileAdded; else addFile">
+                  <div *ngIf="isFileAdded; else addFile">
+                  <mat-card class="example-card" >
                     <mat-card-content>
-                      <p style="display: inline">{{ selectedFile.name }}</p>
+                      <p style="display: inline">{{ selectedFile[0].name }}</p>
                       <mat-icon
                         class="example-icon cP"
                         (click)="removeFileAdded()"
@@ -46,9 +47,10 @@
                       >
                     </mat-card-content>
                   </mat-card>
+                </div>
                   
                 <ng-template #addFile>
-                  <input matInput 
+                  <input 
                   type="file"
                     #fileInput
                     id="uploadFile"
@@ -59,11 +61,15 @@
                   
                 />
                 </ng-template>
+
                 </div>
               </mat-form-field>
         </p>
         <p>
-            <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitDisable">Submit</button>
+            <button mat-flat-button color="primary" type="submit" *ngIf="!isSubmitDisable;else disableSubmit">Submit</button>
+            <ng-template #disableSubmit>
+              <button mat-flat-button color="primary" type="submit" disabled>Submit</button>
+            </ng-template>
             <button mat-flat-button color="primary" class="mL10" (click)="cancel()">Cancel</button>
         </p>
       </mat-card-content>

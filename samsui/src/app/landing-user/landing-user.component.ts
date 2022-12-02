@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ComponentInteractionService, COMPONENT_TYPE_MESSAGE } from '../component-interaction.service';
 import { NotificationsComponent } from '../notifications/notifications.component';
@@ -23,18 +23,24 @@ export class LandingUserComponent implements OnInit {
   constructor(private samsSubmissionService: SamsSubmissionService,
      private sessionService: SessionService,
      private componentInteractionService: ComponentInteractionService,
-     private router: Router) { 
+     private router: Router,
+     private route: ActivatedRoute) { 
 
      }
 
   ngOnInit(): void {
+    this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
     this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
       debugger;
+      let type = {tab: {textLabel: ""}};
       if(data == COMPONENT_TYPE_MESSAGE.SUBMITTER_TAB_SUBMIT){
+        type.tab.textLabel = "Submit"
         this.selectTab(0);
       }else if(data == COMPONENT_TYPE_MESSAGE.SUBMITTER_TAB_VIEW){
+        type.tab.textLabel = "View Papers"
         this.selectTab(1);
       }else if(data == COMPONENT_TYPE_MESSAGE.SUBMITTER_TAB_NOTIFICATION){
+        type.tab.textLabel = "Notifications"
         this.selectTab(2);
       }
      });
@@ -43,8 +49,12 @@ export class LandingUserComponent implements OnInit {
   openTab(type: any){
     if(type.tab.textLabel == "View Papers"){
       this.componentInteractionService.componentTypeMessage.next(COMPONENT_TYPE_MESSAGE.SUBMITTER_VIEW_INITIALIZE);
+      this.selectedIndex = 1;
     }else if(type.tab.textLabel == "Notifications"){
       this.componentInteractionService.componentTypeMessage.next(COMPONENT_TYPE_MESSAGE.NOTIFICATION_VIEW_INITIALIZE);
+      this.selectedIndex = 2;
+    }else{
+      this.selectedIndex = 0;
     }
   }
 

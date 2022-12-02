@@ -45,6 +45,7 @@ public class CodeSmellFixer {
         public static final String PAPER_IDS = "paperIds";
         public static final String REVISION_NO = "revisionNo";
         public static final String PCM_ID = "pcmId";
+        public static final String SUBMITTER_ID = "submitterId";
         
         private CamelCase(){
         

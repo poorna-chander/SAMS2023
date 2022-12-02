@@ -13,6 +13,7 @@ import com.sams.samsapi.json_crud_utils.UserUtils;
 import com.sams.samsapi.model.ResearchPaper;
 import com.sams.samsapi.model.User;
 import com.sams.samsapi.service.FileUploadService;
+import com.sams.samsapi.util.CodeSmellFixer;
 
 public class SubmitterOps implements SubmitterInterface {
 
@@ -38,14 +39,24 @@ public class SubmitterOps implements SubmitterInterface {
         boolean uploadedFile = fileuploadservice.uploadFile(uploadPath + fileName + "." + extension, fileBytes);
         boolean insertedInfo = false;
         if (uploadedFile) {
-            insertedInfo = PapersUtil.insertPaperDetails(data.get("title"),
-                    Integer.parseInt(data.get("submitterId")), // TODO:
-                    authors,
-                    data.get("contact"),
-                    fileName,
-                    extension,
-                    next_paper_id,
-                    revisionNo);
+            // insertedInfo = PapersUtil.insertPaperDetails(data.get("title"),
+            //         Integer.parseInt(data.get("submitterId")), // TODO:
+            //         authors,
+            //         data.get("contact"),
+            //         fileName,
+            //         extension,
+            //         next_paper_id,
+            //         revisionNo);
+                    HashMap<String, Object> paperDetails = new HashMap<>();
+                    paperDetails.put(CodeSmellFixer.LowerCase.TITLE, data.get(CodeSmellFixer.LowerCase.TITLE));
+                    paperDetails.put(CodeSmellFixer.SnakeCase.SUBMITTER_ID, Integer.parseInt(data.get(CodeSmellFixer.CamelCase.SUBMITTER_ID)));
+                    paperDetails.put(CodeSmellFixer.LowerCase.AUTHORS, authors);
+                    paperDetails.put(CodeSmellFixer.LowerCase.CONTACT, data.get(CodeSmellFixer.LowerCase.CONTACT));
+                    paperDetails.put(CodeSmellFixer.SnakeCase.FILE_NAME, fileName);
+                    paperDetails.put(CodeSmellFixer.SnakeCase.FILE_EXTENSION, extension);
+                    paperDetails.put(CodeSmellFixer.SnakeCase.PAPER_ID, next_paper_id);
+                    paperDetails.put(CodeSmellFixer.SnakeCase.REVISION_NO, revisionNo);
+                    insertedInfo = new PaperPool().createNewPaper(paperDetails);
         }
 
         if (insertedInfo && uploadedFile) {
@@ -79,14 +90,25 @@ public class SubmitterOps implements SubmitterInterface {
 
         boolean insertedInfo = false;
         if (uploadedFile) {
-            insertedInfo = PapersUtil.insertPaperDetails(data.get("title"),
-                    Integer.parseInt(data.get("submitterId")),
-                    authors,
-                    data.get("contact"),
-                    fileName,
-                    extension,
-                    paper_id,
-                    revisionNo);
+            // insertedInfo = PapersUtil.insertPaperDetails(data.get("title"),
+            //         Integer.parseInt(data.get("submitterId")),
+            //         authors,
+            //         data.get("contact"),
+            //         fileName,
+            //         extension,
+            //         paper_id,
+            //         revisionNo);
+
+                    HashMap<String, Object> paperDetails = new HashMap<>();
+                    paperDetails.put(CodeSmellFixer.LowerCase.TITLE, data.get(CodeSmellFixer.LowerCase.TITLE));
+                    paperDetails.put(CodeSmellFixer.SnakeCase.SUBMITTER_ID, Integer.parseInt(data.get(CodeSmellFixer.CamelCase.SUBMITTER_ID)));
+                    paperDetails.put(CodeSmellFixer.LowerCase.AUTHORS, authors);
+                    paperDetails.put(CodeSmellFixer.LowerCase.CONTACT, data.get(CodeSmellFixer.LowerCase.CONTACT));
+                    paperDetails.put(CodeSmellFixer.SnakeCase.FILE_NAME, fileName);
+                    paperDetails.put(CodeSmellFixer.SnakeCase.FILE_EXTENSION, extension);
+                    paperDetails.put(CodeSmellFixer.SnakeCase.PAPER_ID, paper_id);
+                    paperDetails.put(CodeSmellFixer.SnakeCase.REVISION_NO, revisionNo);
+                    insertedInfo = new PaperPool().createNewPaper(paperDetails);
         }
 
         if (insertedInfo && uploadedFile) {

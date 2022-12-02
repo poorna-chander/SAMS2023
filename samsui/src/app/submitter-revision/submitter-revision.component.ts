@@ -34,35 +34,33 @@ export class SubmitterRevisionComponent implements OnInit {
  
 
   ngOnInit(): void {
-    debugger;
+    this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
     this.paperId = Number.parseInt(this.route.snapshot.url[1].path);
      this.setData();
   }
 
   public setData(): void{
-    debugger;
     this.samsSubmissionService.getSubmissionBasedOnPaperId(this.paperId).subscribe({next: (paperDetails) =>{
       this.paperDetails = paperDetails;
       this.title = paperDetails.title;
       this.authors = paperDetails.authors;
       this.contact = paperDetails.contact;
-      this.selectedFile = {};
-      this.selectedFile.name = paperDetails.fileName + "." + paperDetails.fileExtension;
+      this.selectedFile = [];
+      this.selectedFile[0] = {};
+      this.selectedFile[0].name = paperDetails.fileName + "." + paperDetails.fileExtension;
       this.isFileAdded = true;
     }}
     );
   }
 
   onSubmit(paperSubmission: any): void {
-    debugger;
     console.log(paperSubmission)
     if(this.isFileAdded){
       this.samsSubmissionService.reviseForm(this.selectedFile[0], paperSubmission.title, paperSubmission.authors, paperSubmission.email, this.paperId).subscribe((event: { type: HttpEventType; }) => {
         if (event instanceof HttpResponse) {
            alert('File Successfully Uploaded');
-           debugger;
            
-           this.router.navigate(['landing']).then(() => {
+           this.router.navigate(['home_submitter']).then(() => {
             window.location.reload();
             this.componentInteractionService.componentTypeMessage.next(COMPONENT_TYPE_MESSAGE.SUBMITTER_TAB_VIEW);
           });
@@ -78,10 +76,14 @@ export class SubmitterRevisionComponent implements OnInit {
     this.selectedFile = imgFile.target.files;
     this.isFileAdded = true;
     this.fileAttr = this.selectedFile[0].name;
+    this.isSubmitDisable = false;
   }
 
   cancel(){
-    this.componentInteractionService.componentTypeMessage.next(COMPONENT_TYPE_MESSAGE.SUBMITTER_TAB_VIEW);
+    this.router.navigate(['home_submitter']).then(() => {
+      window.location.reload();
+    });
+    this.isFileAdded = false;
   }
 
   removeFileAdded(){

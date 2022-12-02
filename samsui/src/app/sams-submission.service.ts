@@ -39,7 +39,6 @@ export class SamsSubmissionService {
         data.append('file', file);
         data.append('authors', authors);
         data.append('contact', contact);
-        debugger;
 
     console.log(data)
 
@@ -68,7 +67,6 @@ export class SamsSubmissionService {
     data.append('authors', authors);
     data.append('contact', contact);
     data.append('paperId', paperId);
-    debugger;
 
 console.log(data)
 
@@ -127,7 +125,6 @@ return this.http.request(req);
   }
 
   public handleUserError<T>(result?: T) {
-    debugger;
     return (error: any): Observable<T> => {
       return of(result as T);
     };

@@ -19,7 +19,7 @@ public class PaperPool {
     public Boolean createNewPaper(HashMap<String, Object> paperDetails){
         String title = paperDetails.get(CodeSmellFixer.LowerCase.TITLE).toString();
         Integer submitterId = Integer.parseInt(paperDetails.get(CodeSmellFixer.SnakeCase.SUBMITTER_ID).toString());
-        List<String> authors =  paperDetails.containsKey(CodeSmellFixer.LowerCase.TITLE) ? (ArrayList<String>) paperDetails.get(CodeSmellFixer.LowerCase.TITLE) : new ArrayList<String>();
+        List<String> authors =  paperDetails.containsKey(CodeSmellFixer.LowerCase.AUTHORS) ? (ArrayList<String>) paperDetails.get(CodeSmellFixer.LowerCase.AUTHORS) : new ArrayList<String>();
         String contact = paperDetails.get(CodeSmellFixer.LowerCase.CONTACT).toString();
         String fileName = paperDetails.get(CodeSmellFixer.SnakeCase.FILE_NAME).toString();
         String fileExtension = paperDetails.get(CodeSmellFixer.SnakeCase.FILE_EXTENSION).toString();

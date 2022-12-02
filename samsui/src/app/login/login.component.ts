@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ComponentInteractionService } from '../component-interaction.service';
 import { SamsSubmissionService } from '../sams-submission.service';
 import { SessionService } from '../session.service';
 
@@ -18,10 +18,10 @@ export class LoginComponent implements OnInit{
   isLoginPage: boolean = true;
   public userDetails: any;
 
-  constructor( private samsSubmissionService: SamsSubmissionService, private router: Router, private sessionService: SessionService) { }
+  constructor( private samsSubmissionService: SamsSubmissionService, private route: ActivatedRoute, private router: Router, private sessionService: SessionService, private componentInteraction : ComponentInteractionService) { }
   
   ngOnInit(){
-    
+    this.componentInteraction.redirectToDefault(this.route.snapshot.url[0].path);
   }
 
   getErrorMessage() {
@@ -65,7 +65,6 @@ export class LoginComponent implements OnInit{
               this.isInvalid = true;
               this.sessionService.logInGuest();
             } else {
-              debugger;
               this.isInvalid = false;
               this.user_type = userDetails.type;
               this.sessionService.logIn(
@@ -73,7 +72,7 @@ export class LoginComponent implements OnInit{
                 userDetails.user_id,
                 this.user_type
               );
-              this.router.navigate(['landing']).then(() => {
+              this.router.navigate(['home_submitter']).then(() => {
                 window.location.reload();
               });
             }
@@ -98,7 +97,6 @@ export class LoginComponent implements OnInit{
             ) {
               this.isInvalid = true;
             } else {
-              debugger;
               this.isInvalid = false;
               this.router.navigate(['login']).then(() => {
                 window.location.reload();
