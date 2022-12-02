@@ -1,34 +1,10 @@
-
-<div class="pcm_selection_div">
-<mat-card>
-    <mat-card-content>
-      <h2 class="example-h2">Select PCMs</h2>
-        <section class="example-section" [formGroup]="pcmDetails">
-            <h4>Select PCMs to be assigned to current paper:</h4>
-            <!-- <mat-divider></mat-divider>
-            <p><mat-checkbox formControlName="PCM1name">PCM1 name</mat-checkbox></p>
-            <mat-divider></mat-divider>
-            <p><mat-checkbox formControlName="PCM2name">PCM1 name</mat-checkbox></p>
-            <mat-divider></mat-divider>
-            <p><mat-checkbox formControlName="PCM3name">PCM1 name</mat-checkbox></p>
-            <mat-divider></mat-divider> -->
-            <span class="example-list-section">
-                <ul>
-                  <li *ngFor="let subtask of pcmDetails">
-                    <mat-checkbox [(ngModel)]="subtask.completed"
-                                  [color]="subtask.color"
-                                  (ngModelChange)="updateAllComplete()">
-                      {{pcmDetails.name}}
-                    </mat-checkbox>
-                  </li>
-                </ul>
-              </span>
-        </section>
-        <section class="example-section" [formGroup]="pcmDetails">
-            <h4>You chose:</h4>
-            {{pcmDetails.value | json}}
-        </section>
-
-    </mat-card-content>
-</mat-card>
+<div class = pcm_selection_div>
+<div *ngFor="let choice of checks; let i=index" class="col-md-2">
+    <label class = checkbox_div>
+      <input type="checkbox" [value]="choice.name" (change)="updateCheckedOptions(choice, $event)">
+      <h1>{{choice.name}}</h1>
+    </label>
 </div>
+<button mat-raised-button (click)="submit_pcms()" >Submit</button>
+</div>
+

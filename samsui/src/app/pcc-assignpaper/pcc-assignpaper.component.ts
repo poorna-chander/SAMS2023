@@ -1,20 +1,19 @@
 import { AnimateTimings } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder} from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {ThemePalette} from '@angular/material/core';
 
 
 export interface pcmName {
   name: string;
-  completed:boolean;
-  color:ThemePalette;
+  checked:boolean;
 }
 
 const pcmDetails: pcmName[] = [
-  {name: "pcm1", completed: false, color:'primary'},
-  {name: "pcm2", completed: false, color:'primary'},
-  {name: "pcm3", completed: false, color:'primary'},
-  {name: "pcm4", completed: false, color:'primary'}
+  {name: "pcm1", checked: false},
+  {name: "pcm2", checked: false},
+  {name: "pcm3", checked: false},
+  {name: "pcm4", checked: false}
 ];
 
 
@@ -25,32 +24,35 @@ const pcmDetails: pcmName[] = [
 })
 
 export class PccAssignpaperComponent implements OnInit {
-  pcmDetails: any;
-  allComplete: boolean = false;
+  
+  public checks: Array<pcmName> = [
+    {name: "pcm1", checked: false},
+    {name: "pcm2", checked: false},
+    {name: "pcm3", checked: false},
+    {name: "pcm4", checked: false}
+  ];
 
-  updateAllComplete() {
-    this.allComplete = this.pcmDetails != null && this.pcmDetails.every((t: { completed: any; }) => t.completed);
-  }
+  public checked_options: Map<string,boolean> = new Map();
 
-  someComplete(): boolean {
-    if (this.pcmDetails == null) {
-      return false;
-    }
-    return this.pcmDetails.filter((t: { completed: any; }) => t.completed).length > 0 && !this.allComplete;
-  }
-
-  constructor(private _formBuilder: FormBuilder) {}
+  private _fb: any;
 
   ngOnInit(): void {
     throw new Error('Method not implemented.');
   }
 
-  setAll(completed: boolean) {
-    this.allComplete = completed;
-    if (this.pcmDetails == null) {
-      return;
+  updateCheckedOptions(choice: any, event: any) {
+    console.log(choice)
+    if (this.checked_options.get(choice["name"])) {
+    this.checked_options.set(choice["name"], false)} else{
+      this.checked_options.set(choice["name"], true)
     }
-    this.pcmDetails.forEach((t: { completed: boolean; }) => (t.completed = completed));
-  }
+
+    console.log(this.checked_options)
+    }
+
+    submit_pcms(){
+      // output of submit
+      console.log(this.checked_options)
+    }
 
 }
