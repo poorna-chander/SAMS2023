@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import {MatDividerModule} from '@angular/material/divider';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -8,6 +9,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import { LoginComponent } from './login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {FormBuilder} from '@angular/forms';
 // import {MaterialExampleModule} from '../material.module';
 import {MatInputModule} from '@angular/material/input'
 import {MatButtonModule} from '@angular/material/button';
@@ -31,6 +33,8 @@ import { LandingPcmComponent } from './landing-pcm/landing-pcm.component';
 import { PcmChoosepaperComponent } from './pcm-choosepaper/pcm-choosepaper.component';
 import { PcmRateassignedComponent } from './pcm-rateassigned/pcm-rateassigned.component';
 import { PcmNotificationsComponent } from './pcm-notifications/pcm-notifications.component';
+import { PccAssignpaperComponent } from './pcc-assignpaper/pcc-assignpaper.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 @NgModule({
   declarations: [
     AppComponent,
@@ -48,10 +52,12 @@ import { PcmNotificationsComponent } from './pcm-notifications/pcm-notifications
     LandingPcmComponent,
     PcmChoosepaperComponent,
     PcmRateassignedComponent,
-    PcmNotificationsComponent
+    PcmNotificationsComponent,
+    PccAssignpaperComponent
   ],
   imports: [
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     MatButtonModule,
     ReactiveFormsModule,
@@ -59,12 +65,14 @@ import { PcmNotificationsComponent } from './pcm-notifications/pcm-notifications
     MatInputModule,
     MatTableModule,
     MatSlideToggleModule,
+    MatDividerModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MatTabsModule,
     MatCardModule,
     MatRadioModule,
+    MatCheckboxModule,
     AngularMaterialModule
     // MaterialExampleModule
   ],
