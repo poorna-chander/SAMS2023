@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { ComponentInteractionService, COMPONENT_TYPE_MESSAGE } from '../component-interaction.service';
+import { SamsSubmissionService } from '../sams-submission.service';
 // import { SamsSubmissionService } from '../sams-submission.service';
 
 export interface Submission {
@@ -22,17 +26,28 @@ const SubmissionData: Submission[] = [
 export class PccViewallpapersComponent implements OnInit {
   displayedColumns: string[] = ['title', 'revision', 'paperId', "assign"];
   // dataSource = SubmissionData;
+  subscription!: Subscription;
   paperDetails: any[];
-
-  // constructor( private samsSubmissionService: SamsSubmissionService) { }
-  constructor() { }
+  constructor( private samsSubmissionService: SamsSubmissionService,
+    private componentInteractionService: ComponentInteractionService,
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    // this.samsSubmissionService.getAllSubmissions().subscribe({next: (paperDetails) =>{
-    //  this.paperDetails = paperDetails;
-    // }}
-    // );
-    this.paperDetails = SubmissionData;
+    this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
+    this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
+      if(data == COMPONENT_TYPE_MESSAGE.SUBMITTER_VIEW_INITIALIZE){
+        this.setData();
+      }
+     });
+     this.setData();
+  }
+
+  setData(): void{
+    this.samsSubmissionService.getAllSubmissions().subscribe({next: (paperDetails) =>{
+      debugger;
+       this.paperDetails = paperDetails;
+      }}
+      );
   }
 
 

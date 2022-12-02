@@ -1,6 +1,7 @@
 import { APP_INITIALIZER, Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LandingPccComponent } from './landing-pcc/landing-pcc.component';
+import { LandingPcmComponent } from './landing-pcm/landing-pcm.component';
 import { LandingUserComponent } from './landing-user/landing-user.component';
 import { LoginComponent } from './login/login.component';
 import { SessionService } from './session.service';
@@ -30,9 +31,11 @@ const routes: Routes = [
   { path: '',   redirectTo: "login", pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'home_submitter', component: LandingUserComponent },
-  { path: 'pcc_landing', component: LandingPccComponent },
+  { path: 'home_pcc', component: LandingPccComponent },
+  { path: 'home_pcm', component: LandingPcmComponent },
   { path: '',   redirectTo: '/login', pathMatch: 'full' },
-  { path: 'revise/:paperId', component: SubmitterRevisionComponent }
+  { path: 'revise/:paperId', component: SubmitterRevisionComponent },
+  { path: 'assign/:paperId', component: SubmitterRevisionComponent }
 ];
 
 function changeRedirectTo(path: any, isLoginNeeded: boolean): any{
