@@ -40,6 +40,7 @@ import { LandingAdminComponent } from './landing-admin/landing-admin.component';
 import { AdminSetDeadlinesComponent } from './admin-set-deadlines/admin-set-deadlines.component';
 import {MatDatepickerInputEvent, MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
+import { PcmReviewPaperComponent } from './pcm-review-paper/pcm-review-paper.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
     PccAssignpaperComponent,
     RatepaperComponent,
     LandingAdminComponent,
-    AdminSetDeadlinesComponent
+    AdminSetDeadlinesComponent,
+    PcmReviewPaperComponent
   ],
   imports: [
     FormsModule,
