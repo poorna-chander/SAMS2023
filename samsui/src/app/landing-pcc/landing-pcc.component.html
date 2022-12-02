@@ -1,0 +1,11 @@
+<section>
+    <h2 class="invhead">PCC Page<button mat-raised-button (click)="logOut()">Log Out</button></h2>
+      <div align="center" >
+          <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" color="primary" backgroundColor="accent">
+              <mat-tab class="apButts" label="Assign Papers"> <app-pcc-viewallpapers class="submit-form"></app-pcc-viewallpapers> </mat-tab>
+              <mat-tab class="apButts"  label="Rate Papers"> <app-pcc-ratepaper></app-pcc-ratepaper></mat-tab>
+              <mat-tab class="apButts"  label="Completed Papers"> <app-pcc-completedpapers></app-pcc-completedpapers></mat-tab>
+              <mat-tab class="apButts"  label="Notifications"> <app-notifications></app-notifications></mat-tab>
+            </mat-tab-group>
+      </div>
+  </section>
