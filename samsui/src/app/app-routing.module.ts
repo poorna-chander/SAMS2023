@@ -6,6 +6,7 @@ import { LandingUserComponent } from './landing-user/landing-user.component';
 import { LoginComponent } from './login/login.component';
 import { SessionService } from './session.service';
 import { SubmitterRevisionComponent } from './submitter-revision/submitter-revision.component';
+import {PccAssignpaperComponent} from './pcc-assignpaper/pcc-assignpaper.component'
 
 
 function initializeAppFactory(sessionService: SessionService): () => any {
@@ -35,7 +36,8 @@ const routes: Routes = [
   { path: 'home_pcm', component: LandingPcmComponent },
   { path: '',   redirectTo: '/login', pathMatch: 'full' },
   { path: 'revise/:paperId', component: SubmitterRevisionComponent },
-  { path: 'assign/:paperId', component: SubmitterRevisionComponent }
+  { path: 'assign/:paperId', component: PccAssignpaperComponent },
+  
 ];
 
 function changeRedirectTo(path: any, isLoginNeeded: boolean): any{
