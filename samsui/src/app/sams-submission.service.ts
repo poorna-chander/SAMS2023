@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpEvent, HttpHeaders, HttpRequest } from '@angular/common/http';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { SessionService } from './session.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SamsSubmissionService {
-  private submission = 'http://localhost:8080/paper/submit';
+  private paper = 'http://localhost:8080/paper/';
   private notification = 'http://localhost:8080/user/notification';
   private user = 'http://localhost:8080/user/';
   private domain = 'http://localhost:8080/';
@@ -25,7 +25,8 @@ export class SamsSubmissionService {
 
   public getHeaders(): any {
     return new HttpHeaders({
-      userId: this.sessionService.get("user_id")
+      userId: this.sessionService.get("user_id"),
+      "Access-Control-Allow-Origin": "http://localhost:4200"
       
     });
   }
@@ -44,7 +45,7 @@ export class SamsSubmissionService {
 
     const req = new HttpRequest(
       'POST',
-      this.submission,
+      this.paper + "submit",
       data,
       {
         reportProgress: true,
@@ -55,6 +56,35 @@ export class SamsSubmissionService {
 
     return this.http.request(req);
   }
+
+  reviseForm(file: File, title: any, authors: any, contact: any, paperId: any) : Observable<HttpEvent<{}>> {
+    console.log(title)
+
+    const data: FormData = new FormData();
+    data.append('title', title);
+    if(file == undefined){
+      data.append('file', file);
+    }
+    data.append('authors', authors);
+    data.append('contact', contact);
+    data.append('paperId', paperId);
+    debugger;
+
+console.log(data)
+
+const req = new HttpRequest(
+  'POST',
+  this.paper + "revise",
+  data,
+  {
+    reportProgress: true,
+    responseType: 'json',
+    headers:  this.getHeaders()
+  }
+);
+
+return this.http.request(req);
+}
 
   getNotifications() : Observable<any> {
     return this.http.get<any>(this.notification, { headers: this.getHeaders() }).pipe(map(response => {
@@ -86,6 +116,12 @@ export class SamsSubmissionService {
 
   getAllSubmissions(): Observable<any> {
     return this.http.get<any>(this.domain + "papers", { headers: this.getHeaders() }).pipe(map(response => {
+      return response;
+    }))
+  }
+
+  getSubmissionBasedOnPaperId(paperId: number): Observable<any> {
+    return this.http.get<any>(this.paper + paperId, { headers: this.getHeaders() }).pipe(map(response => {
       return response;
     }))
   }

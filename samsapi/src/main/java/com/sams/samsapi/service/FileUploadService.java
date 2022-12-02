@@ -2,6 +2,10 @@ package com.sams.samsapi.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +16,14 @@ public class FileUploadService {
     public boolean uploadFile(String uploadPath, MultipartFile file)
             throws IllegalStateException, IOException {
         file.transferTo(new File(IMAGE_FOLDER + uploadPath));
+        return true;
+    }
+
+    public boolean copyFile(String uploadPath, String oldFilePath)
+            throws IllegalStateException, IOException {
+        Path copied = Paths.get(IMAGE_FOLDER + uploadPath);
+        Path originalPath = Paths.get(IMAGE_FOLDER + oldFilePath);
+        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
         return true;
     }
 

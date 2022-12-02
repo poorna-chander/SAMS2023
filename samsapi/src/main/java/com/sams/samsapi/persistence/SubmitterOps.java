@@ -8,11 +8,11 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sams.samsapi.json_crud_utils.PapersUtil;
+import com.sams.samsapi.json_crud_utils.UserUtils;
 import com.sams.samsapi.model.ResearchPaper;
 import com.sams.samsapi.model.User;
 import com.sams.samsapi.service.FileUploadService;
-import com.sams.samsapi.json_crud_utils.PapersUtil;
-import com.sams.samsapi.json_crud_utils.UserUtils;
 
 public class SubmitterOps implements SubmitterInterface {
 
@@ -32,10 +32,10 @@ public class SubmitterOps implements SubmitterInterface {
         String[] uploadedFileExtension = uploadedFileName.split("\\.");
         String extension = uploadedFileExtension[uploadedFileExtension.length - 1];
         int revisionNo = 1;
-        String fileName = data.get("title") + revisionNo + "." + extension;
+        String fileName = data.get("title") + revisionNo;
         List<String> authors = new ArrayList<>(Arrays.asList(data.get("authors").split(",")));
         FileUploadService fileuploadservice = new FileUploadService();
-        boolean uploadedFile = fileuploadservice.uploadFile(uploadPath + fileName, fileBytes);
+        boolean uploadedFile = fileuploadservice.uploadFile(uploadPath + fileName + "." + extension, fileBytes);
         boolean insertedInfo = false;
         if (uploadedFile) {
             insertedInfo = PapersUtil.insertPaperDetails(data.get("title"),
@@ -66,25 +66,27 @@ public class SubmitterOps implements SubmitterInterface {
                 max = paper.getRevisionNo();
             }
         }
-        String uploadedFileName = fileBytes.getOriginalFilename();
+        Boolean isNewFile = fileBytes != null;
+        String oldRevisionFileName = new PaperPool().getPaperDetails(paper_id).getFileName() + "." + new PaperPool().getPaperDetails(paper_id).getFileExtension();
+        String uploadedFileName = Boolean.TRUE.equals(isNewFile) ? fileBytes.getOriginalFilename() : oldRevisionFileName;
         String[] uploadedFileExtension = uploadedFileName.split("\\.");
         String extension = uploadedFileExtension[uploadedFileExtension.length - 1];
         int revisionNo = max + 1;
-        String fileName = data.get("title") + revisionNo + "." + extension;
+        String fileName = data.get("title") + revisionNo;
         List<String> authors = new ArrayList<>(Arrays.asList(data.get("authors").split(",")));
         FileUploadService fileuploadservice = new FileUploadService();
-        boolean uploadedFile = fileuploadservice.uploadFile(uploadPath + fileName, fileBytes);
+        boolean uploadedFile = Boolean.TRUE.equals(isNewFile) ? fileuploadservice.uploadFile(uploadPath + fileName + "." + extension, fileBytes) : fileuploadservice.copyFile(uploadPath + fileName + "." + extension, uploadPath + oldRevisionFileName);
 
         boolean insertedInfo = false;
-        if(uploadedFile){
+        if (uploadedFile) {
             insertedInfo = PapersUtil.insertPaperDetails(data.get("title"),
-            Integer.parseInt(data.get("submitterId")),
-            authors,
-            data.get("contact"),
-            fileName,
-            extension,
-            paper_id,
-            revisionNo);
+                    Integer.parseInt(data.get("submitterId")),
+                    authors,
+                    data.get("contact"),
+                    fileName,
+                    extension,
+                    paper_id,
+                    revisionNo);
         }
 
         if (insertedInfo && uploadedFile) {

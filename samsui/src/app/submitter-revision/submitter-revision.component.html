@@ -11,52 +11,64 @@
       <mat-card-content>
         <p class="title" >
             <mat-form-field appearance="fill">
-            <mat-label>Paper Title</mat-label>
-            <input matInput name="title" placeholder="enter your paper title" ngModel>
+            <input matInput name="title" placeholder="enter your paper title" [(ngModel)]="title">
             <mat-icon matSuffix></mat-icon>
-            <mat-hint>name of the title</mat-hint>
+            <mat-hint>Name of the Title</mat-hint>
             </mat-form-field>
         </p>
         <p class="authors" >
             <mat-form-field appearance="fill">
-            <mat-label>Authors</mat-label>
-            <input matInput name="authors" placeholder="author1, author2, ..." ngModel>
+            <input matInput name="authors" placeholder="author1, author2, ..." [(ngModel)]="authors">
             <mat-icon matSuffix></mat-icon>
-            <mat-hint>author names</mat-hint>
+            <mat-hint>Author Names</mat-hint>
             </mat-form-field>
         </p>
         <p class="contact" >
             <mat-form-field appearance="fill">
-            <mat-label>Contact</mat-label>
-            <input matInput name="email" placeholder="abc@rit.edu" ngModel>
+            <input matInput name="email" placeholder="abc@rit.edu" [(ngModel)]="contact">
             <mat-icon matSuffix></mat-icon>
-            <mat-hint>email id</mat-hint>
+            <mat-hint>Email Id for Contacts</mat-hint>
             </mat-form-field>
         </p>
         <p class = "fileupload">
             <mat-form-field>
                 <div>
-                  <mat-toolbar>
+                  <mat-toolbar [ngClass]="isFileAdded ? 'cD' : 'cP'" *ngIf="!isFileAdded">
                     <!-- Display files names -->
                     <input matInput [(ngModel)]="fileAttr" readonly name="name" />
                     <!-- Browse Button -->
-                    <button mat-flat-button color="primary">Browse File</button>
+                    <button mat-flat-button color="primary" [disabled]="isFileAdded">Browse File</button>
                   </mat-toolbar>
                   <!-- Fetch selected filed on change -->
-                  <input
-                    type="file"
+                  <mat-card class="example-card" *ngIf="isFileAdded; else addFile">
+                    <mat-card-content>
+                      <p style="display: inline">{{ selectedFile.name }}</p>
+                      <mat-icon
+                        class="example-icon cP"
+                        (click)="removeFileAdded()"
+                        >close</mat-icon
+                      >
+                    </mat-card-content>
+                  </mat-card>
+                  
+                <ng-template #addFile>
+                  <input matInput 
+                  type="file"
                     #fileInput
                     id="uploadFile"
                     (change)="uploadFileEvt($event)"
                     name="uploadFile"
-                    multiple="multiple"
-                    accept="image/*"
-                  />
+                    accept=".pdf, .docx"
+                    class="cP"
+                  
+                />
+                </ng-template>
                 </div>
               </mat-form-field>
         </p>
         <p>
-            <button mat-flat-button color="primary" type="submit">Submit</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitDisable">Submit</button>
+            <button mat-flat-button color="primary" class="mL10" (click)="cancel()">Cancel</button>
         </p>
       </mat-card-content>
       <mat-card-actions>
