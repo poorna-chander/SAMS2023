@@ -12,13 +12,13 @@ export class AdminSetDeadlinesComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.startDate = new Date(2022, 12, 1);
+    this.startDate = new Date();
   }
 
-  getdeadline2(type: string, event: MatDatepickerInputEvent<Date>){
+  getReviewSubmissionDeadline(type: string, event: MatDatepickerInputEvent<Date>){
     console.log(event.value);
   }
-  getdeadline1(type: string, event: MatDatepickerInputEvent<Date>){
+  getPaperSubmissionDeadline(type: string, event: MatDatepickerInputEvent<Date>){
     console.log(event.value);
   }
 

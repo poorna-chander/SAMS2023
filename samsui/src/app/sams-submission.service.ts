@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { HttpClient, HttpEvent, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpEvent, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { SessionService } from './session.service';
 
@@ -9,6 +9,7 @@ import { SessionService } from './session.service';
 })
 export class SamsSubmissionService {
   private paper = 'http://localhost:8080/paper/';
+  private papers = 'http://localhost:8080/papers';
   private notification = 'http://localhost:8080/user/notification';
   private user = 'http://localhost:8080/user/';
   private domain = 'http://localhost:8080/';
@@ -113,7 +114,7 @@ return this.http.request(req);
   }
 
   getAllSubmissions(): Observable<any> {
-    return this.http.get<any>(this.domain + "papers", { headers: this.getHeaders() }).pipe(map(response => {
+    return this.http.get<any>(this.papers, { headers: this.getHeaders() }).pipe(map(response => {
       return response;
     }))
   }
@@ -123,6 +124,50 @@ return this.http.request(req);
       return response;
     }))
   }
+
+  getAllSubmissionsAssignmentPending(): Observable<any> {
+    return this.http.get<any>(this.papers + "/" + "pcc/assignment/pending", { headers: this.getHeaders() }).pipe(map(response => {
+      return response;
+    }))
+  }
+
+  getRatingCompletedSubmissions(): Observable<any> {
+    return this.http.get<any>(this.papers + "/" + "pcc/rating/completed", { headers: this.getHeaders() }).pipe(map(response => {
+      return response;
+    }))
+  }
+
+  getAllPcms(): Observable<any> {
+    return this.http.get<any>(this.domain + "pcm", { headers: this.getHeaders() }).pipe(map(response => {
+      return response;
+    }))
+  }
+
+  assignPaper(paperId: number, pcmId: number): Observable<any> {
+      const body = { paper_id: paperId, pcm_id: pcmId };
+      return this.http.put<any>(this.papers + "/" + "pcc/assignment/assign", body, { headers: this.getHeaders() }).pipe(
+      map(response => {
+        return response;
+      }),
+      catchError(this.handleUserError<any>({ "status": "failure" }))
+    );
+  }
+
+  getAllPCMRatedPapers(): Observable<any> {
+    return this.http.get<any>(this.papers + "/" + "pcc/assignment/review/completed", { headers: this.getHeaders() }).pipe(map(response => {
+      return response;
+    }))
+  }
+
+  ratePaper(paperId: number, rating: number): Observable<any> {
+    const body = { paper_id: paperId, rating: rating };
+    return this.http.put<any>(this.papers + "/" + "pcc/rate", body, { headers: this.getHeaders() }).pipe(
+    map(response => {
+      return response;
+    }),
+    catchError(this.handleUserError<any>({ "status": "failure" }))
+  );
+}
 
   public handleUserError<T>(result?: T) {
     return (error: any): Observable<T> => {

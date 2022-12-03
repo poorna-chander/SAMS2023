@@ -2,19 +2,17 @@ import { AnimateTimings } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {ThemePalette} from '@angular/material/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
+import { ComponentInteractionService } from '../component-interaction.service';
+import { SamsSubmissionService } from '../sams-submission.service';
 
 
-export interface pcmName {
+export interface PCMName {
+  id: number,
   name: string;
   checked:boolean;
 }
-
-const pcmDetails: pcmName[] = [
-  {name: "pcm1", checked: false},
-  {name: "pcm2", checked: false},
-  {name: "pcm3", checked: false},
-  {name: "pcm4", checked: false}
-];
 
 
 @Component({
@@ -25,34 +23,67 @@ const pcmDetails: pcmName[] = [
 
 export class PccAssignpaperComponent implements OnInit {
   
-  public checks: Array<pcmName> = [
-    {name: "pcm1", checked: false},
-    {name: "pcm2", checked: false},
-    {name: "pcm3", checked: false},
-    {name: "pcm4", checked: false}
-  ];
+  constructor(
+    private samsSubmissionService: SamsSubmissionService,
+    private componentInteractionService: ComponentInteractionService,
+    private route: ActivatedRoute,
+    private router: Router) {}
 
-  public checked_options: Map<string,boolean> = new Map();
+  public checks: Array<PCMName> = [];
 
+  public checked_options: Map<number,boolean> = new Map();
+  paperId: number;
   private _fb: any;
+  isSubmitDisable: boolean = true;
+  noOfCheckedPcms: number = 0;
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
+    this.paperId = Number.parseInt(this.route.snapshot.url[1].path);
+    this.setData();
+  }
+
+  public setData(): void{
+    this.samsSubmissionService.getAllPcms().subscribe({next: (pcmData) =>{
+      this.checks = [];
+      pcmData.forEach((data: any) => {
+        this.checks.push({name: data.name, id: data.id, checked: false});
+      });
+    }}
+    );
   }
 
   updateCheckedOptions(choice: any, event: any) {
-    console.log(choice)
-    if (this.checked_options.get(choice["name"])) {
-    this.checked_options.set(choice["name"], false)} else{
-      this.checked_options.set(choice["name"], true)
+    if (this.checked_options.get(choice["id"])) {
+      this.checked_options.set(choice["id"], false);
+    this.noOfCheckedPcms -=  1;
+    } else{
+      this.checked_options.set(choice["id"], true);
+      this.noOfCheckedPcms +=  1;
+    }
+    this.isSubmitDisable = !(this.noOfCheckedPcms == 3);
+  }
+
+    submitPcmAssignments(){
+      let pcmIds: any = [];
+      this.checked_options.forEach((value: boolean, key: number) => {
+        if(value){
+          pcmIds.push(key);
+        }
+      });
+      this.submitAssignCall(pcmIds);
     }
 
-    console.log(this.checked_options)
-    }
-
-    submit_pcms(){
-      // output of submit
-      console.log(this.checked_options)
+    submitAssignCall(pcmIds: any = []): void{
+       this.samsSubmissionService.assignPaper(this.paperId, pcmIds[0]).subscribe({next: (pcmData) =>{
+        pcmIds.splice(0, 1);
+        if(pcmIds.length > 0){
+          this.submitAssignCall(pcmIds);
+        }else{
+          this.router.navigate(['/home_pcc']);
+        }
+      }}
+      );
     }
 
 }

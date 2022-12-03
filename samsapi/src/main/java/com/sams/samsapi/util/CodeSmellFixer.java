@@ -33,6 +33,7 @@ public class CodeSmellFixer {
         public static final String REGISTRATION = "registration";
         public static final String SUCCESS = "success";
         public static final String ID = "id";
+        public static final String NAME = "name";
         public static final String IDS = "ids";
 
         private LowerCase(){
@@ -63,6 +64,8 @@ public class CodeSmellFixer {
         public static final String USER_DATA = "user_data";
         public static final String USER_ID = "user_id";
         public static final String PAPER_TITLES = "paper_titles";
+        public static final String PAPER_DETAILS = "paper_details";
+        public static final String PCM_DETAILS = "pcm_details";
 
         private SnakeCase(){
         

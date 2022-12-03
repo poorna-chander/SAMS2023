@@ -92,7 +92,7 @@ public class NotificationsOps implements NotificationsInterface {
                         case PCC_REVIEW_DEADLINE_EXPIRED:
                             notification.insertVisitedId(user.getId());
                             ArrayList<Integer> visitedIds = notification.getVisitedIds();
-                            ArrayList<Integer> pccIds = new PccOps().getAvailablePCCs();
+                            ArrayList<Integer> pccIds = new PccOps().getAvailablePCCIds();
                             Boolean isVisitedIdsConsistsofAllPccs = checkIfBothArraysAreSame(visitedIds, pccIds);
                             if (Boolean.TRUE.equals(isVisitedIdsConsistsofAllPccs)) {
                                 notification.setStatus(STATUS.ALL_PCC_NOTICED);
@@ -120,7 +120,7 @@ public class NotificationsOps implements NotificationsInterface {
                         case PCM_PAPER_SUBMISSION_DEADLINE_EXPIRED:
                             notification.insertVisitedId(user.getId());
                             ArrayList<Integer> visitedIds = notification.getVisitedIds();
-                            ArrayList<Integer> pcmIds = new PccOps().getAvailablePCMs();
+                            ArrayList<Integer> pcmIds = new PccOps().getAvailablePCMIds();
                             Boolean isVisitedIdsConsistsofAllPcms = checkIfBothArraysAreSame(visitedIds, pcmIds);
                             if (Boolean.TRUE.equals(isVisitedIdsConsistsofAllPcms)) {
                                 notification.setStatus(STATUS.ALL_PCM_NOTICED);
@@ -201,8 +201,8 @@ public class NotificationsOps implements NotificationsInterface {
 
             if (notification.getVisitedIds().get(0).equals(user.getId())) {
                 HashMap<String, Object> data = notification.getData();
-                if (data.containsKey(CodeSmellFixer.CamelCase.PAPER_IDS)) {
-                    Object paperIdsObj = data.get(CodeSmellFixer.CamelCase.PAPER_IDS);
+                if (data.containsKey(CodeSmellFixer.CamelCase.PAPER_ID)) {
+                    Object paperIdsObj = data.get(CodeSmellFixer.CamelCase.PAPER_ID);
                     if (paperIdsObj instanceof ArrayList<?>) {
                         ArrayList<?> ids = (ArrayList<?>) paperIdsObj;
 

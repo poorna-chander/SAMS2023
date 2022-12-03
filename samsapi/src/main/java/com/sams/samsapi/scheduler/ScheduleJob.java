@@ -42,6 +42,7 @@ public class ScheduleJob {
             HashMap<String,Object> data = new HashMap<>();
             data.put(CodeSmellFixer.LowerCase.ID, paper.getId());
             data.put(CodeSmellFixer.CamelCase.PAPER_ID, paper.getPaperId());
+            data.put(CodeSmellFixer.LowerCase.TITLE, paper.getTitle());
             if(Boolean.TRUE.equals(isSuccess)){
                 NotificationUtil.insertNotificationData(System.currentTimeMillis(), data, new ArrayList<>(), TYPE.PCC_UNASSIGNED_PAPERS);
             }

@@ -66,7 +66,6 @@ export class LoginComponent implements OnInit{
               this.sessionService.logInGuest();
             } else {
               this.isInvalid = false;
-              debugger;
               this.user_type = userDetails.type;
               this.sessionService.logIn(
                 userDetails.username,
@@ -97,9 +96,7 @@ export class LoginComponent implements OnInit{
               this.isInvalid = true;
             } else {
               this.isInvalid = false;
-              this.router.navigate(['login']).then(() => {
-                window.location.reload();
-              });
+              this.router.navigate(['login']);
             }
           },
         });

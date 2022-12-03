@@ -61,7 +61,6 @@ export class SubmitterRevisionComponent implements OnInit {
            alert('File Successfully Uploaded');
            
            this.router.navigate(['home_submitter']).then(() => {
-            window.location.reload();
             this.componentInteractionService.componentTypeMessage.next(COMPONENT_TYPE_MESSAGE.SUBMITTER_TAB_VIEW);
           });
         }
@@ -80,9 +79,7 @@ export class SubmitterRevisionComponent implements OnInit {
   }
 
   cancel(){
-    this.router.navigate(['home_submitter']).then(() => {
-      window.location.reload();
-    });
+    this.router.navigate(['home_submitter']);
     this.isFileAdded = false;
   }
 

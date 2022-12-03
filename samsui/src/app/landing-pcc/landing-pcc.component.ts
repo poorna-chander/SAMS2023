@@ -33,14 +33,13 @@ export class LandingPccComponent implements OnInit {
   ngOnInit(): void {
     this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
     this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
-      debugger;
       if(data == COMPONENT_TYPE_MESSAGE.PCC_TAB_ASSIGN_PAPERS){
         this.selectTab(0);
       }else if(data == COMPONENT_TYPE_MESSAGE.PCC_TAB_RATE_PAPERS){
         this.selectTab(1);
       }else if(data == COMPONENT_TYPE_MESSAGE.PCC_TAB_COMPLETED_PAPERS){
         this.selectTab(2);
-      }else if(data == COMPONENT_TYPE_MESSAGE.PCC_TAB_NOTIFICATION){
+      }else if(data == COMPONENT_TYPE_MESSAGE.NOTIFICATION_VIEW_INITIALIZE){
         this.selectTab(3);
       }
      });
@@ -57,17 +56,14 @@ export class LandingPccComponent implements OnInit {
       this.componentInteractionService.componentTypeMessage.next(COMPONENT_TYPE_MESSAGE.PCC_TAB_COMPLETED_PAPERS);
       this.selectedIndex = 2;
     }else if(type.tab.textLabel == "Notifications"){
-      this.componentInteractionService.componentTypeMessage.next(COMPONENT_TYPE_MESSAGE.PCC_TAB_NOTIFICATION);
+      this.componentInteractionService.componentTypeMessage.next(COMPONENT_TYPE_MESSAGE.NOTIFICATION_VIEW_INITIALIZE);
       this.selectedIndex = 3;
     }
   }
 
   logOut(){
     this.sessionService.logOut();
-    this.router.navigate(['/'])
-            .then(() => {
-                    window.location.reload();
-                 });
+    this.router.navigate(['/']);
   }
 
   ngOnDestroy(): void {

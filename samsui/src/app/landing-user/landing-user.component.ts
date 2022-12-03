@@ -31,7 +31,6 @@ export class LandingUserComponent implements OnInit {
   ngOnInit(): void {
     this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
     this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
-      debugger;
       if(data == COMPONENT_TYPE_MESSAGE.SUBMITTER_TAB_SUBMIT){
         this.selectTab(0);
       }else if(data == COMPONENT_TYPE_MESSAGE.SUBMITTER_TAB_VIEW){
@@ -56,10 +55,7 @@ export class LandingUserComponent implements OnInit {
 
   logOut(){
     this.sessionService.logOut();
-    this.router.navigate(['/'])
-            .then(() => {
-                    window.location.reload();
-                 });
+    this.router.navigate(['/']);
   }
 
   ngOnDestroy(): void {

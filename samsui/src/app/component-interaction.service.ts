@@ -23,7 +23,11 @@ export class ComponentInteractionService {
         });
       }
     }else if(isAdmin){
-      
+      if(!["home_admin"].includes(currentPath)){
+        this.router.navigate(['home_admin']).then(() => {
+          window.location.reload();
+        });
+      }
     }else if(isPCM){
       if(!["home_pcm"].includes(currentPath)){
         this.router.navigate(['home_pcm']).then(() => {
@@ -31,7 +35,7 @@ export class ComponentInteractionService {
         });
       }
     }else if(isPCC){
-      if(!["home_pcc"].includes(currentPath)){
+      if(!["home_pcc","assign", "rate"].includes(currentPath)){
         this.router.navigate(['home_pcc']).then(() => {
           window.location.reload();
         });
@@ -50,13 +54,14 @@ export class ComponentInteractionService {
     let isSubmitter = this.sessionService.getIsSubmitter();
     let isPCM = this.sessionService.getIsPCM();
     let isPCC = this.sessionService.getIsPCC();
-    debugger;
     if(isSubmitter){
       this.router.navigate(['home_submitter']).then(() => {
         window.location.reload();
       });
     }else if(isAdmin){
-      
+      this.router.navigate(['home_admin']).then(() => {
+        window.location.reload();
+      });
     }else if(isPCM){
       this.router.navigate(['home_pcm']).then(() => {
         window.location.reload();
@@ -81,9 +86,9 @@ export enum COMPONENT_TYPE_MESSAGE {
   PCC_TAB_ASSIGN_PAPERS,
   PCC_TAB_RATE_PAPERS,
   PCC_TAB_COMPLETED_PAPERS,
-  PCC_TAB_NOTIFICATION,
   PCM_TAB_CHOOSE_PAPERS,
   PCM_TAB_RATE_ASSIGNED_PAPERS,
   PCM_TAB_VIEW_PAPERS,
-  PCM_TAB_NOTIFICATION
+  ADMIN_TAB_SET_DEADLINE,
+  ADMIN_TAB_SET_TEMPLATE
 }

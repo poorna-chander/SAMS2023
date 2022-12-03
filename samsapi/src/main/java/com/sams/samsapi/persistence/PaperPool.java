@@ -66,15 +66,8 @@ public class PaperPool {
         return false;
     }
 
-    public ResearchPaper getPaperByPaperId(Integer userId, Integer paperId){
-        HashMap<Integer, ResearchPaper> paperDtls = PapersUtil.getLatestPaperDetailsBasedOnSubmitterId(userId);
-        for(Integer id : paperDtls.keySet()){
-            if(Objects.equals(paperDtls.get(id).getPaperId(), paperId) && Objects.equals(paperDtls.get(id).getSubmitterId(), userId)){
-                return paperDtls.get(id);
-            }
-        }
-
-        return null;
+    public ResearchPaper getPaperByPaperId(Integer paperId){
+        return PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId);
     }
 
 }

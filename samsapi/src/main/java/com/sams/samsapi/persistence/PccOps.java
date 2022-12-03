@@ -14,6 +14,7 @@ import com.sams.samsapi.model.ResearchPaper;
 import com.sams.samsapi.model.ReviewTemplate;
 import com.sams.samsapi.model.User;
 import com.sams.samsapi.model.User.USER_TYPE;
+import com.sams.samsapi.util.CodeSmellFixer;
 
 public class PccOps implements PccInterface {
 
@@ -49,20 +50,53 @@ public class PccOps implements PccInterface {
         return paperDtls;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public HashMap<Integer, HashMap<Integer, Integer>> getPaperAssignmentDetails() {
-        HashMap<Integer, HashMap<Integer, Integer>> paperAssignmentDtls = new HashMap<>();
+    public ArrayList<HashMap<String,Object>> getRatingCompletedPaperDetails() {
+        ArrayList<HashMap<String,Object>> paperDetailsList = new ArrayList<>();
+        HashMap<ResearchPaper, HashMap<String, Object>> paperAssignmentDtls = new HashMap<>();
         HashMap<Integer,ReviewTemplate> idVsAssignedPaperDtls =  AssignedPapersUtil.getAllAssignedPapers();
         for(Integer id : idVsAssignedPaperDtls.keySet()){
             ReviewTemplate assignedPaper = idVsAssignedPaperDtls.get(id);
-            HashMap<Integer, Integer> paperDtl = new HashMap<>();
-            if(paperAssignmentDtls.containsKey(assignedPaper.getPaperId())){
-                paperDtl = paperAssignmentDtls.get(assignedPaper.getPaperId());
+            ResearchPaper paper = PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(assignedPaper.getPaperId());
+            if(paper.getRating() == null){
+                continue;
             }
-            paperDtl.put(assignedPaper.getPcmId(), assignedPaper.getRating());
-            paperAssignmentDtls.put(assignedPaper.getPaperId(), paperDtl);
+            HashMap<String, Object> paperDtl = new HashMap<>();
+            List<Integer> pcmIds = new ArrayList<>();
+            List<Integer> rating = new ArrayList<>();
+            if(paperAssignmentDtls.containsKey(paper)){
+                paperDtl = paperAssignmentDtls.get(paper);
+                pcmIds = (ArrayList<Integer>)paperDtl.get(CodeSmellFixer.SnakeCase.PCM_ID);
+                rating = (ArrayList<Integer>)paperDtl.get(CodeSmellFixer.LowerCase.RATING);
+            }
+            pcmIds.add(assignedPaper.getPcmId());
+            rating.add(assignedPaper.getRating());
+            paperDtl.put(CodeSmellFixer.SnakeCase.PCM_ID, pcmIds);
+            paperDtl.put(CodeSmellFixer.LowerCase.RATING, rating);
+            paperAssignmentDtls.put(paper, paperDtl);
         }
-        return paperAssignmentDtls;
+        for(ResearchPaper paper : paperAssignmentDtls.keySet()){
+            HashMap<String,Object> data = new HashMap<>();
+            data.put(CodeSmellFixer.SnakeCase.PAPER_DETAILS, paper);
+            
+            HashMap<String, Object> paperDtl = paperAssignmentDtls.get(paper);
+            ArrayList<HashMap<String,Object>> pcmDataList = new ArrayList<>();
+
+            List<Integer> pcmIds = (ArrayList<Integer>)paperDtl.get(CodeSmellFixer.SnakeCase.PCM_ID);
+            List<Integer> rating = (ArrayList<Integer>)paperDtl.get(CodeSmellFixer.LowerCase.RATING);
+
+            for(int index = 0; index < pcmIds.size(); index++){
+                HashMap<String,Object> pcmData = new HashMap<>();
+                pcmData.put(CodeSmellFixer.SnakeCase.PCM_ID, pcmIds.get(index));
+                pcmData.put(CodeSmellFixer.LowerCase.RATING, rating.get(index));
+                pcmDataList.add(pcmData);
+            }
+
+            data.put(CodeSmellFixer.SnakeCase.PCM_DETAILS, pcmDataList);
+            paperDetailsList.add(data);
+        }
+        return paperDetailsList;
     }
 
     @Override
@@ -82,7 +116,7 @@ public class PccOps implements PccInterface {
             return false;
         }
         Boolean status = true;
-        status = Boolean.TRUE.equals(isCreate) ? AssignedPapersUtil.insertAssignedPaper(paperId, pcmId, null, pcmId) : AssignedPapersUtil.updateAssignedPaper(updatedReviewTemplate);
+        status = Boolean.TRUE.equals(isCreate) ? AssignedPapersUtil.insertAssignedPaper(paperId, pcmId, null, null) : AssignedPapersUtil.updateAssignedPaper(updatedReviewTemplate);
         if(Boolean.TRUE.equals(status)){
             Integer id = Boolean.TRUE.equals(isCreate) ? AssignedPapersUtil.getAssignedPaperBasedOnPaperIdAndPcmId(paperId, pcmId).getId() : updatedReviewTemplate.getId();
             new NotificationsOps().insertPcmAssignmentNotification(id, paperId, pcmId);
@@ -98,6 +132,19 @@ public class PccOps implements PccInterface {
             pcmIdVsAssignedPapers.put(assignedPaperDtls.get(id).getPcmId(), assignedPaperDtls.get(id));
         }
         return pcmIdVsAssignedPapers;
+    }
+
+    @Override
+    public ArrayList<ResearchPaper> getAllReviewCompletedPapersDetails() {
+        HashMap<Integer, ReviewTemplate> assignedPaperDtls = AssignedPapersUtil.getAllAssignedPapers();
+        ArrayList<ResearchPaper> papers = new ArrayList<>();
+        for(Integer id : assignedPaperDtls.keySet()){
+            ResearchPaper paper = PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(assignedPaperDtls.get(id).getPaperId());
+            if(!papers.contains(paper) && assignedPaperDtls.get(id).getRating() == null){
+                papers.add(paper);
+            }
+        }
+        return papers;
     }
 
     @Override
@@ -144,14 +191,26 @@ public class PccOps implements PccInterface {
     }
     
     @Override
-    public ArrayList<Integer> getAvailablePCMs(){
+    public ArrayList<HashMap<String,Object>> getAvailablePCMs(){
+        HashMap<Integer,User> pcmDtls = UserUtils.getAllUserDetailsBasedOnType(USER_TYPE.PCM);
+        ArrayList<HashMap<String,Object>> pcmData = new ArrayList<>();
+        for(Integer id : pcmDtls.keySet()){
+            HashMap<String,Object> data = new HashMap<>();
+            data.put(CodeSmellFixer.LowerCase.ID, id);
+            data.put(CodeSmellFixer.LowerCase.NAME, pcmDtls.get(id).getName());
+            pcmData.add(data);
+        }
+        return pcmData;
+    }
+
+    public ArrayList<Integer> getAvailablePCMIds(){
         HashMap<Integer,User> pcmDtls = UserUtils.getAllUserDetailsBasedOnType(USER_TYPE.PCM);
         return new ArrayList<>(pcmDtls.keySet());
     }
 
-    public ArrayList<Integer> getAvailablePCCs(){
-        HashMap<Integer,User> pcmDtls = UserUtils.getAllUserDetailsBasedOnType(USER_TYPE.PCC);
-        return new ArrayList<>(pcmDtls.keySet());
+    public ArrayList<Integer> getAvailablePCCIds(){
+        HashMap<Integer,User> pccDtls = UserUtils.getAllUserDetailsBasedOnType(USER_TYPE.PCC);
+        return new ArrayList<>(pccDtls.keySet());
     }
 
 }

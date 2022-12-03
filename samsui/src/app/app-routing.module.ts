@@ -7,6 +7,8 @@ import { LoginComponent } from './login/login.component';
 import { SessionService } from './session.service';
 import { SubmitterRevisionComponent } from './submitter-revision/submitter-revision.component';
 import {PccAssignpaperComponent} from './pcc-assignpaper/pcc-assignpaper.component'
+import { LandingAdminComponent } from './landing-admin/landing-admin.component';
+import { RatepaperComponent } from './ratepaper/ratepaper.component';
 
 
 function initializeAppFactory(sessionService: SessionService): () => any {
@@ -15,13 +17,13 @@ function initializeAppFactory(sessionService: SessionService): () => any {
   let isPCM = sessionService.getIsPCM();
   let isPCC = sessionService.getIsPCC();
   if(isAdmin){
-    changeRedirectTo("", false);
+    changeRedirectTo("home_admin", false);
   }else if(isSubmitter){
     changeRedirectTo("home_submitter", false);
   }else if(isPCM){
-    changeRedirectTo("", false);
+    changeRedirectTo("home_pcm", false);
   }else if(isPCC){
-    changeRedirectTo("", false);
+    changeRedirectTo("home_pcc", false);
   }else{
     changeRedirectTo("login", true);
   }
@@ -34,10 +36,12 @@ const routes: Routes = [
   { path: 'home_submitter', component: LandingUserComponent },
   { path: 'home_pcc', component: LandingPccComponent },
   { path: 'home_pcm', component: LandingPcmComponent },
+  { path: 'home_admin', component: LandingAdminComponent },
   { path: '',   redirectTo: '/login', pathMatch: 'full' },
   { path: 'revise/:paperId', component: SubmitterRevisionComponent },
   { path: 'assign/:paperId', component: PccAssignpaperComponent },
-  
+  { path: 'rate/pcc/:paperId', component: RatepaperComponent },
+  { path: 'rate/pcm/:paperId', component: RatepaperComponent },
 ];
 
 function changeRedirectTo(path: any, isLoginNeeded: boolean): any{

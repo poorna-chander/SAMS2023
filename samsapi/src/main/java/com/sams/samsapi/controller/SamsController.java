@@ -30,6 +30,7 @@ import com.sams.samsapi.json_crud_utils.PapersUtil;
 import com.sams.samsapi.json_crud_utils.ReviewQuestionnaireUtil;
 import com.sams.samsapi.json_crud_utils.UserUtils;
 import com.sams.samsapi.model.Deadline.TYPE;
+import com.sams.samsapi.model.ResearchPaper;
 import com.sams.samsapi.model.ReviewTemplate;
 import com.sams.samsapi.model.ReviewTemplate.Reviews;
 import com.sams.samsapi.model.User;
@@ -142,15 +143,17 @@ public class SamsController {
 
     @GetMapping("/paper/{paperId}")
     public ResponseEntity<Object> getPaperByPaperId(@RequestHeader Object userId, @PathVariable int paperId) throws Exception {
-        Boolean isSubmitter =  usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.SUBMITTER);
-        if (Boolean.FALSE.equals( isSubmitter)) {
+        Boolean isSubmitter = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.SUBMITTER);
+        Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCC) ||
+                                usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN);
+        if (Boolean.FALSE.equals( isValidUser || isSubmitter)) {
             LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        if(Boolean.FALSE.equals(new PaperPool().isGivenPaperSubmittedByUser(Integer.parseInt(userId.toString()), paperId))){
+        if(Boolean.TRUE.equals(isSubmitter) && Boolean.FALSE.equals(new PaperPool().isGivenPaperSubmittedByUser(Integer.parseInt(userId.toString()), paperId))){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<> (new PaperPool().getPaperByPaperId(Integer.parseInt(userId.toString()), paperId), HttpStatus.OK);
+        return new ResponseEntity<> (new PaperPool().getPaperByPaperId(paperId), HttpStatus.OK);
     }
 
     @GetMapping("/pcm")
@@ -174,8 +177,7 @@ public class SamsController {
         }
         return new ResponseEntity<>(pccInterface.getPaperPendingPCCAssignments(), HttpStatus.OK);
     }
-
-    @GetMapping("/papers/pcc/assignment/completed")
+    @GetMapping("/papers/pcc/rating/completed")
     public ResponseEntity<Object> getAllPapersCompletedAssignment(@RequestHeader Object userId) throws Exception {
         Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCC)
                 || usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN);
@@ -183,9 +185,8 @@ public class SamsController {
             LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return new ResponseEntity<>(pccInterface.getPaperAssignmentDetails(), HttpStatus.OK);
+        return new ResponseEntity<>(pccInterface.getRatingCompletedPaperDetails(), HttpStatus.OK);
     }
-
     @PutMapping("/papers/pcc/assignment/assign")
     public ResponseEntity<Object> updatePapersAssignment(@RequestHeader Object userId,
             @RequestBody HashMap<String, Object> details) throws Exception {
@@ -211,8 +212,21 @@ public class SamsController {
         }
     }
 
-    @GetMapping("/papers/pcc/assignment/view")
-    public ResponseEntity<Object> getPaperAssignment(@RequestHeader Object userId, @RequestParam Integer paperId)
+    @GetMapping("/papers/pcc/assignment/review/completed")
+    public ResponseEntity<Object> getAllPaperAssignment(@RequestHeader Object userId)
+            throws Exception {
+        Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCC)
+                || usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN);
+        if (Boolean.FALSE.equals(isValidUser)) {
+            LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        ArrayList<ResearchPaper> papers = pccInterface.getAllReviewCompletedPapersDetails();
+        return new ResponseEntity<>(papers, HttpStatus.OK);
+    }
+
+    @GetMapping("/papers/pcc/assignment/view/{paperId}")
+    public ResponseEntity<Object> getPaperAssignment(@RequestHeader Object userId, @PathVariable Integer paperId)
             throws Exception {
         Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCC)
                 || usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN);

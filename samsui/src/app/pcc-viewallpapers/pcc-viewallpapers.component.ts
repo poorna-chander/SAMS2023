@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ComponentInteractionService, COMPONENT_TYPE_MESSAGE } from '../component-interaction.service';
@@ -25,9 +26,8 @@ const SubmissionData: Submission[] = [
 })
 export class PccViewallpapersComponent implements OnInit {
   displayedColumns: string[] = ['title', 'revision', 'paperId', "assign"];
-  // dataSource = SubmissionData;
   subscription!: Subscription;
-  paperDetails: any[];
+  paperDetails: MatTableDataSource<any>[];
   constructor( private samsSubmissionService: SamsSubmissionService,
     private componentInteractionService: ComponentInteractionService,
     private route: ActivatedRoute) { }
@@ -35,7 +35,7 @@ export class PccViewallpapersComponent implements OnInit {
   ngOnInit(): void {
     this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
     this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
-      if(data == COMPONENT_TYPE_MESSAGE.SUBMITTER_VIEW_INITIALIZE){
+      if(data == COMPONENT_TYPE_MESSAGE.PCC_TAB_ASSIGN_PAPERS){
         this.setData();
       }
      });
@@ -43,8 +43,7 @@ export class PccViewallpapersComponent implements OnInit {
   }
 
   setData(): void{
-    this.samsSubmissionService.getAllSubmissions().subscribe({next: (paperDetails) =>{
-      debugger;
+    this.samsSubmissionService.getAllSubmissionsAssignmentPending().subscribe({next: (paperDetails) =>{
        this.paperDetails = paperDetails;
       }}
       );

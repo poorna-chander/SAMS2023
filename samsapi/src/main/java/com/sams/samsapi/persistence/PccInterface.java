@@ -9,10 +9,11 @@ import com.sams.samsapi.model.ReviewTemplate;
 public interface PccInterface {
     ArrayList<ResearchPaper> getAllSubmissions();
     ArrayList<ResearchPaper> getPaperPendingPCCAssignments();
-    HashMap<Integer,HashMap<Integer,Integer>> getPaperAssignmentDetails();
+    ArrayList<HashMap<String,Object>> getRatingCompletedPaperDetails();
+    ArrayList<ResearchPaper> getAllReviewCompletedPapersDetails();
     Boolean assignPaperToPCM(Integer paperId, Integer pcmId);
     HashMap<Integer,ReviewTemplate> viewPCMReviews(Integer paperId);
     void ratePaper(Integer paperId, Integer rating);
     HashMap<Integer, ArrayList<ResearchPaper>> getPCMChoices();
-    ArrayList<Integer> getAvailablePCMs();
+    ArrayList<HashMap<String,Object>> getAvailablePCMs();
 }

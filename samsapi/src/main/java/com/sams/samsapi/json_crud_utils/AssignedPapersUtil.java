@@ -61,7 +61,7 @@ public class AssignedPapersUtil {
     public static Boolean insertAssignedPaper(Integer paperId, Integer pcmId, Reviews[] reviews, Integer rating){
         Integer id = getNextAssignedPaperId();
 
-        if(paperId == null || pcmId == null || rating == null){
+        if(paperId == null || pcmId == null){
             return false;
         }
 

@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { ComponentInteractionService, COMPONENT_TYPE_MESSAGE } from '../component-interaction.service';
+import { SamsSubmissionService } from '../sams-submission.service';
 // import { SamsPCCService } from '../sams-submission.service';
 
 
@@ -22,14 +27,33 @@ const SubmissionData: Submission[] = [
 })
 export class PccRatepaperComponent implements OnInit {
   displayedColumns: string[] = ['title', 'revision', 'paperId', "rate"];
-  // dataSource = SubmissionData;
-  paperDetails: any[];
+  paperDetails: MatTableDataSource<any>[];
+  subscription!: Subscription;
 
-  // constructor( private samsPCCService: SamsPCCService) { }
-  // constructor() { }
+  constructor( private samsSubmissionService: SamsSubmissionService,
+    private componentInteractionService: ComponentInteractionService,
+    private route: ActivatedRoute) { }
 
-  ngOnInit(): void {
-    this.paperDetails = SubmissionData;
-  }
+    ngOnInit(): void {
+      this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
+      this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
+        if(data == COMPONENT_TYPE_MESSAGE.PCC_TAB_RATE_PAPERS){
+          this.setData();
+        }
+       });
+       this.setData();
+    }
+  
+    setData(): void{
+      this.samsSubmissionService.getAllPCMRatedPapers().subscribe({next: (paperDetails) =>{
+        debugger;
+         this.paperDetails = paperDetails;
+        }}
+        );
+    }
+
+    ngOnDestroy(): void {
+      this.subscription?.unsubscribe();
+    }
 
 }
