@@ -7,11 +7,11 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sams.samsapi.json_crud_utils.DeadlineUtil;
-import com.sams.samsapi.json_crud_utils.ReviewQuestionnaireUtil;
-import com.sams.samsapi.model.ReviewQuestionnaire;
-import com.sams.samsapi.model.Deadline.TYPE;
-import com.sams.samsapi.model.ReviewQuestionnaire.STATUS;
+import com.sams.samsapi.crud_utils.DeadlineUtil;
+import com.sams.samsapi.crud_utils.ReviewQuestionnaireUtil;
+import com.sams.samsapi.modelTemplates.ReviewQuestionnaire;
+import com.sams.samsapi.modelTemplates.Deadline.TYPE;
+import com.sams.samsapi.modelTemplates.ReviewQuestionnaire.STATUS;
 import com.sams.samsapi.util.CodeSmellFixer;
 
 public class AdminOps implements AdminInterface {

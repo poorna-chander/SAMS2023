@@ -8,12 +8,12 @@ import java.util.logging.Logger;
 
 import org.springframework.scheduling.annotation.Scheduled;
 
-import com.sams.samsapi.json_crud_utils.DeadlineUtil;
-import com.sams.samsapi.json_crud_utils.NotificationUtil;
-import com.sams.samsapi.model.Deadline;
-import com.sams.samsapi.model.Notification;
-import com.sams.samsapi.model.Notification.TYPE;
-import com.sams.samsapi.model.ResearchPaper;
+import com.sams.samsapi.crud_utils.DeadlineUtil;
+import com.sams.samsapi.crud_utils.NotificationUtil;
+import com.sams.samsapi.modelTemplates.Deadline;
+import com.sams.samsapi.modelTemplates.Notification;
+import com.sams.samsapi.modelTemplates.ResearchPaper;
+import com.sams.samsapi.modelTemplates.Notification.TYPE;
 import com.sams.samsapi.persistence.PccOps;
 import com.sams.samsapi.persistence.PcmOps;
 import com.sams.samsapi.util.CodeSmellFixer;

@@ -8,10 +8,10 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sams.samsapi.json_crud_utils.PapersUtil;
-import com.sams.samsapi.json_crud_utils.UserUtils;
-import com.sams.samsapi.model.ResearchPaper;
-import com.sams.samsapi.model.User;
+import com.sams.samsapi.crud_utils.PaperPoolUtil;
+import com.sams.samsapi.crud_utils.UserUtils;
+import com.sams.samsapi.modelTemplates.ResearchPaper;
+import com.sams.samsapi.modelTemplates.User;
 import com.sams.samsapi.service.FileUploadService;
 import com.sams.samsapi.util.CodeSmellFixer;
 
@@ -28,7 +28,7 @@ public class SubmitterOps implements SubmitterInterface {
     @Override
     public boolean SubmitPaperForm(String uploadPath, HashMap<String, String> data, MultipartFile fileBytes)
             throws IllegalStateException, IOException {
-        int next_paper_id = PapersUtil.getNextPaperId();
+        int next_paper_id = PaperPoolUtil.getNextPaperId();
         String uploadedFileName = fileBytes.getOriginalFilename();
         String[] uploadedFileExtension = uploadedFileName.split("\\.");
         String extension = uploadedFileExtension[uploadedFileExtension.length - 1];
@@ -69,7 +69,7 @@ public class SubmitterOps implements SubmitterInterface {
     @Override
     public boolean revisePaperForm(String uploadPath, HashMap<String, String> data, MultipartFile fileBytes,
             int paper_id) throws IllegalStateException, IOException {
-        HashMap<Integer, ResearchPaper> paperSubmissions = PapersUtil.getPaperDetailsBasedOnPaperId(paper_id);
+        HashMap<Integer, ResearchPaper> paperSubmissions = PaperPoolUtil.getPaperDetailsBasedOnPaperId(paper_id);
         // fetching latest revision
         int max = 1;
         for (ResearchPaper paper : paperSubmissions.values()) {

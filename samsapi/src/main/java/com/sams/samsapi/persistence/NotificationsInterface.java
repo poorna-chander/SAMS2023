@@ -3,8 +3,8 @@ package com.sams.samsapi.persistence;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.sams.samsapi.model.UserNotification;
-import com.sams.samsapi.model.Notification.TYPE;
+import com.sams.samsapi.modelTemplates.UserNotification;
+import com.sams.samsapi.modelTemplates.Notification.TYPE;
 
 public interface NotificationsInterface {
     ArrayList<UserNotification> getNotificationForUser(Integer userId);

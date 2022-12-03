@@ -3,8 +3,8 @@ package com.sams.samsapi.persistence;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.sams.samsapi.model.ReviewTemplate;
-import com.sams.samsapi.model.ReviewTemplate.Reviews;
+import com.sams.samsapi.modelTemplates.ReviewTemplate;
+import com.sams.samsapi.modelTemplates.ReviewTemplate.Reviews;
 
 public interface PcmInterface {
     Boolean submitPaperChoices(ArrayList<Integer> paperIds, Integer pcmId);

@@ -1,7 +1,7 @@
 package com.sams.samsapi.persistence;
 
-import com.sams.samsapi.model.User;
-import com.sams.samsapi.model.User.USER_TYPE;
+import com.sams.samsapi.modelTemplates.User;
+import com.sams.samsapi.modelTemplates.User.USER_TYPE;
 
 public interface UsersInterface {
     String getSubmitterName(Integer userId);

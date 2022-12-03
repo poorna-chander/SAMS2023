@@ -5,22 +5,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import com.sams.samsapi.json_crud_utils.AssignedPapersUtil;
-import com.sams.samsapi.json_crud_utils.PaperChoicesUtil;
-import com.sams.samsapi.json_crud_utils.PapersUtil;
-import com.sams.samsapi.json_crud_utils.UserUtils;
-import com.sams.samsapi.model.PaperChoices;
-import com.sams.samsapi.model.ResearchPaper;
-import com.sams.samsapi.model.ReviewTemplate;
-import com.sams.samsapi.model.User;
-import com.sams.samsapi.model.User.USER_TYPE;
+import com.sams.samsapi.crud_utils.AssignedPapersUtil;
+import com.sams.samsapi.crud_utils.PaperChoicesUtil;
+import com.sams.samsapi.crud_utils.PaperPoolUtil;
+import com.sams.samsapi.crud_utils.UserUtils;
+import com.sams.samsapi.modelTemplates.PaperMapping;
+import com.sams.samsapi.modelTemplates.ResearchPaper;
+import com.sams.samsapi.modelTemplates.ReviewTemplate;
+import com.sams.samsapi.modelTemplates.User;
+import com.sams.samsapi.modelTemplates.User.USER_TYPE;
 import com.sams.samsapi.util.CodeSmellFixer;
 
 public class PccOps implements PccInterface {
 
     @Override
     public ArrayList<ResearchPaper> getAllSubmissions() {
-        HashMap<Integer,ResearchPaper> idVsPaper = PapersUtil.getAllPaperDetailsBasedOnLatestRevision(true);
+        HashMap<Integer,ResearchPaper> idVsPaper = PaperPoolUtil.getAllPaperDetailsBasedOnLatestRevision(true);
         ArrayList<ResearchPaper> papers = new ArrayList<>();
         for(Integer paperId : idVsPaper.keySet()){
             papers.add(idVsPaper.get(paperId));
@@ -37,7 +37,7 @@ public class PccOps implements PccInterface {
         for(Integer id : idVsAssignedPaperDtls.keySet()){
             ReviewTemplate assignedPaper = idVsAssignedPaperDtls.get(id);
             if(!parsedPaperIds.contains(assignedPaper.getPaperId())){
-                HashMap<Integer, ResearchPaper> papers = PapersUtil.getPaperDetailsBasedOnPaperId(assignedPaper.getPaperId());
+                HashMap<Integer, ResearchPaper> papers = PaperPoolUtil.getPaperDetailsBasedOnPaperId(assignedPaper.getPaperId());
                 for(Integer paperPrimaryId : papers.keySet()){
                     if(paperDtls.contains(papers.get(paperPrimaryId))){
                         paperDtls.remove(papers.get(paperPrimaryId));
@@ -58,7 +58,7 @@ public class PccOps implements PccInterface {
         HashMap<Integer,ReviewTemplate> idVsAssignedPaperDtls =  AssignedPapersUtil.getAllAssignedPapers();
         for(Integer id : idVsAssignedPaperDtls.keySet()){
             ReviewTemplate assignedPaper = idVsAssignedPaperDtls.get(id);
-            ResearchPaper paper = PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(assignedPaper.getPaperId());
+            ResearchPaper paper = PaperPoolUtil.getLatestRevisedPaperDetailsBasedOnPaperId(assignedPaper.getPaperId());
             if(paper.getRating() == null){
                 continue;
             }
@@ -139,7 +139,7 @@ public class PccOps implements PccInterface {
         HashMap<Integer, ReviewTemplate> assignedPaperDtls = AssignedPapersUtil.getAllAssignedPapers();
         ArrayList<ResearchPaper> papers = new ArrayList<>();
         for(Integer id : assignedPaperDtls.keySet()){
-            ResearchPaper paper = PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(assignedPaperDtls.get(id).getPaperId());
+            ResearchPaper paper = PaperPoolUtil.getLatestRevisedPaperDetailsBasedOnPaperId(assignedPaperDtls.get(id).getPaperId());
             if(!papers.contains(paper) && assignedPaperDtls.get(id).getRating() == null){
                 papers.add(paper);
             }
@@ -156,7 +156,7 @@ public class PccOps implements PccInterface {
             if(Objects.equals(researchPaper.getPaperId(), paperId)){
                 researchPaper.setRating(rating);
                 submitterId = researchPaper.getSubmitterId();
-                status = PapersUtil.updatePaperDetails(researchPaper);
+                status = PaperPoolUtil.updatePaperDetails(researchPaper);
                 break;
             }
         }
@@ -167,11 +167,11 @@ public class PccOps implements PccInterface {
 
     @Override
     public HashMap<Integer, ArrayList<ResearchPaper>> getPCMChoices() {
-        HashMap<Integer,ResearchPaper> paperIdVsPaper = PapersUtil.getAllPaperDetailsBasedOnLatestRevision(true);
-        HashMap<Integer,PaperChoices> idVsPaperChoicesDtls =  PaperChoicesUtil.getAllPaperChoices();
+        HashMap<Integer,ResearchPaper> paperIdVsPaper = PaperPoolUtil.getAllPaperDetailsBasedOnLatestRevision(true);
+        HashMap<Integer,PaperMapping> idVsPaperChoicesDtls =  PaperChoicesUtil.getAllPaperChoices();
         HashMap<Integer, ArrayList<ResearchPaper>> pcmChoices = new HashMap<>();
         for(Integer id : idVsPaperChoicesDtls.keySet()){
-            PaperChoices paperChoice = idVsPaperChoicesDtls.get(id);
+            PaperMapping paperChoice = idVsPaperChoicesDtls.get(id);
             ResearchPaper paper = paperIdVsPaper.get(paperChoice.getPaperId());
             ArrayList<ResearchPaper> paperList = new ArrayList<>();
             if(pcmChoices.containsKey(paperChoice.getPcmId())){
