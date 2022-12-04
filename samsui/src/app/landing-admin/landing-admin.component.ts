@@ -25,18 +25,17 @@ export class LandingAdminComponent implements OnInit {
     private router: Router,
     private componentInteractionService: ComponentInteractionService,
      private route: ActivatedRoute) { 
-
+      this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
+        if(data == COMPONENT_TYPE_MESSAGE.ADMIN_TAB_SET_DEADLINE){
+          this.selectTab(0);
+        }else if(data == COMPONENT_TYPE_MESSAGE.ADMIN_TAB_SET_TEMPLATE){
+          this.selectTab(1);
+        }
+       });
     }
 
   ngOnInit(): void {
-    //this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
-    this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
-      if(data == COMPONENT_TYPE_MESSAGE.ADMIN_TAB_SET_DEADLINE){
-        this.selectTab(0);
-      }else if(data == COMPONENT_TYPE_MESSAGE.ADMIN_TAB_SET_TEMPLATE){
-        this.selectTab(1);
-      }
-     });
+    this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
   }
 
   openTab(type: any){
@@ -51,7 +50,7 @@ export class LandingAdminComponent implements OnInit {
 
   logOut() : void{
     this.sessionService.logOut();
-    this.router.navigate(['/']);
+    this.router.navigate(['/login']);
   }
 
   ngOnDestroy(): void {

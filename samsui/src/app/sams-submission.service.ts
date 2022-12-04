@@ -159,6 +159,12 @@ return this.http.request(req);
     }))
   }
 
+  getAllPCMPapersMeta(): Observable<any> {
+    return this.http.get<any>(this.papers + "/" + "pcm/meta", { headers: this.getHeaders() }).pipe(map(response => {
+      return response;
+    }))
+  }
+
   ratePaper(paperId: number, rating: number): Observable<any> {
     const body = { paper_id: paperId, rating: rating };
     return this.http.put<any>(this.papers + "/" + "pcc/rate", body, { headers: this.getHeaders() }).pipe(

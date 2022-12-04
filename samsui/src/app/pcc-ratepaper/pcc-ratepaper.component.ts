@@ -32,15 +32,16 @@ export class PccRatepaperComponent implements OnInit {
 
   constructor( private samsSubmissionService: SamsSubmissionService,
     private componentInteractionService: ComponentInteractionService,
-    private route: ActivatedRoute) { }
-
-    ngOnInit(): void {
-      this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
+    private route: ActivatedRoute) {
       this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
         if(data == COMPONENT_TYPE_MESSAGE.PCC_TAB_RATE_PAPERS){
           this.setData();
         }
        });
+     }
+
+    ngOnInit(): void {
+      this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
        this.setData();
     }
   

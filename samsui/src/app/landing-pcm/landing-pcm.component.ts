@@ -21,6 +21,17 @@ export class LandingPcmComponent implements OnInit {
     private router: Router,
     private componentInteractionService: ComponentInteractionService,
      private route: ActivatedRoute) { 
+      this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
+        if(data == COMPONENT_TYPE_MESSAGE.PCM_TAB_CHOOSE_PAPERS){
+          this.selectTab(0);
+        }else if(data == COMPONENT_TYPE_MESSAGE.PCM_TAB_RATE_ASSIGNED_PAPERS){
+          this.selectTab(1);
+        }else if(data == COMPONENT_TYPE_MESSAGE.PCM_TAB_VIEW_PAPERS){
+          this.selectTab(2);
+        }else if(data == COMPONENT_TYPE_MESSAGE.NOTIFICATION_VIEW_INITIALIZE){
+          this.selectTab(3);
+        }
+       });
     }
 
   selectTab(index: number): void {
@@ -28,18 +39,7 @@ export class LandingPcmComponent implements OnInit {
   }
   
   ngOnInit(): void {
-    //this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
-    this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
-      if(data == COMPONENT_TYPE_MESSAGE.PCM_TAB_CHOOSE_PAPERS){
-        this.selectTab(0);
-      }else if(data == COMPONENT_TYPE_MESSAGE.PCM_TAB_RATE_ASSIGNED_PAPERS){
-        this.selectTab(1);
-      }else if(data == COMPONENT_TYPE_MESSAGE.PCM_TAB_VIEW_PAPERS){
-        this.selectTab(2);
-      }else if(data == COMPONENT_TYPE_MESSAGE.NOTIFICATION_VIEW_INITIALIZE){
-        this.selectTab(3);
-      }
-     });
+    this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
   }
 
   openTab(type: any){
@@ -62,7 +62,7 @@ export class LandingPcmComponent implements OnInit {
 
   logOut(){
     this.sessionService.logOut();
-    this.router.navigate(['/']);
+    this.router.navigate(['/login']);
   }
 
   ngOnDestroy(): void {

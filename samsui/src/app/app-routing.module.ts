@@ -37,7 +37,6 @@ const routes: Routes = [
   { path: 'home_pcc', component: LandingPccComponent },
   { path: 'home_pcm', component: LandingPcmComponent },
   { path: 'home_admin', component: LandingAdminComponent },
-  { path: '',   redirectTo: '/login', pathMatch: 'full' },
   { path: 'revise/:paperId', component: SubmitterRevisionComponent },
   { path: 'assign/:paperId', component: PccAssignpaperComponent },
   { path: 'rate/pcc/:paperId', component: RatepaperComponent },

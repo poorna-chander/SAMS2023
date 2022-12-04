@@ -13,14 +13,16 @@ export class NotificationsComponent implements OnInit {
   subscription!: Subscription;
 
   constructor( private samsSubmissionService: SamsSubmissionService,
-    private componentInteractionService: ComponentInteractionService) { }
+    private componentInteractionService: ComponentInteractionService) {
+      this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
+        if(data == COMPONENT_TYPE_MESSAGE.NOTIFICATION_VIEW_INITIALIZE){
+          this.setData();
+        }
+       });
+     }
 
   ngOnInit(): void {
-    this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
-      if(data == COMPONENT_TYPE_MESSAGE.NOTIFICATION_VIEW_INITIALIZE){
-        this.setData();
-      }
-     });
+   
   }
 
   setData(): void{

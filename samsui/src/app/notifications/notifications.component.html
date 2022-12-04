@@ -1,42 +1,48 @@
 <div *ngFor="let notification of notifications; index as i">
   <ng-template [ngIf]="notification.type == 'SUBMITTED_FINAL_RATING'">
-    <ng-template [ngIf]="notification.status == 'UN_NOTICED'">
       <ng-template ngFor let-item [ngForOf]="notification.data.paper_titles" let-i="index">
         <h3>
           Final Rating Updated for <b>{{item}}</b> on <b>{{notification.timeStamp |  date: "EEEE, MMM dd, yyyy h:mm:ss a"}}</b>
+          <ng-template [ngIf]="notification.status == 'UN_NOTICED'">
+            <span class="newTag">New</span>
+          </ng-template>
         </h3>
       </ng-template>
-    </ng-template>
    </ng-template>
 
    <ng-template [ngIf]="notification.type == 'PAPER_SUBMISSION'">
-    <ng-template [ngIf]="notification.status == 'UN_NOTICED'">
+    
       <h3>
         Paper Titled <b>{{notification.data.title}}</b> of revision <b>{{notification.data.revisionNo}}</b> has been submitted on <b>{{notification.timeStamp |  date: "EEEE, MMM dd, yyyy h:mm:ss a"}}</b>
+        <ng-template [ngIf]="notification.status == 'UN_NOTICED'">
+        <span class="newTag">New</span>
+      </ng-template>
       </h3>
-    </ng-template>
    </ng-template>
    <ng-template [ngIf]="notification.type == 'PCC_UNASSIGNED_PAPERS'">
-    <ng-template [ngIf]="notification.status == 'UN_NOTICED'">
       <h3>
         Paper Titled <b>{{notification.data.title}}</b> has been unassigned to PCM's
+        <ng-template [ngIf]="notification.status == 'UN_NOTICED'">
+          <span class="newTag">New</span>
+        </ng-template>
       </h3>
-    </ng-template>
    </ng-template>
 
    <ng-template [ngIf]="notification.type == 'PCC_REVIEW_DEADLINE_EXPIRED'">
-    <ng-template [ngIf]="notification.status == 'UN_NOTICED'">
       <h3>
         Review Deadline was on <b>{{notification.data.REVIEW_SUBMISSION_DEADLINE |  date: "EEEE, MMM dd, yyyy h:mm:ss a"}}</b> has been expired
+        <ng-template [ngIf]="notification.status == 'UN_NOTICED'">
+          <span class="newTag">New</span>
+        </ng-template>
       </h3>
-    </ng-template>
    </ng-template>
   
    <ng-template [ngIf]="notification.type == 'PCC_REVIEWS_PCM_COMPLETED_RATING_PENDING'">
-    <ng-template [ngIf]="notification.status == 'UN_NOTICED'">
       <h3>
         Final Rating is Pending for Paper of Ids [<b>{{notification.data.paperIds}}</b>]
+        <ng-template [ngIf]="notification.status == 'UN_NOTICED'">
+          <span class="newTag">New</span>
+        </ng-template>
       </h3>
-    </ng-template>
    </ng-template>
 </div>

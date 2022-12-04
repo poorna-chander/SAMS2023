@@ -116,11 +116,12 @@ public class SubmissionController {
         Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCC)
                 || usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN);
         Boolean isSubmitter =  usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.SUBMITTER);
-        if (Boolean.FALSE.equals(isValidUser || isSubmitter)) {
+        Boolean isPCM =  usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCM);
+        if (Boolean.FALSE.equals(isValidUser || isSubmitter || isPCM)) {
             LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return new ResponseEntity<>(Boolean.TRUE.equals(isSubmitter) ? new PaperPool().getAllLatestPapersOfSubmitter(Integer.parseInt(userId.toString())) : pccInterface.getAllSubmissions(), HttpStatus.OK);
+        return new ResponseEntity<>(Boolean.TRUE.equals(isSubmitter || isPCM) ? new PaperPool().getAllPapersOfSubmitter(Integer.parseInt(userId.toString())) : pccInterface.getAllSubmissions(), HttpStatus.OK);
     }
 
     @GetMapping("/paper/{paperId}")

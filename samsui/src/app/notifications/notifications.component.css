@@ -1,0 +1,13 @@
+.newTag{
+    background-color: #f32121!important;
+    color: #fff!important;
+    display: inline-block;
+    padding-left: 2px;
+    padding-right: 2px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    text-align: center;
+    margin-left: 5px;
+    size: a1;
+    font-size: x-small;
+}

@@ -22,15 +22,17 @@ export class SubmitterSubmissionsComponent implements OnInit {
   subscription!: Subscription;
   constructor( private samsSubmissionService: SamsSubmissionService,
     private componentInteractionService: ComponentInteractionService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute) {
+      this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
+        if(data == COMPONENT_TYPE_MESSAGE.SUBMITTER_VIEW_INITIALIZE){
+          this.setData();
+        }
+       });
+     }
 
   ngOnInit(): void {
-    //this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
-    this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
-      if(data == COMPONENT_TYPE_MESSAGE.SUBMITTER_VIEW_INITIALIZE){
-        this.setData();
-      }
-     });
+    debugger;
+    this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
      this.setData();
   }
 
