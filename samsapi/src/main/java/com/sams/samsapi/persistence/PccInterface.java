@@ -3,8 +3,8 @@ package com.sams.samsapi.persistence;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.sams.samsapi.model.ResearchPaper;
-import com.sams.samsapi.model.ReviewTemplate;
+import com.sams.samsapi.modelTemplates.ResearchPaper;
+import com.sams.samsapi.modelTemplates.ReviewTemplate;
 
 public interface PccInterface {
     ArrayList<ResearchPaper> getAllSubmissions();

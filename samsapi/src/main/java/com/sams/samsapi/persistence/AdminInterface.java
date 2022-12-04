@@ -2,7 +2,7 @@ package com.sams.samsapi.persistence;
 
 import java.util.HashMap;
 
-import com.sams.samsapi.model.Deadline.TYPE;
+import com.sams.samsapi.modelTemplates.Deadline.TYPE;
 
 public interface AdminInterface {
     Boolean updateDeadlines(TYPE type, long deadlineInMillis) throws Exception;

@@ -1,8 +1,8 @@
 package com.sams.samsapi.persistence;
 
-import com.sams.samsapi.json_crud_utils.UserUtils;
-import com.sams.samsapi.model.User;
-import com.sams.samsapi.model.User.USER_TYPE;
+import com.sams.samsapi.crud_utils.UserUtils;
+import com.sams.samsapi.modelTemplates.User;
+import com.sams.samsapi.modelTemplates.User.USER_TYPE;
 
 public class UsersOps implements UsersInterface{
 

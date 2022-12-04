@@ -1,6 +1,7 @@
 package com.sams.samsapi.persistence;
 
-import com.sams.samsapi.model.ResearchPaper;
+import com.sams.samsapi.crud_utils.PaperPoolUtil;
+import com.sams.samsapi.modelTemplates.ResearchPaper;
 import com.sams.samsapi.util.CodeSmellFixer;
 
 import java.util.ArrayList;
@@ -8,11 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import com.sams.samsapi.json_crud_utils.PapersUtil;
-
 public class PaperPool {
     public HashMap<Integer, ResearchPaper> getSubmissionDetailsbyUser(Integer userId){
-        return PapersUtil.getPaperDetailsBasedOnSubmitterId(userId);
+        return PaperPoolUtil.getPaperDetailsBasedOnSubmitterId(userId);
     }
 
     @SuppressWarnings("unchecked")
@@ -25,28 +24,28 @@ public class PaperPool {
         String fileExtension = paperDetails.get(CodeSmellFixer.SnakeCase.FILE_EXTENSION).toString();
         Integer paperId = Integer.parseInt(paperDetails.get(CodeSmellFixer.SnakeCase.PAPER_ID).toString());
         Integer revisionNo = Integer.parseInt(paperDetails.get(CodeSmellFixer.SnakeCase.REVISION_NO).toString());
-        Boolean status = PapersUtil.insertPaperDetails(title, submitterId, authors, contact, fileName, fileExtension, paperId, revisionNo);
+        Boolean status = PaperPoolUtil.insertPaperDetails(title, submitterId, authors, contact, fileName, fileExtension, paperId, revisionNo);
         if(Boolean.TRUE.equals(status)){
-            new NotificationsOps().insertPaperSubmissionNotification(PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId).getId(), revisionNo, title, paperId);
+            new NotificationsOps().insertPaperSubmissionNotification(PaperPoolUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId).getId(), revisionNo, title, paperId);
         }
         return status;
     }
 
     public Boolean updatePaper(ResearchPaper paper){
-        return PapersUtil.updatePaperDetails(paper);
+        return PaperPoolUtil.updatePaperDetails(paper);
     }
 
     public Integer getFinalRatingByPaperID(Integer paperId){
-        ResearchPaper paper = PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId);
+        ResearchPaper paper = PaperPoolUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId);
         return (paper != null) ? paper.getRating() : null;
     }
 
     public ResearchPaper getPaperDetails(Integer paperId){
-        return PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId);
+        return PaperPoolUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId);
     }
 
     public ArrayList<ResearchPaper> getAllLatestPapersOfSubmitter(Integer userId){
-        HashMap<Integer, ResearchPaper> paperDtls = PapersUtil.getLatestPaperDetailsBasedOnSubmitterId(userId);
+        HashMap<Integer, ResearchPaper> paperDtls = PaperPoolUtil.getLatestPaperDetailsBasedOnSubmitterId(userId);
         ArrayList<ResearchPaper> papers = new ArrayList<>();
         for(Integer id : paperDtls.keySet()){
             papers.add(paperDtls.get(id));
@@ -56,7 +55,7 @@ public class PaperPool {
     }
 
     public Boolean isGivenPaperSubmittedByUser(Integer userId, Integer paperId){
-        HashMap<Integer, ResearchPaper> paperDtls = PapersUtil.getLatestPaperDetailsBasedOnSubmitterId(userId);
+        HashMap<Integer, ResearchPaper> paperDtls = PaperPoolUtil.getLatestPaperDetailsBasedOnSubmitterId(userId);
         for(Integer id : paperDtls.keySet()){
             if(Objects.equals(paperDtls.get(id).getPaperId(), paperId) && Objects.equals(paperDtls.get(id).getSubmitterId(), userId)){
                     return true;
@@ -67,7 +66,7 @@ public class PaperPool {
     }
 
     public ResearchPaper getPaperByPaperId(Integer paperId){
-        return PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId);
+        return PaperPoolUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId);
     }
 
 }

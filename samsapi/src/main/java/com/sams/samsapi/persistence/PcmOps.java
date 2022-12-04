@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import com.sams.samsapi.json_crud_utils.AssignedPapersUtil;
-import com.sams.samsapi.json_crud_utils.PaperChoicesUtil;
-import com.sams.samsapi.json_crud_utils.PapersUtil;
-import com.sams.samsapi.json_crud_utils.ReviewQuestionnaireUtil;
-import com.sams.samsapi.model.ResearchPaper;
-import com.sams.samsapi.model.ReviewTemplate;
-import com.sams.samsapi.model.ReviewTemplate.Reviews;
+import com.sams.samsapi.crud_utils.AssignedPapersUtil;
+import com.sams.samsapi.crud_utils.PaperChoicesUtil;
+import com.sams.samsapi.crud_utils.PaperPoolUtil;
+import com.sams.samsapi.crud_utils.ReviewQuestionnaireUtil;
+import com.sams.samsapi.modelTemplates.ResearchPaper;
+import com.sams.samsapi.modelTemplates.ReviewTemplate;
+import com.sams.samsapi.modelTemplates.ReviewTemplate.Reviews;
 import com.sams.samsapi.util.CodeSmellFixer;
 
 public class PcmOps implements PcmInterface {
@@ -32,7 +32,7 @@ public class PcmOps implements PcmInterface {
     @Override
     public HashMap<Integer, HashMap<String, String>> getMetaAvailablePaperDetails(Integer pcmId) {
         HashMap<Integer, HashMap<String, String>> metaData = new HashMap<>();
-        HashMap<Integer, ResearchPaper> paperIdVsPaper = PapersUtil.getAllPaperDetailsBasedOnLatestRevision(true);
+        HashMap<Integer, ResearchPaper> paperIdVsPaper = PaperPoolUtil.getAllPaperDetailsBasedOnLatestRevision(true);
         for(Integer paperId : paperIdVsPaper.keySet()){
 
             HashMap<String,String> data = new HashMap<>();

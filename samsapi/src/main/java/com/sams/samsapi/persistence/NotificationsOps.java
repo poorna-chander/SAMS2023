@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import com.sams.samsapi.json_crud_utils.NotificationUtil;
-import com.sams.samsapi.json_crud_utils.PapersUtil;
-import com.sams.samsapi.json_crud_utils.UserUtils;
-import com.sams.samsapi.model.Notification;
-import com.sams.samsapi.model.ResearchPaper;
-import com.sams.samsapi.model.Notification.STATUS;
-import com.sams.samsapi.model.Notification.TYPE;
-import com.sams.samsapi.model.User.USER_TYPE;
-import com.sams.samsapi.model.User;
-import com.sams.samsapi.model.UserNotification;
+import com.sams.samsapi.crud_utils.NotificationUtil;
+import com.sams.samsapi.crud_utils.PaperPoolUtil;
+import com.sams.samsapi.crud_utils.UserUtils;
+import com.sams.samsapi.modelTemplates.Notification;
+import com.sams.samsapi.modelTemplates.ResearchPaper;
+import com.sams.samsapi.modelTemplates.User;
+import com.sams.samsapi.modelTemplates.UserNotification;
+import com.sams.samsapi.modelTemplates.Notification.STATUS;
+import com.sams.samsapi.modelTemplates.Notification.TYPE;
+import com.sams.samsapi.modelTemplates.User.USER_TYPE;
 import com.sams.samsapi.util.CodeSmellFixer;
 
 public class NotificationsOps implements NotificationsInterface {
@@ -284,7 +284,7 @@ public class NotificationsOps implements NotificationsInterface {
                 ArrayList<Integer> paperIds = (ArrayList<Integer>) data.get(CodeSmellFixer.CamelCase.PAPER_IDS);
                 Boolean notCompleted = false;
                 for (Integer paperId : paperIds) {
-                    if (PapersUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId).getRating() == null) {
+                    if (PaperPoolUtil.getLatestRevisedPaperDetailsBasedOnPaperId(paperId).getRating() == null) {
                         notCompleted = true;
                         break;
                     }
