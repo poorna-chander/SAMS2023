@@ -25,7 +25,7 @@ export class SubmitterSubmissionsComponent implements OnInit {
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
+    //this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
     this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
       if(data == COMPONENT_TYPE_MESSAGE.SUBMITTER_VIEW_INITIALIZE){
         this.setData();

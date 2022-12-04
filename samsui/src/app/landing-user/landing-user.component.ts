@@ -29,7 +29,7 @@ export class LandingUserComponent implements OnInit {
      }
 
   ngOnInit(): void {
-    this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
+   // this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
     this.subscription = this.componentInteractionService.componentTypeMessage.subscribe((data: COMPONENT_TYPE_MESSAGE) => {
       if(data == COMPONENT_TYPE_MESSAGE.SUBMITTER_TAB_SUBMIT){
         this.selectTab(0);
