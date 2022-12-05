@@ -91,6 +91,13 @@ return this.http.request(req);
     }))
   }
 
+  updateNotifications(ids: []) : Observable<any> {
+    const body = { ids: ids };
+    return this.http.put<any>(this.notification, body, { headers: this.getHeaders() }).pipe(map(response => {
+      return response;
+    }))
+  }
+
   authenticateUser(username: any, password: any): Observable<any> {
     console.log(this.user + "authenticate" + ", username = " + username + ", password = " + password);
     const body = { username: username, password: password };
@@ -165,6 +172,22 @@ return this.http.request(req);
     }))
   }
 
+  getAllAssignedPapers(): Observable<any> {
+    return this.http.get<any>(this.papers + "/" + "pcm", { headers: this.getHeaders() }).pipe(map(response => {
+      return response;
+    }))
+  }
+
+  choosePaper(paperId: number): Observable<any> {
+    const body = { paper_ids: [paperId] };
+    return this.http.post<any>(this.papers + "/" + "pcm/choose", body, { headers: this.getHeaders() }).pipe(
+    map(response => {
+      return response;
+    }),
+    catchError(this.handleUserError<any>({ "status": "failure" }))
+  );
+}
+
   ratePaper(paperId: number, rating: number): Observable<any> {
     const body = { paper_id: paperId, rating: rating };
     return this.http.put<any>(this.papers + "/" + "pcc/rate", body, { headers: this.getHeaders() }).pipe(
@@ -173,6 +196,38 @@ return this.http.request(req);
     }),
     catchError(this.handleUserError<any>({ "status": "failure" }))
   );
+}
+
+reviewPaper(paperId: number, reviews: any, rating: number): Observable<any> {
+  const body = { paper_id: paperId, rating: rating, reviews: reviews };
+  return this.http.post<any>(this.papers + "/" + "pcm/review", body, { headers: this.getHeaders() }).pipe(
+  map(response => {
+    return response;
+  }),
+  catchError(this.handleUserError<any>({ "status": "failure" }))
+);
+}
+
+getDeadlines(): Observable<any> {
+  return this.http.get<any>(this.papers + "/" + "deadline", { headers: this.getHeaders() }).pipe(map(response => {
+    return response;
+  }))
+}
+
+getQuestionnaire(): Observable<any> {
+  return this.http.get<any>(this.papers + "/" + "template", { headers: this.getHeaders() }).pipe(map(response => {
+    return response;
+  }))
+}
+
+updateDeadline(type: any, deadline: any): Observable<any> {
+  const body = { type: type, deadline: deadline };
+  return this.http.put<any>(this.papers + "/" + "deadline", body, { headers: this.getHeaders() }).pipe(
+  map(response => {
+    return response;
+  }),
+  catchError(this.handleUserError<any>({ "status": "failure" }))
+);
 }
 
   public handleUserError<T>(result?: T) {

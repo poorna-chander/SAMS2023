@@ -31,7 +31,6 @@ export class SubmitterSubmissionsComponent implements OnInit {
      }
 
   ngOnInit(): void {
-    debugger;
     this.componentInteractionService.redirectToDefault(this.route.snapshot.url[0].path);
      this.setData();
   }

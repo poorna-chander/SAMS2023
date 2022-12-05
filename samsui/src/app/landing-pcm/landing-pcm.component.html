@@ -1,7 +1,7 @@
 <section>
     <h2 class="invhead">PCM Page<button mat-raised-button (click)="logOut()">Log Out</button></h2>
       <div align="center" >
-          <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" color="primary" backgroundColor="accent">
+          <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" color="primary" backgroundColor="accent" (selectedTabChange)="openTab($event)" [selectedIndex]="selectedIndex">
               <mat-tab class="apButts" label="Choose Papers"> <app-pcm-choosepaper ></app-pcm-choosepaper> </mat-tab>
               <mat-tab class="apButts"  label="Rate Assigned Papers"> <app-pcm-rateassigned></app-pcm-rateassigned></mat-tab>
               <mat-tab class="apButts" label="Submit Paper"> <app-submitter-form ></app-submitter-form> </mat-tab>

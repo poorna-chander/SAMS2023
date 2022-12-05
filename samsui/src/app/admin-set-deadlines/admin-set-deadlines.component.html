@@ -2,23 +2,24 @@
 <h1>Set Paper Submission Deadline</h1>
 <mat-form-field  class = "date-card" appearance="fill">
     <mat-label>Choose Paper Submission Deadline</mat-label>
-    <input matInput [matDatepicker]="picker" placeholder="Choose Paper Submission Deadline"  (dateChange)="getPaperSubmissionDeadline('change', $event)">
+    <input matInput [matDatepicker]="picker" [min]="currentDate" [(ngModel)]="paperSubmissionDeadline" placeholder="Choose Paper Submission Deadline">
     <mat-hint>MM/DD/YYYY</mat-hint>
     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
+    <mat-datepicker #picker startView="year" [startAt]="paperSubmissionDeadline"></mat-datepicker>
 </mat-form-field>
 <br/>
 <h1>Set Review Submission Deadline</h1>
 <mat-form-field class = "date-card" appearance="fill">
     <mat-label>Choose Review Submission Deadline</mat-label>
-    <input matInput [matDatepicker]="picker" placeholder="Choose Review Submission Deadline"  (dateChange)="getReviewSubmissionDeadline('change', $event)">
+    <input matInput [matDatepicker]="picker1" [min]="currentDate" [(ngModel)]="reviewSubmissionDeadline" placeholder="Choose Review Submission Deadline">
     <mat-hint>MM/DD/YYYY</mat-hint>
-    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
+    <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+    <mat-datepicker #picker1 startView="year" [startAt]="reviewSubmissionDeadline"></mat-datepicker>
 </mat-form-field>
 <br/>
 <br/>
-<button mat-raised-button (click)="back()" color="accent">Back</button>
+<button mat-raised-button (click)="back()" class="mR5" color="accent">Back</button>
+<button mat-raised-button (click)="submit()" color="accent">Submit</button>
 </div>
 
 

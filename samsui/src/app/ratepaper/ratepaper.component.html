@@ -9,9 +9,17 @@
         <mat-icon matSuffix></mat-icon>
         <mat-hint>Rating 0-10</mat-hint>
         </mat-form-field>
+        <span *ngIf="from == 'PCM'">
+            <div *ngFor="let question of questionnaire; let i=index">
+                  <div>
+                    <h1>{{question.field}}</h1>
+                  <input type="text" [(ngModel)]="question.answer">
+                    </div>
+            </div>
+        </span>
     </p>
     <section>
-            <button mat-raised-button (click)="rate()" [disabled]="rating === undefined || rating < 0 || rating === null || rating > 10">Rate</button>
+            <button mat-raised-button (click)="rate()" [disabled]="!validate()">Rate</button>
             <button mat-button target="_blank" (click)="cancel()">Cancel</button>
     </section>
 </div>

@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -100,5 +101,27 @@ public class AdminActionController {
             LOG.log(Level.SEVERE, CodeSmellFixer.UpperCase.INVALID_BODY);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/papers/template")
+    public ResponseEntity<Object> getTemplate(@RequestHeader Object userId) throws Exception {
+            Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN) || usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCM);
+            if (Boolean.FALSE.equals(isValidUser)) {
+                LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+
+            return new ResponseEntity<>(adminInterface.getTemplate(),HttpStatus.OK);
+    }
+
+    @GetMapping("/papers/deadline")
+    public ResponseEntity<Object> getDeadlines(@RequestHeader Object userId) throws Exception {
+            Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.ADMIN) || usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCM);
+            if (Boolean.FALSE.equals(isValidUser)) {
+                LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+
+            return new ResponseEntity<>(adminInterface.getDeadlines(),HttpStatus.OK);
     }
 }

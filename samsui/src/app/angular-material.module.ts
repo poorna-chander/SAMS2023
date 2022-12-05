@@ -6,6 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatToolbarModule } from '@angular/material/toolbar'; 
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 const materialModules = [
   MatIconModule,
   MatButtonModule,
@@ -13,6 +15,8 @@ const materialModules = [
   MatFormFieldModule,
   MatProgressBarModule,
   MatToolbarModule,
+  MatTooltipModule,
+  BrowserAnimationsModule
 ];
 @NgModule({
   imports: [CommonModule, ...materialModules],

@@ -28,6 +28,18 @@ export class NotificationsComponent implements OnInit {
   setData(): void{
     this.samsSubmissionService.getNotifications().subscribe({next: (notifications) =>{
       this.notifications = notifications;
+      this.changeNotifiedData();
+    }}
+    );
+  }
+
+  changeNotifiedData(): void{
+    let ids:any = [];
+    this.notifications.forEach((data: any) => {
+      ids.push(data.id);
+    });
+    this.samsSubmissionService.updateNotifications(ids).subscribe({next: (notifications) =>{
+      debugger;
     }}
     );
   }

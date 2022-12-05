@@ -46,7 +46,8 @@ public class PcmActionController {
 
     }
 
-    @PostMapping("/papers/pcm/choice")
+    @CrossOrigin
+    @PostMapping("/papers/pcm/choose")
     public ResponseEntity<Object> createPaperChoices(@RequestHeader Object userId,
             @RequestBody HashMap<String, Object> details) throws Exception {
         try {
@@ -85,6 +86,18 @@ public class PcmActionController {
         }
 
         return new ResponseEntity<>(pcmInterface.getMetaAvailablePaperDetails(Integer.parseInt(userId.toString())),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/papers/pcm")
+    public ResponseEntity<Object> getAssignedPaperDetails(@RequestHeader Object userId) throws Exception {
+        Boolean isValidUser = usersInterface.authenticateUser(Integer.parseInt(userId.toString()), USER_TYPE.PCM);
+        if (Boolean.FALSE.equals(isValidUser)) {
+            LOG.log(Level.SEVERE, CodeSmellFixer.LoggerCase.USER_UN_AUTHORIZED, userId);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        return new ResponseEntity<>(pcmInterface.getAssignedPaperDetails(Integer.parseInt(userId.toString())),
                 HttpStatus.OK);
     }
 

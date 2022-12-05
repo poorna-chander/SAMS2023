@@ -1,17 +1,17 @@
 [
     {
         "id": 1,
-        "field": "",
+        "field": "Overall Review of the Paper :",
         "status": "IN_LIVE"
     },
     {
         "id": 2,
-        "field": "",
+        "field": "Positives About the Paper :",
         "status": "IN_LIVE"
     },
     {
         "id": 3,
-        "field": "",
-        "status": "NOT_LIVE"
+        "field": "Negatives About the Paper :",
+        "status": "IN_LIVE"
     }
 ]

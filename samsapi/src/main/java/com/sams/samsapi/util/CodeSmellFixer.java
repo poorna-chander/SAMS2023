@@ -35,6 +35,7 @@ public class CodeSmellFixer {
         public static final String ID = "id";
         public static final String NAME = "name";
         public static final String IDS = "ids";
+        public static final String CHOOSED = "choosed";
 
         private LowerCase(){
         

@@ -1,18 +1,14 @@
 package com.sams.samsapi.persistence;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sams.samsapi.crud_utils.DeadlineUtil;
 import com.sams.samsapi.crud_utils.ReviewQuestionnaireUtil;
-import com.sams.samsapi.modelTemplates.ReviewQuestionnaire;
 import com.sams.samsapi.modelTemplates.Deadline.TYPE;
+import com.sams.samsapi.modelTemplates.ReviewQuestionnaire;
 import com.sams.samsapi.modelTemplates.ReviewQuestionnaire.STATUS;
-import com.sams.samsapi.util.CodeSmellFixer;
 
 public class AdminOps implements AdminInterface {
     private static final Logger LOG = Logger.getLogger(AdminOps.class.getName());
@@ -46,6 +42,26 @@ public class AdminOps implements AdminInterface {
             }
         }
         return true;
+    }
+
+    @Override
+    public ArrayList<ReviewQuestionnaire> getTemplate() {
+        ArrayList<ReviewQuestionnaire> reviews = new ArrayList<>();
+        HashMap<Integer,ReviewQuestionnaire> idVsReviewQuestionnaire = ReviewQuestionnaireUtil.getAllReviewQuestionnaire();
+        for(Integer id : idVsReviewQuestionnaire.keySet()){
+            if(idVsReviewQuestionnaire.get(id).getStatus() == STATUS.IN_LIVE){
+                reviews.add(idVsReviewQuestionnaire.get(id));
+            }
+        }
+        return reviews;
+    }
+
+    @Override
+    public HashMap<String,Long> getDeadlines() {
+        HashMap<String,Long> deadlineData = new HashMap<>();
+        deadlineData.put(TYPE.PAPER_SUBMISSION_DEADLINE.name(), DeadlineUtil.getPaperSubmissionDeadline());
+        deadlineData.put(TYPE.REVIEW_SUBMISSION_DEADLINE.name(), DeadlineUtil.getReviewSubmissionDeadline());
+        return deadlineData;
     }
 
 }

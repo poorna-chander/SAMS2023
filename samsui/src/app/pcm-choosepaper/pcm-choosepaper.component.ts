@@ -11,7 +11,7 @@ import { SamsSubmissionService } from '../sams-submission.service';
   styleUrls: ['./pcm-choosepaper.component.css']
 })
 export class PcmChoosepaperComponent implements OnInit {
-  displayedColumns: string[] = ['title', 'revision', 'paperId', "choose"];
+  displayedColumns: string[] = ['title', 'paperId', "choose"];
   subscription!: Subscription;
   paperDetails: MatTableDataSource<any>[];
   constructor( private samsSubmissionService: SamsSubmissionService,
@@ -31,10 +31,25 @@ export class PcmChoosepaperComponent implements OnInit {
   }
   
   setData(): void{
-    this.samsSubmissionService.getAllPCMPapersMeta().subscribe({next: (paperDetails) =>{
-       this.paperDetails = paperDetails;
+    this.samsSubmissionService.getAllPCMPapersMeta().subscribe({next: (paperMap) =>{
+      this.paperDetails = [];
+      Object.keys(paperMap).forEach((id) => {
+          let data: any ={};
+          data["paperId"] = id;
+          data["title"] = paperMap[id].title;
+          data["choosed"] = paperMap[id].choosed == "true";
+          this.paperDetails.push(data);
+      })
       }}
       );
+  }
+
+  choosePaper(paperId: any): void{
+    this.samsSubmissionService.choosePaper(paperId).subscribe({next: (response) =>{
+      console.log(response);
+      this.ngOnInit();
+    }}
+    );
   }
 
 }

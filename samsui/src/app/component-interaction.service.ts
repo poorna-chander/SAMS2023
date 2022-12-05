@@ -29,7 +29,7 @@ export class ComponentInteractionService {
         });
       }
     }else if(isPCM){
-      if(!["home_pcm"].includes(currentPath)){
+      if(!["home_pcm", "rate"].includes(currentPath)){
         this.router.navigate(['home_pcm']).then(() => {
           window.location.reload();
         });

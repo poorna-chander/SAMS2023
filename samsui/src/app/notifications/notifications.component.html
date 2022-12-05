@@ -45,4 +45,22 @@
         </ng-template>
       </h3>
    </ng-template>
+
+   <ng-template [ngIf]="notification.type == 'PCM_ASSIGNMENT'">
+    <h3>
+      Paper of Id <b>{{notification.data.paperId}}</b> has been assigned to you at <b>{{notification.timeStamp |  date: "EEEE, MMM dd, yyyy h:mm:ss a"}}</b>
+      <ng-template [ngIf]="notification.status == 'UN_NOTICED'">
+        <span class="newTag">New</span>
+      </ng-template>
+    </h3>
+ </ng-template>
+
+ <ng-template [ngIf]="notification.type == 'PCM_PAPER_SUBMISSION_DEADLINE_EXPIRED'">
+  <h3>
+    Paper Submission Deadline was on <b>{{notification.data.PAPER_SUBMISSION_DEADLINE |  date: "EEEE, MMM dd, yyyy h:mm:ss a"}}</b> has been expired
+    <ng-template [ngIf]="notification.status == 'UN_NOTICED'">
+      <span class="newTag">New</span>
+    </ng-template>
+  </h3>
+</ng-template>
 </div>

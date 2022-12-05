@@ -1,6 +1,7 @@
 package com.sams.samsapi.crud_utils;
 
 import java.util.logging.Logger;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -85,6 +86,17 @@ public class PaperChoicesUtil {
 
     public static PaperMapping getPaperChoice(Integer id){
         return idVsPaperChoices.get(id);
+    }
+
+    public static ArrayList<PaperMapping> getPaperChoiceBasedOnType(Integer id, Boolean isBasedOnPaperId){
+        ArrayList<PaperMapping> paperMappingList = new ArrayList<>();
+        for(Integer primaryId : idVsPaperChoices.keySet()){
+            PaperMapping paperMapping = idVsPaperChoices.get(primaryId);
+            if( (isBasedOnPaperId && paperMapping.getPaperId().equals(id)) || (!isBasedOnPaperId && paperMapping.getPcmId().equals(id))){
+                paperMappingList.add(paperMapping);
+            }
+        }
+        return paperMappingList;
     }
 
     public static Boolean isPaperChoicePresent(Integer pcmId, Integer paperId){
